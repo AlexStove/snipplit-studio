@@ -1517,26 +1517,22 @@
 
     // LIVE DATA SYNC (Online API with Graceful Offline Fallback)
     
-    // Direct Telegram Bot API Notification helper for zero-latency mobile execution
-    async function notifyTelegramDirect(message) {
+    // Native Telegram WebApp Data handler without exposing bot secrets
+    function notifyTelegramDirect(message) {
       try {
         if (window.Telegram && window.Telegram.WebApp) {
           try {
             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
           } catch(e) {}
+          try {
+            window.Telegram.WebApp.sendData(JSON.stringify({
+              action: "plitty_admin_event",
+              message: message
+            }));
+          } catch(e) {}
         }
-        const url = 'https://api.telegram.org/bot8654316556:AAH_j5i5wrb1OLJMxeWesoSGVPYZT_56-tU/sendMessage';
-        await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: 234658540,
-            text: message,
-            parse_mode: 'HTML'
-          })
-        });
       } catch (err) {
-        console.warn("[Plitty Direct TG Notify]", err);
+        console.warn("[Plitty WebApp Notify]", err);
       }
     }
 
