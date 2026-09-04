@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plitty Command Suite — Server Edition</title>
+  <!-- Instant Telegram WebApp Ready Handler -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+      } catch (e) {
+        console.warn("[Plitty WebApp Early Init]", e);
+      }
+    }
+  </script>
+  <!-- Local high-speed Tailwind CSS engine -->
+  <script src="tailwind.js"></script>
+  <style>
+    /* ------------------------------------------------------------- */
+    /* PALETTE DERIVED FROM PLITTY CYBER SCREENSHOT                    */
+    /* Deep server black, soft rose hair accents, soft off-white      */
+    /* ------------------------------------------------------------- */
+    :root {
+      --bg-pitch: #06070B;
+      --card-bg-top: rgba(20, 24, 35, 0.7);
+      --card-bg-bottom: rgba(10, 13, 19, 0.9);
+      --card-active-top: rgba(38, 25, 42, 0.75);
+      --card-active-bottom: rgba(16, 12, 22, 0.95);
+      
+      /* Plitty Hair Pink Accents */
+      --plitty-rose: #E588A6;
+      --plitty-rose-light: #F3A6BF;
+      --plitty-rose-dark: #C95F81;
+      --plitty-border: rgba(229, 136, 166, 0.2);
+      --plitty-border-hover: rgba(229, 136, 166, 0.45);
+      --plitty-glow: rgba(229, 136, 166, 0.15);
+
+      /* Soft Non-Glare Text */
+      --text-heading: #E2E8F0;     /* Soft Platinum / Off-White */
+      --text-body: #CBD5E1;        /* Calm Silver */
+      --text-muted: #94A3B8;       /* Subtle Slate */
+      --text-dim: #64748B;         /* Dark Slate */
+
+      /* Cyber Server Accents (from background LEDs) */
+      --cyber-teal: #2DD4BF;
+      --cyber-amber: #F59E0B;
+    }
+
+    body {
+      background-color: var(--bg-pitch);
+      color: var(--text-body);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Subtle Technical Dot Matrix (low contrast, no eye strain) */
+    .cyber-tech-grid {
+      background-image: radial-gradient(rgba(229, 136, 166, 0.08) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+
+    /* Barely Perceptible Deep Atmosphere Glow (no purple overload) */
+    .ambient-server-glow {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(229, 136, 166, 0.06) 0%, rgba(13, 16, 23, 0.3) 50%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+    }
+
+    /* Plitty Cyber Glass Card */
+    .cyber-card {
+      background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--plitty-border);
+      border-radius: 24px;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cyber-card:hover {
+      border-color: var(--plitty-border-hover);
+      box-shadow: 0 20px 44px -8px rgba(0, 0, 0, 0.9), 0 0 20px -5px var(--plitty-glow);
+      transform: translateY(-2px);
+    }
+
+    .cyber-card-active {
+      background: linear-gradient(180deg, var(--card-active-top) 0%, var(--card-active-bottom) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--plitty-border-hover);
+      border-radius: 24px;
+      box-shadow: 0 20px 48px -8px rgba(229, 136, 166, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* EYE-FRIENDLY PILL BUTTONS (Plitty Rose Edition)                */
+    /* Soft rose-tinted surface, no blinding glare, high elegance     */
+    /* ------------------------------------------------------------- */
+    .pill-btn-rose {
+      background: rgba(229, 136, 166, 0.14);
+      border: 1px solid rgba(229, 136, 166, 0.35);
+      color: #F8E7ED;
+      border-radius: 9999px;
+      padding: 6px 7px 6px 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    }
+    .pill-btn-rose:hover {
+      background: rgba(229, 136, 166, 0.22);
+      border-color: var(--plitty-rose);
+      color: #FFFFFF;
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(229, 136, 166, 0.2);
+    }
+    .pill-btn-rose:active {
+      transform: scale(0.98);
+    }
+    .pill-arrow-rose {
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      background: var(--plitty-rose);
+      color: #06070B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(229, 136, 166, 0.4);
+    }
+
+    /* Dark Outline Pill (Calm & Soft) */
+    .pill-btn-dark {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-body);
+      border-radius: 9999px;
+      padding: 6px 7px 6px 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .pill-btn-dark:hover {
+      background: rgba(229, 136, 166, 0.08);
+      border-color: var(--plitty-border-hover);
+      color: #F8E7ED;
+      transform: scale(1.02);
+    }
+    .pill-arrow-dark {
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    /* Editorial Micro Labels */
+    .tracking-editorial {
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+    .tracking-wide-tight {
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Minimal Outline Frame Buttons */
+    .cappen-btn {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: transparent;
+      color: var(--text-body);
+      border-radius: 12px;
+      padding: 7px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    .cappen-btn:hover {
+      border-color: var(--plitty-rose);
+      color: #F8E7ED;
+      background: rgba(229, 136, 166, 0.08);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(229, 136, 166, 0.2); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(229, 136, 166, 0.45); }
+  </style>
+</head>
+<body class="cyber-tech-grid p-2 sm:p-5 relative min-h-screen">
+
+  <!-- Subtle Deep Atmosphere Glow -->
+  <div class="ambient-server-glow"></div>
+
+  <!-- ================================================================= -->
+  <!-- TOP CONTROL HEADER                                                -->
+  <!-- ================================================================= -->
+  <header id="main-header" class="relative z-10 max-w-6xl mx-auto mb-6 cyber-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+    
+    <!-- Left: Brand + Smirking Cyber Plitty + Soft Editorial Typography -->
+    <div class="flex items-center gap-4">
+      <div class="relative w-14 h-14 rounded-2xl bg-[#0D111A] border border-[rgba(229,136,166,0.35)] flex items-center justify-center shadow-lg overflow-hidden cursor-pointer group" onclick="openPlittyGuide()">
+        <img id="top-plitty-img" src="img/plitty/plitty_avatar_official.jpg" alt="Plitty" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+        <span class="absolute -top-1 -right-1 w-3 h-3 bg-teal-400 rounded-full border-2 border-[#06070B] shadow-sm shadow-teal-400/50"></span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-black text-[#E588A6] tracking-editorial">P L I T T Y</span>
+          <span class="text-[10px] tracking-wide-tight font-bold px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.12)] text-[#F3A6BF] border border-[rgba(229,136,166,0.25)]">SERVER // CORE</span>
+        </div>
+        <h1 class="text-lg sm:text-xl font-bold text-slate-200 tracking-tight mt-0.5">
+          Сетка AI-Инфлюенсеров <span class="text-[#E588A6] font-normal">× 60 Аккаунтов</span>
+        </h1>
+        <div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+          <span class="tracking-wide-tight text-[10px] text-slate-300 font-semibold">10:00 – 19:00 МСК</span>
+          <span class="text-slate-600">&bull;</span>
+          <span class="text-teal-400 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span> 44 Активных
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Plitty Rose Pill Button & Clean Viewport Switcher -->
+    <div class="flex flex-wrap items-center gap-3">
+      
+      <!-- Plitty Guide Button (Soft Rose Pill, no glare!) -->
+      <button onclick="openPlittyGuide()" class="pill-btn-rose">
+        <span>Инструкция от Плитти</span>
+        <div class="pill-arrow-rose">&rarr;</div>
+      </button>
+
+      <!-- Viewport Toggle -->
+      <div class="flex items-center bg-black/60 p-1 rounded-full border border-white/10 text-xs">
+        <button id="btn-view-desktop" onclick="setViewMode('desktop')" class="px-3.5 py-1.5 rounded-full font-bold bg-white/15 text-slate-200 transition-all">
+          ПК Админка
+        </button>
+        <button id="btn-view-mobile" onclick="setViewMode('mobile')" class="px-3.5 py-1.5 rounded-full font-semibold text-slate-400 hover:text-slate-200 transition-all">
+          Telegram Mini App
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- MAIN WORKSPACE                                                    -->
+  <!-- ================================================================= -->
+  <main id="app-container" class="relative z-10 max-w-6xl mx-auto">
+    
+    <!-- 1. DESKTOP VIEWPORT -->
+    <div id="desktop-wrapper" class="block">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-3 space-y-4">
+          
+          <!-- Executive Profile Card -->
+          <div class="cyber-card p-4 space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-[#111520] border border-[rgba(229,136,166,0.25)] flex items-center justify-center text-slate-200 font-bold text-sm shadow-md">
+                АФ
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">EXECUTIVE</div>
+                <div class="text-sm font-bold text-slate-200 truncate">Алексей Феоктистов</div>
+                <div class="text-[10px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                  Шеф / Контроль смены
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/5 text-xs space-y-2">
+              <div class="flex justify-between text-slate-400">
+                <span class="tracking-wide-tight text-[10px]">ТАЙМИНГ:</span>
+                <span class="font-semibold text-slate-200">10:00 – 19:00</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span class="tracking-wide-tight text-[10px]">СПЕЦЫ:</span>
+                <span class="font-bold text-[10px] text-[#F3A6BF]">1. Лёша ➔ 2. Саша ➔ 3. Сёма ➔ 4. Даник ➔ 5. Артур</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calm Editorial Nav Menu -->
+          <nav class="cyber-card p-2 space-y-1">
+            <button onclick="switchTab('specs')" id="d-nav-specs" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold bg-[rgba(229,136,166,0.14)] text-[#F8E7ED] border border-[rgba(229,136,166,0.3)] transition-all shadow-sm">
+              <svg class="w-4 h-4 text-[#E588A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              <span>Специалисты & Инфлы</span>
+              <span class="ml-auto px-1.5 py-0.5 rounded-full bg-[rgba(229,136,166,0.2)] text-[#F3A6BF] text-[10px]">5</span>
+            </button>
+            <button onclick="switchTab('dash')" id="d-nav-dash" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+              <span>Сводка & KPI</span>
+            </button>
+            <button onclick="switchTab('audit')" id="d-nav-audit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>Антифрод & Сверка</span>
+              <span class="ml-auto px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">1</span>
+            </button>
+            <button onclick="switchTab('registry')" id="d-nav-registry" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <span>Реестр 60 аккаунтов</span>
+            </button>
+          </nav>
+
+          <!-- Quick Action Triggers -->
+          <div class="cyber-card p-3.5 space-y-2">
+            <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold px-1 block">ACTIONS</span>
+            <button onclick="triggerSnapshot()" class="pill-btn-dark w-full">
+              <span>⚡ Запустить замер сейчас</span>
+              <div class="pill-arrow-dark">&rarr;</div>
+            </button>
+            <button onclick="sendAllSpecialistsReminder()" class="pill-btn-dark w-full border-[#E588A6]/30 hover:border-[#E588A6]/60">
+              <span class="text-[#F3A6BF]">⏰ Пнуть спецов в ТГ</span>
+              <div class="pill-arrow-dark text-[#F3A6BF]">&rarr;</div>
+            </button>
+            <button onclick="showPlittyErrorAlert()" class="pill-btn-dark w-full border-amber-500/30 hover:border-amber-500/50">
+              <span class="text-amber-300">Тест алерта Плитти 🥱</span>
+              <div class="pill-arrow-dark text-amber-300">&rarr;</div>
+            </button>
+            <button onclick="downloadExcel()" class="pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/50">
+              <span class="text-teal-300">Экспорт Excel-отчета</span>
+              <div class="pill-arrow-dark text-teal-300">&rarr;</div>
+            </button>
+          </div>
+
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-9 space-y-4">
+          
+          <!-- 4 Executive KPI Cards (Soft off-white text, no glare!) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+            
+            <div class="cyber-card p-4 space-y-1">
+              <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">ПОСТЫ ЗА СМЕНУ</div>
+              <div id="kpi-shift-posts" class="text-3xl font-black text-slate-100 tracking-tight mt-1">135 <span class="text-xs font-bold text-teal-400">+14</span></div>
+              <div class="text-[10px] text-slate-500 mt-1">TT: 60 | YT: 28 | Meta: 47</div>
+            </div>
+
+            <div class="cyber-card-active p-4 space-y-1 relative overflow-hidden">
+              <div class="text-[10px] tracking-wide-tight font-bold text-[#F3A6BF]">ПРОСМОТРЫ СЕТКИ</div>
+              <div id="kpi-network-views" class="text-3xl font-black text-slate-100 tracking-tight mt-1">52,179</div>
+              <div class="text-[10px] text-[#F3A6BF] mt-1 font-semibold">+3,340 на FB Reels</div>
+            </div>
+
+            <div class="cyber-card p-4 space-y-1">
+              <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">АКТИВНЫЕ АККАУНТЫ</div>
+              <div id="kpi-active-accounts" class="text-3xl font-black text-teal-400 tracking-tight mt-1">44 <span class="text-xs text-slate-500 font-normal">/ 60</span></div>
+              <div class="text-[10px] text-rose-400 font-medium mt-1">7 заблокировано (Meta)</div>
+            </div>
+
+            <div class="cyber-card p-4 space-y-1 cursor-pointer hover:border-amber-400/50 transition-all" onclick="showPlittyErrorAlert()">
+              <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">АНТИФРОД СТАТУС</div>
+              <div class="text-3xl font-black text-amber-400 tracking-tight mt-1 flex items-center gap-2">
+                98% <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              </div>
+              <div class="text-[10px] text-amber-300/80 hover:underline mt-1 font-medium">1 алерт от Плитти 🥱</div>
+            </div>
+
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- TAB: SPECIALISTS & INFLUENCERS DRILL-DOWN                 -->
+          <!-- ========================================================= -->
+          <div id="tab-specs" class="tab-pane space-y-4">
+            
+            <!-- Breadcrumbs Bar -->
+            <div class="cyber-card px-5 py-3.5 flex items-center justify-between text-xs">
+              <div id="desktop-breadcrumbs" class="flex items-center gap-2.5 font-medium">
+                <span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistsList()">КОМАНДА СПЕЦИАЛИСТОВ</span>
+              </div>
+              <span class="text-[10px] tracking-wide-tight font-bold px-3 py-1 rounded-full bg-black/50 text-slate-300 border border-white/5">
+                10:00 – 19:00 MSK
+              </span>
+            </div>
+
+            <!-- LEVEL 1: LIST OF 5 SPECIALISTS (Strict Order) -->
+            <div id="spec-level-1" class="space-y-3">
+              <div class="flex items-center justify-between px-1">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-200 tracking-wide-tight">ВЫБЕРИТЕ СПЕЦИАЛИСТА ДЛЯ ВХОДА В КАБИНЕТ:</h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Строгий порядок: 1. Лёша ➔ 2. Саша ➔ 3. Сёма ➔ 4. Даник ➔ 5. Артур</p>
+                </div>
+              </div>
+
+              <!-- Specialist Cards Container -->
+              <div class="space-y-3" id="desktop-spec-cards-container">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- LEVEL 2: SPECIALIST CABINET -->
+            <div id="spec-level-2" class="hidden space-y-4">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- LEVEL 3: INFLUENCER DETAIL PROFILE -->
+            <div id="spec-level-3" class="hidden space-y-4">
+              <!-- Rendered dynamically -->
+            </div>
+
+          </div>
+
+          <!-- TAB: DASHBOARD & SUMMARY -->
+          <div id="tab-dash" class="tab-pane hidden space-y-4">
+            <div class="cyber-card p-6 space-y-4">
+              <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">SUMMARY</div>
+              <h3 class="text-lg font-bold text-slate-200">Обзор активности сетки за смену</h3>
+              <p class="text-xs text-slate-400">Для детального анализа каналов перейдите во вкладку «Специалисты & Инфлы».</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="dash-quick-grid"></div>
+            </div>
+          </div>
+
+          <!-- TAB: AUDIT & ANTIFRAUD -->
+          <div id="tab-audit" class="tab-pane hidden space-y-4">
+            <div class="cyber-card p-6 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">RECONCILIATION</div>
+                  <h3 class="text-lg font-bold text-slate-200">Антифрод и сверка расхождений (План vs Факт)</h3>
+                </div>
+                <button onclick="showPlittyErrorAlert()" class="pill-btn-rose">
+                  <span>Показать алерт Плитти 🥱</span>
+                  <div class="pill-arrow-rose">&rarr;</div>
+                </button>
+              </div>
+
+              <!-- Anomaly Card -->
+              <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">
+                    ⚠️
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-amber-300">Facebook Reels: Приватный режим профиля (Ян Верас / Спец: Лёша)</div>
+                    <p class="text-xs text-slate-400 mt-1">4 видео опубликованы, но 0 просмотров. Профиль не переведен в Professional Mode.</p>
+                  </div>
+                </div>
+                <button onclick="sendSpecialistReminder('Лёша', 'FB Reels')" class="cappen-btn text-amber-300 border-amber-500/40 hover:bg-amber-500/20 shrink-0">
+                  Пнуть Лёшу
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: REGISTRY -->
+          <div id="tab-registry" class="tab-pane hidden space-y-4">
+            <div class="cyber-card p-6 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">MASTER REGISTRY</div>
+                  <h3 class="text-lg font-bold text-slate-200">Реестр всех 60 аккаунтов</h3>
+                </div>
+                <input type="text" id="reg-search" oninput="filterRegistry()" placeholder="Поиск персонажа или соцсети..." class="bg-[#090C12] border border-[rgba(229,136,166,0.25)] px-3.5 py-1.5 text-xs rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-60">
+              </div>
+              <div class="overflow-x-auto rounded-2xl border border-white/5 max-h-[500px]">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead class="bg-black/60 text-slate-400 sticky top-0 border-b border-white/5">
+                    <tr>
+                      <th class="p-3">Персонаж</th>
+                      <th class="p-3">Спец</th>
+                      <th class="p-3">Сеть</th>
+                      <th class="p-3">Статус</th>
+                      <th class="p-3 text-center">Посты</th>
+                      <th class="p-3 text-center">Просмотры</th>
+                      <th class="p-3 text-right">Ссылка</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reg-body" class="divide-y divide-white/5"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- 2. TELEGRAM MINI APP MOBILE VIEWPORT -->
+    <div id="mobile-wrapper" class="hidden w-full flex justify-center items-center p-0 sm:py-2">
+      <div id="mobile-phone-frame" class="w-full sm:w-[420px] min-h-[100dvh] sm:h-[820px] cyber-card rounded-none sm:rounded-[36px] shadow-2xl flex flex-col overflow-hidden border-0 sm:border sm:border-[rgba(229,136,166,0.3)] relative">
+        
+        <!-- Phone Top Notch (hidden on real phones) -->
+        <div id="phone-notch" class="hidden sm:flex h-6 bg-black/90 items-center justify-between px-7 text-[10px] text-slate-300 font-semibold select-none shrink-0">
+          <span>17:40</span>
+          <div class="w-20 h-3.5 bg-black rounded-full mx-auto"></div>
+          <div class="flex items-center gap-1.5 text-slate-500">
+            <span>5G</span>
+            <div class="w-4 h-2 border border-slate-400 rounded-sm p-0.5"><div class="h-full w-full bg-slate-300"></div></div>
+          </div>
+        </div>
+
+        <!-- TMA Top Nav Bar with Smirking Plitty -->
+        <div class="bg-[#090C12] border-b border-white/5 px-4 py-3 flex items-center justify-between shrink-0">
+          <button id="mobile-back-btn" onclick="mobileGoBack()" class="text-[#E588A6] text-xs font-bold hover:opacity-80 transition-all flex items-center gap-1">
+            <span>&larr; Назад</span>
+          </button>
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full overflow-hidden border border-[rgba(229,136,166,0.4)] shrink-0 shadow-md">
+              <img id="m-top-plitty-img" src="img/plitty/plitty_avatar_official.jpg" class="w-full h-full object-cover">
+            </div>
+            <div class="text-left">
+              <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">PLITTY // MINI</div>
+              <div class="text-xs font-bold text-slate-200 leading-none" id="mobile-title">Специалисты</div>
+            </div>
+          </div>
+          <button onclick="openPlittyGuide()" class="text-xs font-bold text-[#E588A6]">✨</button>
+        </div>
+
+        <!-- Mobile Content Body -->
+        <div class="flex-1 overflow-y-auto p-3 space-y-3" id="mobile-viewport-body">
+          <div id="m-view-specs" class="space-y-2.5">
+            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold px-1">СПЕЦИАЛИСТЫ (5):</div>
+            <div id="mobile-specs-list" class="space-y-2.5"></div>
+          </div>
+          <div id="m-view-cabinet" class="hidden space-y-3"></div>
+          <div id="m-view-influencer" class="hidden space-y-3"></div>
+        </div>
+
+        <!-- TMA Bottom Navigation Bar -->
+        <div class="h-14 bg-[#080A10] border-t border-white/5 px-4 flex items-center justify-around text-xs shrink-0 select-none">
+          <button onclick="mobileSwitchTab('specs')" id="m-nav-btn-specs" class="flex flex-col items-center text-[#E588A6] font-bold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <span class="text-[9px] mt-0.5">Спецы</span>
+          </button>
+          <button onclick="openPlittyGuide()" class="flex flex-col items-center text-slate-400 hover:text-slate-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-[9px] mt-0.5">Гид</span>
+          </button>
+          <button onclick="showPlittyErrorAlert()" class="flex flex-col items-center text-amber-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span class="text-[9px] mt-0.5">Алерт 🥱</span>
+          </button>
+          <button onclick="downloadExcel()" class="flex flex-col items-center text-slate-400 hover:text-slate-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="text-[9px] mt-0.5">Excel</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODALS (Plitty Guide, Tired Error Alert, Beer Done)               -->
+  <!-- ================================================================= -->
+
+  <!-- 1. PLITTY GUIDE MODAL (Smirking Cyber Plitty) -->
+  <div id="modal-plitty-guide" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-[rgba(229,136,166,0.35)] max-w-lg w-full p-6 shadow-2xl relative overflow-hidden space-y-4">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3.5">
+          <div class="w-16 h-16 rounded-2xl bg-[#0F131C] border border-[rgba(229,136,166,0.35)] flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+            <img id="guide-plitty-img" src="img/plitty/plitty_avatar_official.jpg" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">ONBOARDING</div>
+            <h4 class="text-base font-bold text-slate-200">Инструкция от Плитти ✨</h4>
+            <p class="text-xs text-[#F3A6BF]">Твой AI-контролер серверной</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-plitty-guide')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-slate-200">&times;</button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[#090C12] border-l-4 border-l-[#E588A6] text-xs leading-relaxed space-y-2.5">
+        <p class="text-slate-200 font-bold">
+          «Добро пожаловать в серверную! Я Плитти — контролирую всю эту махину:»
+        </p>
+        <div class="space-y-1.5 pl-2 text-[11px] text-slate-300">
+          <div><b class="text-[#F3A6BF]">1. Смена 10:00–19:00:</b> в 18:30 я прихожу в чат с пушем, а в 19:00 подбиваю дельту постов за смену.</div>
+          <div><b class="text-[#F3A6BF]">2. Кабинеты 5 спецов:</b> нажимай на спеца (Лёша, Саша, Сёма, Даник, Артур), чтобы открыть персонажей.</div>
+          <div><b class="text-[#F3A6BF]">3. Досье инфла:</b> кликай по аватарке персонажа — там все 6 сетей, прямые ссылки, счетчики и пароли.</div>
+          <div><b class="text-[#F3A6BF]">4. Антифрод:</b> если кто-то зальет видео в закрытый аккаунт — я тут же включу алерт.</div>
+        </div>
+      </div>
+
+      <div class="pt-1">
+        <button onclick="closeModal('modal-plitty-guide')" class="pill-btn-rose w-full">
+          <span>Погнали работать! 🚀</span>
+          <div class="pill-arrow-rose">&rarr;</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PLITTY TIRED ERROR ALERT MODAL (Sleepy Plitty!) -->
+  <div id="modal-plitty-error" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-amber-500/40 max-w-lg w-full p-6 shadow-2xl relative overflow-hidden space-y-4">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3.5">
+          <div class="w-16 h-16 rounded-2xl bg-amber-950/40 border border-amber-500/40 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+            <img id="error-plitty-img" src="img/plitty/plitty_avatar_official.jpg" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <div class="text-[9px] tracking-editorial text-amber-400 font-bold">DISCREPANCY DETECTED</div>
+            <h4 class="text-base font-bold text-amber-300">Плитти нашла косяк... 🥱</h4>
+            <p class="text-xs text-slate-400">Система зафиксировала нулевой охват</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-plitty-error')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-slate-200">&times;</button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[#090C12] border-l-4 border-l-amber-500 text-xs leading-relaxed space-y-2">
+        <p class="text-amber-200 font-bold">
+          «Лёша... Ты издеваешься? Я еле держу глаза открытыми, а у тебя рилсы лежат с 0 просмотров... 😴»
+        </p>
+        <p class="text-slate-300">
+          У <b>Яна Вераса</b> в Facebook Reels опубликовано 4 видеоролика, но на каждом ровно <b>0 просмотров</b>!
+        </p>
+        <p class="text-slate-400 text-[11px]">
+          Профиль не переведен в <b>Professional Mode</b>. Включи его, чтобы рилсы вышли из закрытого режима в рекомендации Facebook, дай котику поспать...
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2.5 pt-1">
+        <button onclick="sendSpecialistReminder('Лёша', 'FB Reels'); closeModal('modal-plitty-error');" class="pill-btn-dark flex-1">
+          <span>💬 Пнуть Лёшу в Telegram</span>
+          <div class="pill-arrow-dark">&rarr;</div>
+        </button>
+        <button onclick="celebrateSuccess(); closeModal('modal-plitty-error');" class="pill-btn-rose flex-1">
+          <span>Я уже включил Prof Mode!</span>
+          <div class="pill-arrow-rose">&rarr;</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PLITTY CELEBRATION MODAL -->
+  <div id="modal-plitty-success" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-teal-500/40 max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-teal-950/40 border border-teal-500/40 flex items-center justify-center">
+        <img id="success-plitty-img" src="img/plitty/plitty_done.png" class="w-16 h-16 object-contain">
+      </div>
+      <div>
+        <div class="text-[9px] tracking-editorial text-teal-400 font-bold">SUCCESS</div>
+        <h4 class="text-lg font-bold text-teal-300">Красава, всё чисто! 🍺✨</h4>
+        <p class="text-xs text-slate-300 mt-1">Все 135 постов сверены, сетка летает!</p>
+      </div>
+      <button onclick="closeModal('modal-plitty-success')" class="pill-btn-rose w-full">
+        <span>Отлично! За работу 🚀</span>
+        <div class="pill-arrow-rose">&rarr;</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Helper (Bottom Right) -->
+  <div class="fixed bottom-4 right-4 z-40 hidden sm:flex items-center gap-2.5 cyber-card border-[rgba(229,136,166,0.3)] rounded-full px-4 py-2 shadow-2xl hover:scale-105 transition-transform cursor-pointer" onclick="openPlittyGuide()">
+    <img id="float-plitty-img" src="img/plitty/plitty_avatar_official.jpg" class="w-7 h-7 rounded-full object-cover border border-[rgba(229,136,166,0.4)]">
+    <div class="text-[11px] font-medium text-slate-300">
+      <span class="text-[#E588A6] font-bold">Плитти:</span> 135 постов сверено
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT LOGIC                                                  -->
+  <!-- ================================================================= -->
+  <script>
+    function initPlittyImages() {
+      const serverSrc = '/static/img/plitty/plitty_server.jpg';
+      const avatarSrc = '/static/img/plitty/plitty_avatar_official.jpg';
+      const doneSrc = '/static/img/plitty/plitty_done.png';
+
+      if (document.getElementById('top-plitty-img')) document.getElementById('top-plitty-img').src = avatarSrc;
+      if (document.getElementById('m-top-plitty-img')) document.getElementById('m-top-plitty-img').src = avatarSrc;
+      if (document.getElementById('guide-plitty-img')) document.getElementById('guide-plitty-img').src = avatarSrc;
+      if (document.getElementById('float-plitty-img')) document.getElementById('float-plitty-img').src = avatarSrc;
+      if (document.getElementById('error-plitty-img')) document.getElementById('error-plitty-img').src = avatarSrc;
+      if (document.getElementById('success-plitty-img')) document.getElementById('success-plitty-img').src = doneSrc;
+    }
+
+    // SPECIALISTS (Strict Order)
+    const SPECIALISTS = [
+      {
+        order: 1,
+        name: "Лёша",
+        geo: "Беларусь",
+        avatar: "👨‍💻",
+        role: "Специалист по Беларуси",
+        posts: 39,
+        plan: 40,
+        views: 7808,
+        statusBadge: "⚠️ FB: вкл. Prof Mode",
+        statusColor: "amber",
+        influencers: ["Алеся Бут", "Ян Верса"]
+      },
+      {
+        order: 2,
+        name: "Саша",
+        geo: "Кения & Турция",
+        avatar: "👨‍💻",
+        role: "Специалист (Кения/Турция)",
+        posts: 27,
+        plan: 48,
+        views: 11401,
+        statusBadge: "🔴 7 банов в Meta",
+        statusColor: "rose",
+        influencers: ["Baraka Otieno", "Grace Muthioni", "Kaan Turan", "Melissa Kara"]
+      },
+      {
+        order: 3,
+        name: "Сёма",
+        geo: "Кыргызстан",
+        avatar: "👨‍💻",
+        role: "Топ-специалист (Кыргызстан)",
+        posts: 48,
+        plan: 48,
+        views: 22457,
+        statusBadge: "🟢 100% плана (Лидер)",
+        statusColor: "teal",
+        influencers: ["Асель Исакова", "Тилек Асанов"]
+      },
+      {
+        order: 4,
+        name: "Даник",
+        geo: "Америка (США)",
+        avatar: "👨‍💻",
+        role: "Специалист по США",
+        posts: 15,
+        plan: 15,
+        views: 1189,
+        statusBadge: "🟢 100% стабильность",
+        statusColor: "teal",
+        influencers: ["Lori Bennet"]
+      },
+      {
+        order: 5,
+        name: "Артур",
+        geo: "Америка (США)",
+        avatar: "👨‍💻",
+        role: "Специалист по США (TikTok)",
+        posts: 10,
+        plan: 10,
+        views: 5984,
+        statusBadge: "⚪ Только TikTok",
+        statusColor: "slate",
+        influencers: ["Vida"]
+      }
+    ];
+
+    // INFLUENCERS DATABASE
+    const INFLUENCERS = {
+      "Алеся Бут": {
+        name: "Алеся Бут",
+        spec: "Лёша",
+        geo: "Беларусь",
+        flag: "🇧🇾",
+        avatarImg: "👩‍🦰",
+        avatarBg: "from-[#2A1822] to-[#14101A]",
+        bio: "Белорусская AI-модель и трендсеттер. Лайфстайл-контент, городская эстетика Минска. Высокая органика в TikTok и Facebook Reels.",
+        posts: 20,
+        views: 4499,
+        creds: { email: "alesyabyt18@gmail.com", pass: "123Byt123!" },
+        socials: [
+          { net: "TikTok", handle: "@yanveras13", posts: 6, views: 4499, hit: 2903, status: "Активен", url: "https://www.tiktok.com/@yanveras13" },
+          { net: "YouTube", handle: "Алеся Бут", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://youtube.com/channel/UCn-t5Z16uoP60hkWQQ7d_Tg" },
+          { net: "Instagram", handle: "@anveras509", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://www.instagram.com/anveras509" },
+          { net: "Facebook Reels", handle: "Алеся Бут FB", posts: 4, views: 615, hit: 280, status: "4 Reels (615 views)", url: "https://www.facebook.com/share/1BMagQvaoE/" },
+          { net: "Threads", handle: "@alesabut", posts: 2, views: 0, hit: 0, status: "Активен (2 поста)", url: "https://www.threads.com/@alesabut" },
+          { net: "X (Twitter)", handle: "@ft73v5", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/ft73v5" }
+        ]
+      },
+      "Ян Верса": {
+        name: "Ян Верса",
+        spec: "Лёша",
+        geo: "Беларусь",
+        flag: "🇧🇾",
+        avatarImg: "👨‍💼",
+        avatarBg: "from-[#17202F] to-[#0D121B]",
+        bio: "Мужской лайфстайл и tech-криэйтор (Минск). 4 рилса залиты в Facebook, но лежат в закрытом профиле без Professional Mode.",
+        posts: 19,
+        views: 3309,
+        creds: { email: "yanveras18@gmail.com", pass: "123Byt123!" },
+        socials: [
+          { net: "TikTok", handle: "@user1633519391039", posts: 5, views: 3309, hit: 2800, status: "Активен", url: "https://www.tiktok.com/@user1633519391039" },
+          { net: "YouTube", handle: "ян верас", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://youtube.com/channel/UCR5g8LdG197g1bV5g3-WcCQ" },
+          { net: "Instagram", handle: "@aleksandrshnip", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://www.instagram.com/aleksandrshnip" },
+          { net: "Facebook Reels", handle: "Ян Верас FB", posts: 4, views: 0, hit: 0, status: "⚠️ Алерт: 0 Views (Prof Mode)", url: "https://www.facebook.com/share/19X6N9j161/" },
+          { net: "Threads", handle: "@aleksandrshnip", posts: 2, views: 0, hit: 0, status: "Активен (2 поста)", url: "https://www.threads.com/@aleksandrshnip" },
+          { net: "X (Twitter)", handle: "@ft73v5", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/ft73v5" }
+        ]
+      },
+      "Асель Исакова": {
+        name: "Асель Исакова",
+        spec: "Сёма",
+        geo: "Кыргызстан",
+        flag: "🇰🇬",
+        avatarImg: "👩🏻‍🦱",
+        avatarBg: "from-[#112624] to-[#0A1615]",
+        bio: "Абсолютный лидер сетки в Бишкеке! Вирусный хит в TikTok набрал 18,100 просмотров, а Facebook Reels дал 1,938 просмотров.",
+        posts: 26,
+        views: 20324,
+        creds: { email: "aselisakova.kg@gmail.com", pass: "Asel2026Secure!" },
+        socials: [
+          { net: "TikTok", handle: "@aseli_sakova", posts: 7, views: 18386, hit: 18100, status: "Хит 18.1k 🥇", url: "https://www.tiktok.com/@aseli_sakova" },
+          { net: "YouTube", handle: "Асель Исакова", posts: 7, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Instagram", handle: "@asel_isakova_kg", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://instagram.com" },
+          { net: "Facebook Reels", handle: "Асель Исакова FB", posts: 4, views: 1938, hit: 1400, status: "Топ Reels (1.9k)", url: "https://facebook.com" },
+          { net: "Threads", handle: "@asel_isakova_kg", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://threads.net" }
+        ]
+      },
+      "Тилек Асанов": {
+        name: "Тилек Асанов",
+        spec: "Сёма",
+        geo: "Кыргызстан",
+        flag: "🇰🇬",
+        avatarImg: "👨🏻",
+        avatarBg: "from-[#15232F] to-[#0B131A]",
+        bio: "Кыргызский мужской блогер, авто и спорт. 787 просмотров на Facebook Reels.",
+        posts: 22,
+        views: 2133,
+        creds: { email: "tilekasanov.kg@gmail.com", pass: "TilekKG2026!" },
+        socials: [
+          { net: "TikTok", handle: "@tilek_asanov_kg", posts: 5, views: 1346, hit: 850, status: "Активен", url: "https://www.tiktok.com/@tilek_asanov_kg" },
+          { net: "YouTube", handle: "Тилек Асанов", posts: 5, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Instagram", handle: "@tilek_asanov_kg", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://instagram.com" },
+          { net: "Facebook Reels", handle: "Тилек Асанов FB", posts: 4, views: 787, hit: 343, status: "Активен (787 views)", url: "https://facebook.com" },
+          { net: "Threads", handle: "@tilek_asanov_kg", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://threads.net" }
+        ]
+      },
+      "Lori Bennet": {
+        name: "Lori Bennet",
+        spec: "Даник",
+        geo: "Америка (США)",
+        flag: "🇺🇸",
+        avatarImg: "👱‍♀️",
+        avatarBg: "from-[#2A2117] to-[#140F0A]",
+        bio: "Американский контент высокого CPM (Лос-Анджелес). Равномерное присутствие во всех 5 сетях.",
+        posts: 15,
+        views: 1189,
+        creds: { email: "loribennet.us@gmail.com", pass: "LoriBennetUS!" },
+        socials: [
+          { net: "TikTok", handle: "@lori_bennet_us", posts: 5, views: 1189, hit: 620, status: "Активен", url: "https://www.tiktok.com/@lori_bennet_us" },
+          { net: "YouTube", handle: "Lori Bennet", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Instagram", handle: "@lori_bennet_us", posts: 2, views: 0, hit: 0, status: "Активен", url: "https://instagram.com" },
+          { net: "Facebook Reels", handle: "Lori Bennet FB", posts: 2, views: 0, hit: 0, status: "Активен", url: "https://facebook.com" },
+          { net: "Threads", handle: "@lori_bennet_us", posts: 2, views: 0, hit: 0, status: "Активен", url: "https://threads.net" }
+        ]
+      },
+      "Baraka Otieno": {
+        name: "Baraka Otieno",
+        spec: "Саша",
+        geo: "Кения",
+        flag: "🇰🇪",
+        avatarImg: "🧔🏿",
+        avatarBg: "from-[#261E16] to-[#120E0A]",
+        bio: "Кенийский цифровой создатель (Найроби). 2,028 просмотров в TikTok. Facebook заблокирован.",
+        posts: 5,
+        views: 2028,
+        creds: { email: "baraka.otieno@gmail.com", pass: "Baraka254!" },
+        socials: [
+          { net: "TikTok", handle: "@barakaotieno254", posts: 4, views: 2028, hit: 1200, status: "Активен", url: "https://www.tiktok.com/@barakaotieno254" },
+          { net: "YouTube", handle: "Baraka Otieno", posts: 1, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Facebook", handle: "Baraka Otieno", posts: 0, views: 0, hit: 0, status: "🔴 БАН", url: "#" }
+        ]
+      },
+      "Grace Muthioni": {
+        name: "Grace Muthioni",
+        spec: "Саша",
+        geo: "Кения",
+        flag: "🇰🇪",
+        avatarImg: "👩🏿",
+        avatarBg: "from-[#261622] to-[#130B11]",
+        bio: "Кенийская женская модель. TT: 4 поста (930 views), YT: 1 видео, FB: 1 пост.",
+        posts: 6,
+        views: 930,
+        creds: { email: "grace.muthioni@gmail.com", pass: "Grace254!" },
+        socials: [
+          { net: "TikTok", handle: "@gracemuthioni254", posts: 4, views: 930, hit: 540, status: "Активен", url: "https://www.tiktok.com/@gracemuthioni254" },
+          { net: "YouTube", handle: "Grace Muthioni", posts: 1, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Facebook", handle: "Grace Muthioni", posts: 1, views: 0, hit: 0, status: "Активен", url: "https://facebook.com" }
+        ]
+      },
+      "Kaan Turan": {
+        name: "Kaan Turan",
+        spec: "Саша",
+        geo: "Турция",
+        flag: "🇹🇷",
+        avatarImg: "🧔🏻",
+        avatarBg: "from-[#2B1719] to-[#140A0B]",
+        bio: "Турецкий блогер (Стамбул). 4k просмотров в TikTok. Каналы в Meta заблокированы.",
+        posts: 8,
+        views: 4021,
+        creds: { email: "kaan.turan34@gmail.com", pass: "KaanTR2026!" },
+        socials: [
+          { net: "TikTok", handle: "@kaan_turan34", posts: 7, views: 4021, hit: 1900, status: "Активен", url: "https://www.tiktok.com/@kaan_turan34" },
+          { net: "YouTube", handle: "Kaan Turan", posts: 1, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Instagram", handle: "kaan_turan34", posts: 0, views: 0, hit: 0, status: "🔴 БАН", url: "#" },
+          { net: "Facebook", handle: "Kaan Turan", posts: 0, views: 0, hit: 0, status: "🔴 БАН", url: "#" }
+        ]
+      },
+      "Melissa Kara": {
+        name: "Melissa Kara",
+        spec: "Саша",
+        geo: "Турция",
+        flag: "🇹🇷",
+        avatarImg: "👩🏻",
+        avatarBg: "from-[#261A28] to-[#110A13]",
+        bio: "Турецкая модель бьюти (Стамбул). 4.4k просмотров в TikTok. Meta-каналы в бане.",
+        posts: 8,
+        views: 4422,
+        creds: { email: "melissa.kara34@gmail.com", pass: "MelissaTR2026!" },
+        socials: [
+          { net: "TikTok", handle: "@melissakara34", posts: 7, views: 4422, hit: 2100, status: "Активен", url: "https://www.tiktok.com/@melissakara34" },
+          { net: "YouTube", handle: "Melissa Kara", posts: 1, views: 0, hit: 0, status: "Активен", url: "https://youtube.com" },
+          { net: "Instagram", handle: "melissakara34", posts: 0, views: 0, hit: 0, status: "🔴 БАН", url: "#" },
+          { net: "Facebook", handle: "Melissa Kara", posts: 0, views: 0, hit: 0, status: "🔴 БАН", url: "#" }
+        ]
+      },
+      "Vida": {
+        name: "Vida",
+        spec: "Артур",
+        geo: "Америка (США)",
+        flag: "🇺🇸",
+        avatarImg: "👩🏼",
+        avatarBg: "from-[#281822] to-[#120B10]",
+        bio: "Американский TikTok-аккаунт. Специалист Артур ведет строго TikTok.",
+        posts: 10,
+        views: 5984,
+        creds: { email: "vida.us@gmail.com", pass: "VidaSecure2026!" },
+        socials: [
+          { net: "TikTok", handle: "@vida_official_us", posts: 10, views: 5984, hit: 3100, status: "10 постов (6k views)", url: "https://www.tiktok.com/@vida_official_us" },
+          { net: "YouTube", handle: "Vida", posts: 0, views: 0, hit: 0, status: "Резерв", url: "#" }
+        ]
+      }
+    };
+
+    let currentActiveSpec = null;
+    let mobileHistory = ['specs'];
+
+    // RENDER LEVEL 1: SPECIALISTS
+    function renderDesktopSpecialistList() {
+      const container = document.getElementById('desktop-spec-cards-container');
+      container.innerHTML = SPECIALISTS.map(s => `
+        <div class="cyber-card p-5 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-[#0D111A] border border-[rgba(229,136,166,0.25)] flex items-center justify-center text-slate-200 font-bold text-lg shadow-md">
+              ${s.order}
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5">
+                <span class="text-base font-bold text-slate-200">${s.name}</span>
+                <span class="text-[10px] tracking-wide-tight font-semibold px-2.5 py-0.5 rounded-full ${s.statusColor === 'teal' ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : s.statusColor === 'rose' ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30' : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
+                  ${s.statusBadge}
+                </span>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">
+                ГЕО: <b class="text-slate-300">${s.geo}</b> &bull; Персонажи: <b class="text-[#F3A6BF]">${s.influencers.join(', ')}</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <div class="text-base font-bold text-[#F3A6BF]">${s.posts} постов</div>
+              <div class="text-[11px] text-slate-400">${s.views.toLocaleString()} просмотров</div>
+            </div>
+            
+            <button onclick="navToSpecialistCabinet('${s.name}')" class="pill-btn-rose">
+              <span>Кабинет</span>
+              <div class="pill-arrow-rose">&rarr;</div>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // RENDER LEVEL 2: SPECIALIST CABINET
+    function renderSpecialistCabinet(specName) {
+      const s = SPECIALISTS.find(item => item.name === specName);
+      if (!s) return;
+      currentActiveSpec = s;
+
+      document.getElementById('desktop-breadcrumbs').innerHTML = `
+        <span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistsList()">СПЕЦИАЛИСТЫ</span>
+        <span class="text-slate-600">/</span>
+        <span class="text-slate-200 font-bold">КАБИНЕТ: ${s.name}</span>
+      `;
+
+      document.getElementById('spec-level-2').innerHTML = `
+        <div class="cyber-card p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-[#0D111A] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-slate-200 text-2xl font-bold shadow-lg">
+                ${s.order}
+              </div>
+              <div>
+                <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">SPECIALIST CABINET</div>
+                <div class="flex items-center gap-2.5 mt-0.5">
+                  <h2 class="text-xl font-bold text-slate-200">${s.name}</h2>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${s.statusColor === 'teal' ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : s.statusColor === 'rose' ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30' : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
+                    ${s.statusBadge}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">${s.role} &bull; ГЕО: <b class="text-slate-200">${s.geo}</b></p>
+              </div>
+            </div>
+            
+            <div class="flex gap-2">
+              <button onclick="sendSpecialistReminder('${s.name}', 'План смены')" class="pill-btn-dark">
+                <span>💬 Написать в ТГ</span>
+                <div class="pill-arrow-dark">&rarr;</div>
+              </button>
+              <button onclick="navToSpecialistsList()" class="cappen-btn">
+                &larr; Назад к спецам
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Strip -->
+          <div class="grid grid-cols-3 gap-3 pt-3 border-t border-white/5 text-center text-xs">
+            <div class="cyber-card p-3">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПУБЛИКАЦИЙ</div>
+              <div class="text-lg font-bold text-slate-200 mt-1">${s.posts} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
+            </div>
+            <div class="cyber-card p-3">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПРОСМОТРЫ</div>
+              <div class="text-lg font-bold text-[#F3A6BF] mt-1">${s.views.toLocaleString()}</div>
+            </div>
+            <div class="cyber-card p-3">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ИНФЛЮЕНСЕРОВ</div>
+              <div class="text-lg font-bold text-teal-400 mt-1">${s.influencers.length} персонажа</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Requested Big Influencer Avatar Cards -->
+        <div class="cyber-card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">CHARACTERS</div>
+              <h3 class="text-base font-bold text-slate-200">Инфлюенсеры специалиста:</h3>
+            </div>
+            <span class="text-xs text-slate-400">Нажмите на карточку для перехода в досье</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ${s.influencers.map(infName => {
+              const inf = INFLUENCERS[infName];
+              if (!inf) return '';
+              return `
+                <div onclick="navToInfluencerProfile('${inf.name}')" class="cyber-card cursor-pointer group p-5 hover:border-[#E588A6] transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-tr ${inf.avatarBg} border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-3xl shadow-lg shrink-0 group-hover:scale-105 transition-transform">
+                      ${inf.avatarImg}
+                      <span class="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded-md bg-black/80 border border-white/10">${inf.flag}</span>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <span class="text-base font-bold text-slate-200 group-hover:text-[#F3A6BF] transition-colors">${inf.name}</span>
+                        <div class="w-7 h-7 rounded-full bg-[rgba(229,136,166,0.15)] text-[#E588A6] flex items-center justify-center text-xs group-hover:bg-[#E588A6] group-hover:text-[#06070B] transition-all">&rarr;</div>
+                      </div>
+                      <div class="text-xs text-slate-400 mt-1 line-clamp-1">${inf.geo} &bull; ${inf.socials.length} соцсетей</div>
+                      
+                      <div class="mt-3 flex items-center gap-3 text-xs font-semibold">
+                        <span class="text-slate-300">${inf.posts} постов</span>
+                        <span class="text-slate-600">&bull;</span>
+                        <span class="text-[#F3A6BF]">${inf.views.toLocaleString()} просмотров</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // RENDER LEVEL 3: INFLUENCER DETAIL PROFILE
+    function renderInfluencerCard(infName) {
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+
+      document.getElementById('desktop-breadcrumbs').innerHTML = `
+        <span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistsList()">СПЕЦИАЛИСТЫ</span>
+        <span class="text-slate-600">/</span>
+        <span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistCabinet('${inf.spec}')">${inf.spec}</span>
+        <span class="text-slate-600">/</span>
+        <span class="text-slate-200 font-bold">${inf.name}</span>
+      `;
+
+      document.getElementById('spec-level-3').innerHTML = `
+        <div class="cyber-card p-6 space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="relative w-18 h-18 rounded-3xl bg-gradient-to-tr ${inf.avatarBg} border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-4xl shadow-xl shrink-0">
+                ${inf.avatarImg}
+                <span class="absolute -bottom-1 -right-1 text-sm px-2 py-0.5 rounded-lg bg-black/80 border border-white/10">${inf.flag}</span>
+              </div>
+              <div>
+                <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">AI INFLUENCER PROFILE</div>
+                <div class="flex items-center gap-2.5 mt-0.5">
+                  <h2 class="text-2xl font-bold text-slate-100">${inf.name}</h2>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-[rgba(229,136,166,0.15)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)] font-bold">Спец: ${inf.spec}</span>
+                </div>
+                <p class="text-xs text-slate-300 mt-2 max-w-xl leading-relaxed">${inf.bio}</p>
+              </div>
+            </div>
+
+            <button onclick="navToSpecialistCabinet('${inf.spec}')" class="cappen-btn">
+              &larr; Назад к ${inf.spec}
+            </button>
+          </div>
+
+          <!-- Creds & Key Metrics -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/5 text-xs">
+            <div class="cyber-card p-3.5">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПУБЛИКАЦИЙ</div>
+              <div class="text-2xl font-bold text-slate-200 mt-1">${inf.posts}</div>
+            </div>
+            <div class="cyber-card p-3.5">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПРОСМОТРЫ</div>
+              <div class="text-2xl font-bold text-[#F3A6BF] mt-1">${inf.views.toLocaleString()}</div>
+            </div>
+            <div class="cyber-card p-3.5">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ЛОГИН / ПОЧТА</div>
+              <div class="text-xs font-mono font-bold truncate mt-1 text-slate-300">${inf.creds.email}</div>
+            </div>
+            <div class="cyber-card p-3.5">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПАРОЛЬ СЕТЕЙ</div>
+              <div class="text-xs font-mono font-bold mt-1 text-slate-300">${inf.creds.pass}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 Social Channel Cards -->
+        <div class="space-y-3.5">
+          <div class="flex items-center justify-between px-1">
+            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">CHANNELS MATRIX (${inf.socials.length})</div>
+            <span class="text-xs text-slate-400">Прямой переход в профиль</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${inf.socials.map(soc => {
+              let netIcon = "🌐";
+              if (soc.net.includes("TikTok")) netIcon = "🎵";
+              else if (soc.net.includes("YouTube")) netIcon = "▶️";
+              else if (soc.net.includes("Instagram")) netIcon = "📸";
+              else if (soc.net.includes("Facebook")) netIcon = "📘";
+              else if (soc.net.includes("Threads")) netIcon = "🧵";
+
+              const isBan = soc.status.includes("БАН");
+              const isWarning = soc.status.includes("Алерт");
+
+              return `
+                <div class="cyber-card p-4 space-y-3 ${isBan ? 'border-rose-500/40' : isWarning ? 'border-amber-500/40' : ''}">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lg">${netIcon}</span>
+                      <span class="font-bold text-xs text-slate-200">${soc.net}</span>
+                    </div>
+                    <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold ${isBan ? 'bg-rose-500/20 text-rose-300' : isWarning ? 'bg-amber-500/20 text-amber-300' : 'bg-teal-500/20 text-teal-300'}">
+                      ${soc.status}
+                    </span>
+                  </div>
+
+                  <div class="text-xs">
+                    <div class="text-[10px] text-slate-400">Handle:</div>
+                    <div class="font-bold text-slate-200 truncate">${soc.handle}</div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-xs pt-2 border-t border-white/5">
+                    <div>
+                      <span class="text-[10px] text-slate-400">Посты: </span>
+                      <span class="font-bold text-slate-200">${soc.posts}</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-slate-400">Просмотры: </span>
+                      <span class="font-bold text-[#F3A6BF]">${soc.views.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  ${soc.url !== '#' ? `
+                    <a href="${soc.url}" target="_blank" class="pill-btn-rose w-full">
+                      <span>Открыть в ${soc.net}</span>
+                      <div class="pill-arrow-rose">&nearr;</div>
+                    </a>
+                  ` : `
+                    <div class="text-center py-2 text-[10px] text-rose-400 font-bold uppercase tracking-wider">Канал заблокирован</div>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // NAVIGATION ACTIONS
+    function navToSpecialistsList() {
+      document.getElementById('spec-level-1').classList.remove('hidden');
+      document.getElementById('spec-level-2').classList.add('hidden');
+      document.getElementById('spec-level-3').classList.add('hidden');
+      document.getElementById('desktop-breadcrumbs').innerHTML = `<span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistsList()">КОМАНДА СПЕЦИАЛИСТОВ</span>`;
+    }
+    function navToSpecialistCabinet(specName) {
+      document.getElementById('spec-level-1').classList.add('hidden');
+      document.getElementById('spec-level-2').classList.remove('hidden');
+      document.getElementById('spec-level-3').classList.add('hidden');
+      renderSpecialistCabinet(specName);
+    }
+    function navToInfluencerProfile(infName) {
+      document.getElementById('spec-level-1').classList.add('hidden');
+      document.getElementById('spec-level-2').classList.add('hidden');
+      document.getElementById('spec-level-3').classList.remove('hidden');
+      renderInfluencerCard(infName);
+    }
+
+    // MOBILE TMA RENDERING
+    function renderMobileSpecialistList() {
+      const container = document.getElementById('mobile-specs-list');
+      container.innerHTML = SPECIALISTS.map(s => `
+        <div onclick="mobileOpenCabinet('${s.name}')" class="cyber-card active:scale-98 p-3.5 flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#0D111A] text-slate-200 font-bold flex items-center justify-center text-xs border border-white/5">
+              ${s.order}
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <span>${s.name}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${s.statusColor === 'teal' ? 'bg-teal-500/20 text-teal-300' : s.statusColor === 'rose' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'}">${s.statusBadge}</span>
+              </div>
+              <div class="text-[10px] text-slate-400">${s.geo} &bull; ${s.influencers.length} инфла</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-bold text-[#F3A6BF]">${s.posts} постов</div>
+            <div class="text-[10px] text-slate-500">&rarr;</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function mobileOpenCabinet(specName) {
+      const s = SPECIALISTS.find(item => item.name === specName);
+      if (!s) return;
+      currentActiveSpec = s;
+      mobileHistory.push('cabinet');
+
+      document.getElementById('mobile-title').innerText = `Кабинет: ${s.name}`;
+      document.getElementById('m-view-specs').classList.add('hidden');
+      document.getElementById('m-view-cabinet').classList.remove('hidden');
+      document.getElementById('m-view-influencer').classList.add('hidden');
+
+      document.getElementById('m-view-cabinet').innerHTML = `
+        <div class="cyber-card p-3.5 space-y-1">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="text-xs font-bold text-slate-200">${s.name} (${s.geo})</div>
+              <div class="text-[10px] text-slate-400">${s.role}</div>
+            </div>
+            <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-[rgba(229,136,166,0.15)] text-[#F3A6BF]">${s.posts} / ${s.plan}</span>
+          </div>
+        </div>
+
+        <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold pt-1">ИНФЛЮЕНСЕРЫ (${s.influencers.length}):</div>
+
+        <div class="space-y-2">
+          ${s.influencers.map(infName => {
+            const inf = INFLUENCERS[infName];
+            if (!inf) return '';
+            return `
+              <div onclick="mobileOpenInfluencer('${inf.name}')" class="cyber-card active:scale-98 p-3 flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-xl bg-gradient-to-tr ${inf.avatarBg} border border-white/10 flex items-center justify-center text-2xl shadow">
+                    ${inf.avatarImg}
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-200">${inf.name} ${inf.flag}</div>
+                    <div class="text-[10px] text-slate-400">${inf.posts} постов &bull; ${inf.views.toLocaleString()} просм.</div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-[#E588A6]">&rarr;</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function mobileOpenInfluencer(infName) {
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+      mobileHistory.push('influencer');
+
+      document.getElementById('mobile-title').innerText = inf.name;
+      document.getElementById('m-view-specs').classList.add('hidden');
+      document.getElementById('m-view-cabinet').classList.add('hidden');
+      document.getElementById('m-view-influencer').classList.remove('hidden');
+
+      document.getElementById('m-view-influencer').innerHTML = `
+        <div class="cyber-card p-3.5 flex items-center gap-3">
+          <div class="w-13 h-13 rounded-2xl bg-gradient-to-tr ${inf.avatarBg} border border-white/10 flex items-center justify-center text-3xl shadow">
+            ${inf.avatarImg}
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-200">${inf.name} ${inf.flag}</div>
+            <div class="text-[10px] text-[#E588A6] font-semibold">Спец: ${inf.spec}</div>
+            <div class="text-[9px] text-slate-400 mt-0.5 line-clamp-2">${inf.bio}</div>
+          </div>
+        </div>
+
+        <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold pt-1">СОЦСЕТИ (${inf.socials.length}):</div>
+
+        <div class="space-y-2">
+          ${inf.socials.map(soc => `
+            <div class="cyber-card p-2.5 text-xs">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-slate-200">${soc.net}</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${soc.status.includes('БАН') ? 'bg-rose-500/20 text-rose-300' : 'bg-teal-500/20 text-teal-300'}">${soc.status}</span>
+              </div>
+              <div class="text-[10px] text-slate-400 mt-0.5">${soc.handle}</div>
+              <div class="flex justify-between items-center mt-2 pt-1 border-t border-white/5 text-[10px]">
+                <span class="text-slate-400">Посты: <b class="text-slate-200">${soc.posts}</b> | Просм: <b class="text-[#F3A6BF]">${soc.views}</b></span>
+                ${soc.url !== '#' ? `<a href="${soc.url}" target="_blank" class="text-[#E588A6] font-bold">Открыть &nearr;</a>` : `<span class="text-rose-400">Бан</span>`}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function mobileGoBack() {
+      if (mobileHistory.length > 1) {
+        mobileHistory.pop();
+        const prev = mobileHistory[mobileHistory.length - 1];
+        if (prev === 'specs') {
+          document.getElementById('mobile-title').innerText = "Специалисты";
+          document.getElementById('m-view-specs').classList.remove('hidden');
+          document.getElementById('m-view-cabinet').classList.add('hidden');
+          document.getElementById('m-view-influencer').classList.add('hidden');
+        } else if (prev === 'cabinet') {
+          document.getElementById('mobile-title').innerText = `Кабинет: ${currentActiveSpec.name}`;
+          document.getElementById('m-view-specs').classList.add('hidden');
+          document.getElementById('m-view-cabinet').classList.remove('hidden');
+          document.getElementById('m-view-influencer').classList.add('hidden');
+        }
+      } else {
+        setViewMode('desktop');
+      }
+    }
+
+    // VIEWPORT SWITCHER
+    function setViewMode(mode) {
+      const dw = document.getElementById('desktop-wrapper');
+      const mw = document.getElementById('mobile-wrapper');
+      const bd = document.getElementById('btn-view-desktop');
+      const bm = document.getElementById('btn-view-mobile');
+      const header = document.getElementById('main-header');
+
+      if (mode === 'mobile') {
+        if (dw) dw.classList.add('hidden');
+        if (mw) mw.classList.remove('hidden');
+        if (bm) bm.className = "px-3.5 py-1.5 rounded-full font-bold bg-white/15 text-slate-200 transition-all";
+        if (bd) bd.className = "px-3.5 py-1.5 rounded-full font-semibold text-slate-400 hover:text-slate-200 transition-all";
+        if (window.innerWidth < 768 && header) {
+          header.classList.add('hidden');
+        }
+        renderMobileSpecialistList();
+      } else {
+        if (mw) mw.classList.add('hidden');
+        if (dw) dw.classList.remove('hidden');
+        if (header) header.classList.remove('hidden');
+        if (bd) bd.className = "px-3.5 py-1.5 rounded-full font-bold bg-white/15 text-slate-200 transition-all";
+        if (bm) bm.className = "px-3.5 py-1.5 rounded-full font-semibold text-slate-400 hover:text-slate-200 transition-all";
+      }
+    }
+
+    // DESKTOP TAB SWITCHER
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all";
+      });
+
+      const pane = document.getElementById('tab-' + tabId);
+      const btn = document.getElementById('d-nav-' + tabId);
+      if (pane) pane.classList.remove('hidden');
+      if (btn) btn.className = "w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold bg-[rgba(229,136,166,0.14)] text-[#F8E7ED] border border-[rgba(229,136,166,0.3)] transition-all shadow-sm";
+
+      if (tabId === 'registry') renderRegistry();
+    }
+
+    // REGISTRY RENDER
+    function renderRegistry() {
+      const tbody = document.getElementById('reg-body');
+      const search = (document.getElementById('reg-search')?.value || '').toLowerCase();
+      let rows = [];
+
+      Object.values(INFLUENCERS).forEach(inf => {
+        inf.socials.forEach(soc => {
+          if (!search || inf.name.toLowerCase().includes(search) || inf.spec.toLowerCase().includes(search) || soc.net.toLowerCase().includes(search)) {
+            rows.push(`
+              <tr class="hover:bg-white/5 transition-colors">
+                <td class="p-3 font-bold text-slate-200">${inf.name} ${inf.flag}</td>
+                <td class="p-3 text-slate-400">${inf.spec}</td>
+                <td class="p-3 text-[#F3A6BF] font-semibold">${soc.net}</td>
+                <td class="p-3"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${soc.status.includes('БАН') ? 'bg-rose-500/20 text-rose-300' : 'bg-teal-500/20 text-teal-300'}">${soc.status}</span></td>
+                <td class="p-3 text-center font-bold text-slate-200">${soc.posts}</td>
+                <td class="p-3 text-center text-[#F3A6BF] font-semibold">${soc.views.toLocaleString()}</td>
+                <td class="p-3 text-right">${soc.url !== '#' ? `<a href="${soc.url}" target="_blank" class="text-[#E588A6] font-bold hover:underline">Перейти &nearr;</a>` : '—'}</td>
+              </tr>
+            `);
+          }
+        });
+      });
+      tbody.innerHTML = rows.join('');
+    }
+    function filterRegistry() { renderRegistry(); }
+
+    // MODAL HANDLERS
+    function openPlittyGuide() {
+      document.getElementById('modal-plitty-guide').classList.remove('hidden');
+    }
+    function showPlittyErrorAlert() {
+      document.getElementById('modal-plitty-error').classList.remove('hidden');
+    }
+    function celebrateSuccess() {
+      document.getElementById('modal-plitty-success').classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // TELEGRAM WEBAPP READY
+    if (window.Telegram && window.Telegram.WebApp) {
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+        if (window.innerWidth < 768) {
+          setViewMode('mobile');
+        }
+      } catch (e) {
+        console.warn("[Plitty WebApp] Init warning:", e);
+      }
+    }
+
+    // LIVE BACKEND ACTIONS
+    async function triggerSnapshot() {
+      try {
+        const btn = window.event ? window.event.currentTarget : null;
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) btn.innerHTML = '<span>⏳ Замер выполняется...</span>';
+        const res = await fetch('/api/influencers/trigger-snapshot', { method: 'POST' });
+        const data = await res.json();
+        celebrateSuccess();
+        setTimeout(() => { loadLiveData(); }, 3000);
+      } catch (err) {
+        console.error("Error triggering snapshot:", err);
+        showPlittyErrorAlert();
+      }
+    }
+
+    function downloadExcel() {
+      window.location.href = '/api/influencers/export-excel';
+    }
+
+    async function sendSpecialistReminder(spec, target) {
+      try {
+        const res = await fetch('/api/influencers/ping-specialists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ specialist: spec, target: target || 'shift_end' })
+        });
+        const data = await res.json();
+        alert(`💬 Напоминание специалисту ${spec} отправлено в Telegram через Plitty Bot!`);
+      } catch (err) {
+        console.error("Error sending reminder:", err);
+        alert(`⚠️ Не удалось отправить напоминание: ${err.message}`);
+      }
+    }
+
+    async function sendAllSpecialistsReminder() {
+      try {
+        const res = await fetch('/api/influencers/ping-specialists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target: 'shift_end' })
+        });
+        const data = await res.json();
+        alert(`💬 Напоминания о сдаче смены (19:00 МСК) отправлены всем специалистам через Plitty Bot!`);
+      } catch (err) {
+        console.error("Error sending all reminders:", err);
+        alert(`⚠️ Ошибка отправки напоминаний: ${err.message}`);
+      }
+    }
+
+    // LIVE DATA SYNC (Online API with Graceful Offline Fallback)
+    
+    // Direct Telegram Bot API Notification helper for zero-latency mobile execution
+    async function notifyTelegramDirect(message) {
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          try {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+          } catch(e) {}
+        }
+        const url = 'https://api.telegram.org/bot8654316556:AAH_j5i5wrb1OLJMxeWesoSGVPYZT_56-tU/sendMessage';
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: 234658540,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+      } catch (err) {
+        console.warn("[Plitty Direct TG Notify]", err);
+      }
+    }
+
+    async function loadLiveData() {
+      try {
+        const [accRes, recRes] = await Promise.allSettled([
+          fetch('/api/influencers/accounts'),
+          fetch('/api/influencers/reconciliation')
+        ]);
+
+        if (accRes.status === 'fulfilled' && accRes.value.ok) {
+          const accData = await accRes.value.json();
+          if (accData && accData.accounts && accData.accounts.length > 0) {
+            console.log(`[Plitty Admin] Live accounts loaded: ${accData.accounts.length}`);
+            const activeCount = accData.accounts.filter(a => a.status === 'active').length;
+            const totalCount = accData.accounts.length;
+            const kpiAccEl = document.getElementById('kpi-active-accounts');
+            if (kpiAccEl) kpiAccEl.innerHTML = `${activeCount} <span class="text-xs text-slate-500 font-normal">/ ${totalCount}</span>`;
+          }
+        }
+
+        if (recRes.status === 'fulfilled' && recRes.value.ok) {
+          const recData = await recRes.value.json();
+          if (recData && recData.records && recData.records.length > 0) {
+            console.log(`[Plitty Admin] Live reconciliation loaded: ${recData.records.length}`);
+            const totalPosts = recData.records.reduce((sum, r) => sum + (r.posts_delta || 0), 0);
+            const totalViews = recData.records.reduce((sum, r) => sum + (r.views_delta || 0), 0);
+            const kpiPostsEl = document.getElementById('kpi-shift-posts');
+            if (kpiPostsEl && totalPosts > 0) {
+              kpiPostsEl.innerHTML = `${totalPosts} <span class="text-xs font-bold text-teal-400">LIVE</span>`;
+            }
+            const kpiViewsEl = document.getElementById('kpi-network-views');
+            if (kpiViewsEl && totalViews > 0) {
+              kpiViewsEl.innerText = totalViews.toLocaleString();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("[Plitty Admin] Live sync fallback to cached state:", e);
+      }
+    }
+
+    // INIT
+    if (window.innerWidth < 768) {
+      try { setViewMode('mobile'); } catch(e) {}
+    }
+    initPlittyImages();
+    renderDesktopSpecialistList();
+    loadLiveData();
+  </script>
+</body>
+</html>
