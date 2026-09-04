@@ -1209,10 +1209,10 @@
                   </div>
 
                   ${soc.url !== '#' ? `
-                    <button type="button" onclick="openExternalUrl('${soc.url}', event)" class="pill-btn-rose w-full">
+                    <a href="${soc.url}" target="_blank" rel="noopener noreferrer" onclick="return handleLinkClick('${soc.url}', event)" class="pill-btn-rose w-full flex items-center justify-between">
                       <span>Открыть в ${soc.net}</span>
                       <div class="pill-arrow-rose">&nearr;</div>
-                    </button>
+                    </a>
                   ` : `
                     <div class="text-center py-2 text-[10px] text-rose-400 font-bold uppercase tracking-wider">Канал заблокирован</div>
                   `}
@@ -1350,7 +1350,7 @@
               <div class="text-[10px] text-slate-400 mt-0.5">${soc.handle}</div>
               <div class="flex justify-between items-center mt-2 pt-1 border-t border-white/5 text-[10px]">
                 <span class="text-slate-400">Посты: <b class="text-slate-200">${soc.posts}</b> | Просм: <b class="text-[#F3A6BF]">${soc.views}</b></span>
-                ${(soc.url && soc.url !== '#' && !soc.url.includes('Бан')) ? `<button type="button" onclick="openExternalUrl(\'${soc.url}\', event)" class="text-[#E588A6] font-bold py-1 px-2 rounded hover:bg-white/5 active:scale-95 transition-all">Открыть &nearr;</button>` : `<span class="text-rose-400">🔴 Бан</span>`}
+                ${(soc.url && soc.url !== '#' && !soc.url.includes('Бан')) ? `<a href="${soc.url}" target="_blank" rel="noopener noreferrer" onclick="return handleLinkClick('${soc.url}', event)" class="text-[#E588A6] font-bold py-1 px-2.5 rounded hover:bg-white/5 active:scale-95 transition-all inline-flex items-center gap-1">Открыть &nearr;</a>` : `<span class="text-rose-400 font-medium">🔴 Бан</span>`}
               </div>
             </div>
           `).join('')}
@@ -1436,7 +1436,7 @@
                 <td class="p-3"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${soc.status.includes('БАН') ? 'bg-rose-500/20 text-rose-300' : 'bg-teal-500/20 text-teal-300'}">${soc.status}</span></td>
                 <td class="p-3 text-center font-bold text-slate-200">${soc.posts}</td>
                 <td class="p-3 text-center text-[#F3A6BF] font-semibold">${soc.views.toLocaleString()}</td>
-                <td class="p-3 text-right">${(soc.url && soc.url !== '#' && !soc.url.includes('Бан')) ? `<button type="button" onclick="openExternalUrl(\'${soc.url}\', event)" class="text-[#E588A6] font-bold hover:underline">Перейти &nearr;</button>` : '—'}</td>
+                <td class="p-3 text-right">${(soc.url && soc.url !== '#' && !soc.url.includes('Бан')) ? `<a href="${soc.url}" target="_blank" rel="noopener noreferrer" onclick="return handleLinkClick('${soc.url}', event)" class="text-[#E588A6] font-bold hover:underline">Перейти &nearr;</a>` : '—'}</td>
               </tr>
             `);
           }
