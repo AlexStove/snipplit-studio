@@ -685,16 +685,29 @@
   <!-- ================================================================= -->
   <script>
     function initPlittyImages() {
-      const serverSrc = '/static/img/plitty/plitty_server.jpg';
-      const avatarSrc = '/static/img/plitty/plitty_avatar_official.jpg';
-      const doneSrc = '/static/img/plitty/plitty_done.png';
+      const serverSrc = 'img/plitty/plitty_server.jpg';
+      const avatarSrc = 'img/plitty/plitty_avatar_official.jpg';
+      const doneSrc = 'img/plitty/plitty_done.png';
 
-      if (document.getElementById('top-plitty-img')) document.getElementById('top-plitty-img').src = avatarSrc;
-      if (document.getElementById('m-top-plitty-img')) document.getElementById('m-top-plitty-img').src = avatarSrc;
-      if (document.getElementById('guide-plitty-img')) document.getElementById('guide-plitty-img').src = avatarSrc;
-      if (document.getElementById('float-plitty-img')) document.getElementById('float-plitty-img').src = avatarSrc;
-      if (document.getElementById('error-plitty-img')) document.getElementById('error-plitty-img').src = avatarSrc;
-      if (document.getElementById('success-plitty-img')) document.getElementById('success-plitty-img').src = doneSrc;
+      const setImgSafe = (id, src) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.src = src;
+          el.onerror = () => {
+            if (!el.dataset.retried) {
+              el.dataset.retried = '1';
+              el.src = '/static/' + src;
+            }
+          };
+        }
+      };
+
+      setImgSafe('top-plitty-img', avatarSrc);
+      setImgSafe('m-top-plitty-img', avatarSrc);
+      setImgSafe('guide-plitty-img', avatarSrc);
+      setImgSafe('float-plitty-img', avatarSrc);
+      setImgSafe('error-plitty-img', avatarSrc);
+      setImgSafe('success-plitty-img', doneSrc);
     }
 
     // SPECIALISTS (Strict Order)
@@ -710,7 +723,7 @@
         views: 7808,
         statusBadge: "⚠️ FB: вкл. Prof Mode",
         statusColor: "amber",
-        influencers: ["Алеся Бут", "Ян Верса"]
+        influencers: ["Алеся Бут", "Ян Верас"]
       },
       {
         order: 2,
@@ -961,6 +974,9 @@
       }
     };
 
+    
+    // Alias fallback for any legacy reference
+    if (typeof INFLUENCERS !== "undefined" && INFLUENCERS["Ян Верас"]) { INFLUENCERS["Ян Верса"] = INFLUENCERS["Ян Верас"]; }
     let currentActiveSpec = null;
     let mobileHistory = ['specs'];
 
