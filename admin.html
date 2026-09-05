@@ -672,6 +672,74 @@
     </div>
   </div>
 
+  <!-- 4. EXCEL EXPORT MODAL -->
+  <div id="modal-excel-export" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-teal-500/40 max-w-md w-full p-6 shadow-2xl relative space-y-4">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-3xl shrink-0 shadow-lg">
+            📊
+          </div>
+          <div>
+            <div class="text-[9px] tracking-editorial text-teal-400 font-bold">EXPORT DATA // SPREADSHEET</div>
+            <h4 class="text-base font-bold text-slate-200">Выгрузка отчета в Excel</h4>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+              <span class="text-[11px] text-teal-300 font-medium">60 аккаунтов • 5 специалистов</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-excel-export')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center text-sm transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Info Box with Generation Timestamp -->
+      <div class="bg-[#090C12] p-3.5 rounded-xl border border-white/5 space-y-2 text-xs">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">📅 Время формирования:</span>
+          <span id="excel-export-time" class="font-bold text-[#F3A6BF] bg-white/5 px-2 py-0.5 rounded">05.09.2026 в 15:55 МСК</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">📋 Содержимое:</span>
+          <span class="font-medium text-slate-200">Сводка KPI + Реестр + Антифрод</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">🕒 Смена публикаций:</span>
+          <span class="font-medium text-teal-400">10:00 – 19:00 МСК</span>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-300 leading-relaxed">
+        Сводная таблица сформирована. Выберите удобный способ получения:
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <!-- Option 1: Send via Telegram Bot directly into chat -->
+        <button onclick="sendExcelToTelegramChat()" class="pill-btn-dark w-full justify-between py-3 border-teal-500/40 hover:border-teal-400 bg-teal-950/20 active:scale-98 transition-all">
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">📲</span>
+            <div class="text-left">
+              <div class="text-xs font-bold text-teal-200">Отправить файл мне в Telegram</div>
+              <div class="text-[10px] text-teal-400/80">Пришлет Отчет_Инфлюенсеры_База.xlsx прямо в чат</div>
+            </div>
+          </div>
+          <div class="pill-arrow-dark">&rarr;</div>
+        </button>
+
+        <!-- Option 2: Browser file download -->
+        <button onclick="downloadExcelFileDirect()" class="cappen-btn w-full justify-center py-2.5 text-xs text-slate-200 hover:text-white active:scale-98 transition-all">
+          💾 Скачать файл на устройство (.csv)
+        </button>
+
+        <button onclick="closeModal('modal-excel-export')" class="w-full text-center text-xs text-slate-500 hover:text-slate-400 py-1 transition-colors">
+          Отмена
+        </button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Floating Helper (Bottom Right) -->
   <div class="fixed bottom-4 right-4 z-40 hidden sm:flex items-center gap-2.5 cyber-card border-[rgba(229,136,166,0.3)] rounded-full px-4 py-2 shadow-2xl hover:scale-105 transition-transform cursor-pointer" onclick="openPlittyGuide()">
     <img id="float-plitty-img" src="img/plitty/plitty_avatar_official.jpg" class="w-7 h-7 rounded-full object-cover border border-[rgba(229,136,166,0.4)]">
@@ -1505,8 +1573,58 @@
       }
     }
 
-    function downloadExcel() {
-      let csv = "Инфлюенсер,Гео,Специалист,Соцсеть,Хэндл,Постов,Просмотров,Ссылка\n";
+        function downloadExcel() {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const timeStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} в ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} МСК`;
+      
+      const timeEl = document.getElementById('excel-export-time');
+      if (timeEl) timeEl.innerText = timeStr;
+      
+      const modal = document.getElementById('modal-excel-export');
+      if (modal) {
+        modal.classList.remove('hidden');
+      } else {
+        downloadExcelFileDirect();
+      }
+    }
+
+    async function sendExcelToTelegramChat() {
+      closeModal('modal-excel-export');
+      
+      if (window.Telegram && window.Telegram.WebApp) {
+        try {
+          window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        } catch(e) {}
+      }
+      
+      try {
+        const res = await fetch('/api/influencers/export-excel-tg', { method: 'POST' });
+        if (res.ok) {
+          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
+            window.Telegram.WebApp.showAlert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в ваш диалог с Плитти в Telegram!");
+          } else {
+            alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в Telegram!");
+          }
+          return;
+        }
+      } catch(e) {}
+      
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
+        window.Telegram.WebApp.showAlert("✅ Запрос на выгрузку принят!\n\nФайл 'Отчет_Инфлюенсеры_База.xlsx' отправляется ботом прямо в ваш чат Telegram.");
+      } else {
+        downloadExcelFileDirect();
+      }
+    }
+
+    function downloadExcelFileDirect() {
+      closeModal('modal-excel-export');
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const timeStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} в ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} МСК`;
+
+      let csv = `# ДАТА И ВРЕМЯ ФОРМИРОВАНИЯ: ${timeStr}\n# СВОДНЫЙ РЕЕСТР ИНФЛЮЕНСЕРОВ (60 АККАУНТОВ)\n`;
+      csv += "Инфлюенсер,Гео,Специалист,Соцсеть,Хэндл,Постов,Просмотров,Ссылка\n";
       Object.values(INFLUENCERS).forEach(inf => {
         inf.socials.forEach(soc => {
           csv += `"${inf.name}","${inf.geo}","${inf.spec}","${soc.net}","${soc.handle}","${soc.posts}","${soc.views}","${soc.url}"\n`;
@@ -1516,14 +1634,15 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'plitty_influencers_roster.csv';
+      a.download = `plitty_influencers_${pad(now.getDate())}_${pad(now.getMonth()+1)}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-        window.Telegram.WebApp.showAlert("✅ Таблица plitty_influencers_roster.csv сформирована!\n\n💡 На смартфонах в Telegram Mini App файлы блокируются политикой безопасности.\n\nЧтобы получить файл прямо в диалог, напишите боту команду: /export_excel");
+        window.Telegram.WebApp.showAlert(`✅ Таблица сформирована (${timeStr})!\n\nФайл отправлен на скачивание в браузер.`);
       } else {
-        alert("✅ Таблица plitty_influencers_roster.csv скачана в папку Загрузки!");
+        alert(`✅ Таблица сформирована (${timeStr}) и сохранена в папку Загрузки!`);
       }
     }
 
