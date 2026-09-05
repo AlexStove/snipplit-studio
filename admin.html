@@ -721,15 +721,20 @@
             <span class="text-base">📲</span>
             <div class="text-left">
               <div class="text-xs font-bold text-teal-200">Отправить файл мне в Telegram</div>
-              <div class="text-[10px] text-teal-400/80">Пришлет Отчет_Инфлюенсеры_База.xlsx прямо в чат</div>
+              <div class="text-[10px] text-teal-400/80">Мгновенная доставка Отчет_Инфлюенсеры_База.xlsx в чат</div>
             </div>
           </div>
           <div class="pill-arrow-dark">&rarr;</div>
         </button>
 
-        <!-- Option 2: Browser file download -->
-        <button onclick="downloadExcelFileDirect()" class="cappen-btn w-full justify-center py-2.5 text-xs text-slate-200 hover:text-white active:scale-98 transition-all">
-          💾 Скачать файл на устройство (.csv)
+        <!-- Option 2: Direct Excel Download -->
+        <button onclick="downloadExcelFileDirect('xlsx')" class="cappen-btn w-full justify-center py-2.5 text-xs text-slate-200 hover:text-white active:scale-98 transition-all">
+          💾 Скачать Excel (.xlsx) на устройство
+        </button>
+
+        <!-- Option 3: CSV Download -->
+        <button onclick="downloadExcelFileDirect('csv')" class="w-full text-center text-xs text-slate-400 hover:text-slate-300 py-1.5 transition-colors">
+          📄 Или скачать в формате .csv
         </button>
 
         <button onclick="closeModal('modal-excel-export')" class="w-full text-center text-xs text-slate-500 hover:text-slate-400 py-1 transition-colors">
@@ -1597,53 +1602,52 @@
           window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
         } catch(e) {}
       }
-      
+
+      // 1. If inside Telegram Mini App, trigger export via bot deep link
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink("https://t.me/SnipPlit_bot?start=excel");
+        return;
+      }
+
+      // 2. Fallback to local server endpoint if running on localhost
       try {
         const res = await fetch('/api/influencers/export-excel-tg', { method: 'POST' });
         if (res.ok) {
-          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-            window.Telegram.WebApp.showAlert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в ваш диалог с Плитти в Telegram!");
-          } else {
-            alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в Telegram!");
-          }
+          alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно сформирован и отправлен в Telegram!");
           return;
         }
       } catch(e) {}
-      
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-        window.Telegram.WebApp.showAlert("✅ Запрос на выгрузку принят!\n\nФайл 'Отчет_Инфлюенсеры_База.xlsx' отправляется ботом прямо в ваш чат Telegram.");
-      } else {
-        downloadExcelFileDirect();
-      }
+
+      // 3. Fallback to direct Excel download
+      downloadExcelFileDirect('xlsx');
     }
 
-    function downloadExcelFileDirect() {
+    function downloadExcelFileDirect(format = 'xlsx') {
       closeModal('modal-excel-export');
-      const now = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      const timeStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} в ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} МСК`;
 
-      let csv = `# ДАТА И ВРЕМЯ ФОРМИРОВАНИЯ: ${timeStr}\n# СВОДНЫЙ РЕЕСТР ИНФЛЮЕНСЕРОВ (60 АККАУНТОВ)\n`;
-      csv += "Инфлюенсер,Гео,Специалист,Соцсеть,Хэндл,Постов,Просмотров,Ссылка\n";
-      Object.values(INFLUENCERS).forEach(inf => {
-        inf.socials.forEach(soc => {
-          csv += `"${inf.name}","${inf.geo}","${inf.spec}","${soc.net}","${soc.handle}","${soc.posts}","${soc.views}","${soc.url}"\n`;
-        });
-      });
-      const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
+      if (window.Telegram && window.Telegram.WebApp) {
+        try {
+          window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        } catch(e) {}
+      }
+
+      const xlsxUrl = "https://alexstove.github.io/snipplit-studio/plitty_influencers_report.xlsx";
+      const csvUrl = "https://alexstove.github.io/snipplit-studio/plitty_influencers_report.csv";
+      const targetUrl = format === 'csv' ? csvUrl : xlsxUrl;
+      const fileName = format === 'csv' ? 'plitty_influencers_report.csv' : 'Отчет_Инфлюенсеры_База.xlsx';
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+        window.Telegram.WebApp.openLink(targetUrl);
+        return;
+      }
+
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `plitty_influencers_${pad(now.getDate())}_${pad(now.getMonth()+1)}.csv`;
+      a.href = targetUrl;
+      a.download = fileName;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-        window.Telegram.WebApp.showAlert(`✅ Таблица сформирована (${timeStr})!\n\nФайл отправлен на скачивание в браузер.`);
-      } else {
-        alert(`✅ Таблица сформирована (${timeStr}) и сохранена в папку Загрузки!`);
-      }
     }
 
     async function sendSpecialistReminder(spec, target) {
