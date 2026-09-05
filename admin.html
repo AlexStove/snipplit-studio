@@ -1521,9 +1521,9 @@
       a.click();
       document.body.removeChild(a);
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-        window.Telegram.WebApp.showAlert("✅ Таблица plitty_influencers_roster.csv успешно сформирована!");
+        window.Telegram.WebApp.showAlert("✅ Таблица plitty_influencers_roster.csv сформирована!\n\n💡 На смартфонах в Telegram Mini App файлы блокируются политикой безопасности.\n\nЧтобы получить файл прямо в диалог, напишите боту команду: /export_excel");
       } else {
-        alert("✅ Таблица plitty_influencers_roster.csv успешно сформирована!");
+        alert("✅ Таблица plitty_influencers_roster.csv скачана в папку Загрузки!");
       }
     }
 
