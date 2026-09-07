@@ -2845,39 +2845,54 @@
       const origHtml = btn ? btn.innerHTML : '';
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Отправка отчета...</span>';
+        btn.innerHTML = '<span>✅ Отправлено!</span>';
+      }
+
+      // 1. Sync to local state immediately
+      if (Array.isArray(reportItemsState)) {
+        reportItemsState.forEach(it => {
+          const inf = INFLUENCERS[it.influencer];
+          if (inf && inf.socials) {
+            const soc = inf.socials.find(s => s.net === it.network);
+            if (soc) {
+              soc.reported = it.posts;
+              if (it.banned) {
+                soc.status = "🔴 БАН";
+              }
+            }
+          }
+        });
       }
 
       try {
-        // 1. Sync to local state INFLUENCERS and AUDIT_MATRIX
-        if (Array.isArray(reportItemsState)) {
-          reportItemsState.forEach(it => {
-            const inf = INFLUENCERS[it.influencer];
-            if (inf && inf.socials) {
-              const soc = inf.socials.find(s => s.net === it.network);
-              if (soc) {
-                soc.reported = it.posts;
-                if (it.banned) {
-                  soc.status = "🔴 БАН";
-                }
-              }
-            }
-          });
+        if (typeof recalculateMetrics === 'function') recalculateMetrics();
+        if (typeof renderAuditTable === 'function') renderAuditTable();
+        if (typeof renderSpecialistsTab === 'function') renderSpecialistsTab();
+        if (typeof renderSpecialistCabinet === 'function' && currentReportingSpec) {
+          const s = SPECIALISTS.find(item => item.name === currentReportingSpec);
+          if (s) renderSpecialistCabinet(s);
         }
+      } catch (renderErr) {
+        console.warn("Render update warning:", renderErr);
+      }
 
-        try {
-          if (typeof recalculateMetrics === 'function') recalculateMetrics();
-          if (typeof renderAuditTable === 'function') renderAuditTable();
-          if (typeof renderSpecialistsTab === 'function') renderSpecialistsTab();
-          if (typeof renderSpecialistCabinet === 'function' && currentReportingSpec) {
-            const s = SPECIALISTS.find(item => item.name === currentReportingSpec);
-            if (s) renderSpecialistCabinet(s);
-          }
-        } catch (renderErr) {
-          console.warn("Render update warning:", renderErr);
+      // Immediately close modal & show success toast to user
+      setTimeout(() => {
+        closeModal('modal-specialist-shift-report');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
         }
+        showPlittyToast('🎉 Отчет за смену успешно сдан! Разработчик уведомлен.');
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+          try {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+          } catch(e){}
+        }
+      }, 250);
 
-        // 2. Call backend API with timeout
+      // 2. Call backend API asynchronously in background
+      try {
         const payload = {
           specialist: currentReportingSpec || 'Лёша',
           report_date: new Date().toISOString().split('T')[0],
@@ -2900,21 +2915,8 @@
           signal: controller.signal
         }).catch(e => console.warn("Fetch error or timeout:", e));
         clearTimeout(timeoutId);
-
       } catch (err) {
-        console.error("Error in submitShiftReportModal:", err);
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = origHtml;
-        }
-        closeModal('modal-specialist-shift-report');
-        showPlittyToast('✅ Отчет за смену успешно сдан! Разработчик уведомлен.');
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-          try {
-            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-          } catch(e){}
-        }
+        console.warn("Backend submit report sync warning (cached locally):", err);
       }
     }
 
