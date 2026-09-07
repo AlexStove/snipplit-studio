@@ -724,7 +724,7 @@
 
       <div class="space-y-2 pt-1">
         <!-- Option 1: Send via Telegram Bot directly into chat -->
-        <button onclick="sendExcelToTelegramChat()" class="pill-btn-dark w-full justify-between py-3 border-teal-500/40 hover:border-teal-400 bg-teal-950/20 active:scale-98 transition-all">
+        <button id="btn-send-tg-doc" onclick="sendExcelToTelegramChat()" class="pill-btn-dark w-full justify-between py-3 border-teal-500/40 hover:border-teal-400 bg-teal-950/20 active:scale-98 transition-all">
           <div class="flex items-center gap-2.5">
             <span class="text-base">📲</span>
             <div class="text-left">
@@ -1816,37 +1816,66 @@
       }
     }
 
-        async function sendExcelToTelegramChat() {
-      const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
-      const targetChatId = tgUser && tgUser.id ? tgUser.id : 234658540;
+            async function sendExcelToTelegramChat() {
+      const btn = document.getElementById('btn-send-tg-doc');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="text-base animate-pulse">⏳</span>
+            <div class="text-left">
+              <div class="text-xs font-bold text-teal-300">Формирую и отправляю в Telegram...</div>
+              <div class="text-[10px] text-teal-400/80">Пожалуйста, подождите пару секунд</div>
+            </div>
+          </div>
+        `;
+      }
 
-      // 1. Send via local API directly to Telegram chat
+      const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+      const targetChatId = (tgUser && tgUser.id) ? tgUser.id : 234658540;
+
       try {
         const res = await fetch('/api/influencers/export-excel-tg', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: targetChatId })
         });
+        
         if (res.ok) {
-          closeModal('modal-excel-export');
+          if (btn) {
+            btn.innerHTML = `
+              <div class="flex items-center gap-2.5">
+                <span class="text-base">✅</span>
+                <div class="text-left">
+                  <div class="text-xs font-bold text-emerald-300">Файл успешно отправлен!</div>
+                  <div class="text-[10px] text-emerald-400/80">Отчет уже ждет тебя в чате @SnipPlit_bot</div>
+                </div>
+              </div>
+            `;
+          }
           if (window.Telegram && window.Telegram.WebApp) {
             try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } catch(e) {}
           }
-          alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в твой Telegram! Проверь чат с ботом.");
+          setTimeout(() => {
+            closeModal('modal-excel-export');
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = origHtml;
+            }
+          }, 2000);
           return;
+        } else {
+          throw new Error("HTTP " + res.status);
         }
       } catch(e) {
-        console.warn("[Plitty Export] API error:", e);
+        console.warn("[Plitty Export] Background API error:", e);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+        alert("⚠️ Не удалось отправить файл напрямую через сервер. Попробуйте скачать Excel прямо на устройство.");
       }
-
-      // 2. Fallback: If API wasn't reached (e.g. offline on github pages)
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
-        closeModal('modal-excel-export');
-        window.Telegram.WebApp.openTelegramLink("https://t.me/SnipPlit_bot?start=excel");
-        return;
-      }
-
-      downloadExcelFileDirect('xlsx');
     }
 
     async function downloadExcelFileDirect(format = 'xlsx') {
@@ -1876,7 +1905,7 @@
           setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
           return;
         }
-      } catch(e) {
+      } catch (e) {
         console.warn("[Plitty Export] Fetch API fallback:", e);
       }
 
