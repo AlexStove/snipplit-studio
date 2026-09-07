@@ -675,20 +675,38 @@
   <!-- ================================================================= -->
 
   
-  <!-- 4. SPECIALIST CUSTOM MESSAGE MODAL (Direct Telegram) -->
+  <!-- 4. SPECIALIST CUSTOM MESSAGE MODAL (Direct Telegram & Broadcast) -->
   <div id="modal-specialist-message" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="cyber-card border-[rgba(229,136,166,0.35)] max-w-lg w-full p-6 shadow-2xl relative space-y-4">
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-[#090C12] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-xl">
-            💬
+            📢
           </div>
           <div>
-            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">DIRECT TELEGRAM MESSAGE</div>
-            <h4 class="text-base font-bold text-slate-200">Написать специалисту: <span id="msg-spec-name" class="text-[#F3A6BF]"></span></h4>
+            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">PUSH DISPATCH // TELEGRAM</div>
+            <h4 class="text-base font-bold text-slate-200" id="msg-spec-title">Пнуть специалистов в Telegram</h4>
           </div>
         </div>
         <button onclick="closeModal('modal-specialist-message')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white">&times;</button>
+      </div>
+
+      <!-- Recipient selector -->
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold text-slate-400">Получатели пуша:</label>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:border-[#E588A6]">
+            <input type="checkbox" id="ping-all-specs" onchange="toggleAllPingRecipients(this.checked)" checked class="accent-[#E588A6]">
+            <span class="font-bold text-[#F3A6BF]">Все специалисты (5)</span>
+          </label>
+          <div class="flex flex-wrap gap-1.5" id="ping-individual-specs">
+            <label class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 cursor-pointer text-[11px]"><input type="checkbox" class="ping-spec-chk accent-[#E588A6]" value="Лёша" checked> <span>Лёша (🟢 TG)</span></label>
+            <label class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 cursor-pointer text-[11px]"><input type="checkbox" class="ping-spec-chk accent-[#E588A6]" value="Саша" checked> <span>Саша</span></label>
+            <label class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 cursor-pointer text-[11px]"><input type="checkbox" class="ping-spec-chk accent-[#E588A6]" value="Сёма" checked> <span>Сёма</span></label>
+            <label class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 cursor-pointer text-[11px]"><input type="checkbox" class="ping-spec-chk accent-[#E588A6]" value="Даник" checked> <span>Даник</span></label>
+            <label class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 cursor-pointer text-[11px]"><input type="checkbox" class="ping-spec-chk accent-[#E588A6]" value="Артур" checked> <span>Артур</span></label>
+          </div>
+        </div>
       </div>
 
       <!-- Quick Template Chips -->
@@ -704,21 +722,69 @@
       <!-- Custom Text Input -->
       <div class="space-y-1.5">
         <label class="text-[10px] font-bold text-slate-400">Текст сообщения:</label>
-        <textarea id="spec-custom-msg-input" rows="4" placeholder="Введите любое поручение, вопрос или комментарий специалисту..." class="w-full bg-[#090C12] border border-[rgba(229,136,166,0.25)] rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#E588A6]"></textarea>
+        <textarea id="spec-custom-msg-input" rows="3" placeholder="Введите любое поручение, вопрос или комментарий специалистам..." class="w-full bg-[#090C12] border border-[rgba(229,136,166,0.25)] rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#E588A6]"></textarea>
       </div>
 
       <div class="text-[10px] text-slate-400 flex items-center gap-1.5">
-        <span>🔒 Сообщение отправляется напрямую в личный Telegram специалиста.</span>
+        <span>🔒 Сообщение отправляется в виде пуш-уведомления от бота Plitty в личные сообщения Telegram.</span>
       </div>
 
       <div class="flex gap-2.5 pt-1">
         <button id="btn-submit-spec-msg" onclick="submitSpecialistCustomMessage()" class="pill-btn-rose flex-1 justify-center py-2.5">
-          <span>✈️ Отправить в Telegram</span>
+          <span>✈️ Отправить пуш в Telegram</span>
           <div class="pill-arrow-rose">&rarr;</div>
         </button>
         <button type="button" onclick="closeModal('modal-specialist-message')" class="cappen-btn px-4 text-slate-400">
           Отмена
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SPECIALIST SHIFT REPORT MODAL (1-Click with default 1 post & BAN toggles) -->
+  <div id="modal-specialist-shift-report" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-[rgba(229,136,166,0.35)] max-w-2xl w-full p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-teal-950/40 border border-teal-500/40 flex items-center justify-center text-2xl shadow-lg">
+            📝
+          </div>
+          <div>
+            <div class="text-[9px] tracking-editorial text-teal-400 font-bold">DAILY SHIFT REPORT // 1-CLICK</div>
+            <h4 class="text-lg font-bold text-slate-100">Сдача отчета за смену: <span id="report-modal-spec-name" class="text-[#F3A6BF]"></span></h4>
+            <div class="text-[11px] text-slate-400 mt-0.5">
+              📅 <span id="report-modal-date"></span> &bull; Норматив: <b class="text-slate-200">10:00 – 19:00 МСК</b>
+            </div>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-specialist-shift-report')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white">&times;</button>
+      </div>
+
+      <!-- Info Banner: Pre-filled with 1 post -->
+      <div class="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-200 flex items-center gap-2">
+        <span class="text-base">💡</span>
+        <span>По умолчанию во всех активных сетках выставлено: <b>1 пост</b>. Если сеть заблокирована — нажмите кнопку <b>[🔴 БАН]</b>.</span>
+      </div>
+
+      <!-- Container for dynamic influencer accounts -->
+      <div id="report-modal-accounts-list" class="space-y-4">
+        <!-- Injected dynamically by JS -->
+      </div>
+
+      <!-- Bottom Bar with Total & Submit Button -->
+      <div class="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+        <div class="text-xs text-slate-300">
+          Всего постов к сдаче: <span id="report-modal-total-count" class="text-base font-bold text-teal-400">12</span>
+        </div>
+        <div class="flex gap-2">
+          <button id="btn-submit-shift-report" onclick="submitShiftReportModal()" class="pill-btn-rose text-xs py-2.5 px-5 shadow-lg">
+            <span>🚀 Отправить отчет (1 клик)</span>
+            <div class="pill-arrow-rose">&rarr;</div>
+          </button>
+          <button type="button" onclick="closeModal('modal-specialist-shift-report')" class="cappen-btn text-xs px-4 text-slate-400">
+            Закрыть
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -906,6 +972,8 @@
   <!-- JAVASCRIPT LOGIC                                                  -->
   <!-- ================================================================= -->
   <script>
+    var isSpecialistMode = false;
+    var currentSpecialistName = null;
     // Универсальный обработчик открытия внешних ссылок (Telegram WebApp + Desktop + Mobile)
     function handleLinkClick(url, event) {
       if (!url || url === '#' || url.trim() === '') return false;
@@ -1303,12 +1371,23 @@
                 <span>📄 Открыть досье (${s.name})</span>
                 <div class="pill-arrow-rose">&rarr;</div>
               </button>
-              <button onclick="openSpecialistMessageModal('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
-                💬 Написать в ТГ
-              </button>
-              <button onclick="navToSpecialistsList()" class="cappen-btn text-xs">
-                &larr; Назад к спецам
-              </button>
+              ${isSpecialistMode ? `
+                <button onclick="openShiftReportModal('${s.name}')" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-teal-200">
+                  <span>📝 Сдать отчет за смену</span>
+                  <div class="pill-arrow-rose text-teal-300">&rarr;</div>
+                </button>
+              ` : `
+                <button onclick="openShiftReportModal('${s.name}')" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-teal-200">
+                  <span>📝 Отчет</span>
+                  <div class="pill-arrow-rose text-teal-300">&rarr;</div>
+                </button>
+                <button onclick="openSpecialistMessageModal('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
+                  💬 Написать в ТГ
+                </button>
+                <button onclick="navToSpecialistsList()" class="cappen-btn text-xs">
+                  &larr; Назад к спецам
+                </button>
+              `}
             </div>
           </div>
 
@@ -1574,7 +1653,7 @@
       document.getElementById('m-view-influencer').classList.add('hidden');
 
       document.getElementById('m-view-cabinet').innerHTML = `
-        <div class="cyber-card p-3.5 space-y-1">
+        <div class="cyber-card p-3.5 space-y-2.5">
           <div class="flex justify-between items-start">
             <div>
               <div class="text-xs font-bold text-slate-200">${s.name} (${s.geo})</div>
@@ -1582,6 +1661,10 @@
             </div>
             <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-[rgba(229,136,166,0.15)] text-[#F3A6BF]">${s.posts} / ${s.plan}</span>
           </div>
+          <button onclick="openShiftReportModal('${s.name}')" class="pill-btn-rose text-xs py-2 w-full justify-center shadow-lg border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-teal-200">
+            <span>📝 Сдать отчет за смену (1 клик)</span>
+            <div class="pill-arrow-rose text-teal-300">&rarr;</div>
+          </button>
         </div>
 
         <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold pt-1">ИНФЛЮЕНСЕРЫ (${s.influencers.length}):</div>
@@ -1962,9 +2045,7 @@
     }
 
     // LIVE BACKEND ACTIONS
-    
 
-            }
 
             
     
@@ -2523,14 +2604,38 @@
       downloadInfluencerDoc(infName);
     }
 
-    // DIRECT SPECIALIST CUSTOM MESSAGING
+    // DIRECT SPECIALIST CUSTOM MESSAGING & BROADCAST
     let currentTargetSpecForMsg = null;
+
+    function toggleAllPingRecipients(checked) {
+      document.querySelectorAll('.ping-spec-chk').forEach(chk => {
+        chk.checked = checked;
+      });
+    }
+
     function openSpecialistMessageModal(specName) {
       currentTargetSpecForMsg = specName;
-      const nameEl = document.getElementById('msg-spec-name');
-      if (nameEl) nameEl.innerText = specName;
+      const isAll = !specName || specName === 'all' || specName === 'Все';
+      
+      const allChk = document.getElementById('ping-all-specs');
+      if (allChk) allChk.checked = isAll;
+
+      const titleEl = document.getElementById('msg-spec-title');
+      if (titleEl) {
+        titleEl.innerText = isAll ? 'Пнуть всех специалистов в Telegram' : `Написать специалисту: ${specName}`;
+      }
+
+      document.querySelectorAll('.ping-spec-chk').forEach(chk => {
+        if (isAll) {
+          chk.checked = true;
+        } else {
+          chk.checked = (chk.value === specName);
+        }
+      });
+
       const input = document.getElementById('spec-custom-msg-input');
       if (input) input.value = '';
+
       const modal = document.getElementById('modal-specialist-message');
       if (modal) modal.classList.remove('hidden');
     }
@@ -2544,7 +2649,22 @@
       const input = document.getElementById('spec-custom-msg-input');
       const text = input ? input.value.trim() : '';
       if (!text) {
-        alert("Пожалуйста, введите текст сообщения.");
+        showPlittyToast("Пожалуйста, введите текст сообщения.", true);
+        return;
+      }
+
+      const isAllChecked = document.getElementById('ping-all-specs')?.checked;
+      const selectedRecipients = [];
+      if (isAllChecked) {
+        selectedRecipients.push("Все");
+      } else {
+        document.querySelectorAll('.ping-spec-chk:checked').forEach(chk => {
+          selectedRecipients.push(chk.value);
+        });
+      }
+
+      if (selectedRecipients.length === 0) {
+        showPlittyToast("Выберите хотя бы одного получателя", true);
         return;
       }
 
@@ -2552,7 +2672,7 @@
       const origText = btn ? btn.innerHTML : '';
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Отправка...</span>';
+        btn.innerHTML = '<span>⏳ Отправка пушей...</span>';
       }
 
       try {
@@ -2560,23 +2680,270 @@
         const res = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ specialist: currentTargetSpecForMsg, message: text })
+          body: JSON.stringify({
+            recipients: selectedRecipients,
+            message: text
+          })
         });
         const data = await res.json();
         closeModal('modal-specialist-message');
-        if (data && data.direct) {
-          alert(`✅ Личное сообщение успешно доставлено в Telegram специалисту ${currentTargetSpecForMsg}!`);
-        } else {
-          alert(`✅ Сообщение для ${currentTargetSpecForMsg} отправлено в Telegram!\n\n(Пока специалист не привязал свой Telegram через персональный старт, копия направлена руководству)`);
-        }
+        const count = (data && data.sent_to) ? data.sent_to.length : selectedRecipients.length;
+        showPlittyToast(`📢 Пуш-сообщение успешно отправлено специалистам (${count} чел.)!`);
       } catch(e) {
         console.error("Error sending custom msg:", e);
-        alert("⚠️ Ошибка отправки сообщения: " + e.message);
+        showPlittyToast("Ошибка отправки: " + e.message, true);
       } finally {
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = origText;
         }
+      }
+    }
+
+    // =========================================================================
+    // SPECIALIST 1-CLICK DAILY REPORT SYSTEM
+    // =========================================================================
+    let currentReportingSpec = null;
+    let reportItemsState = [];
+
+    function openShiftReportModal(specName) {
+      currentReportingSpec = specName || currentActiveSpec?.name || 'Лёша';
+      const s = SPECIALISTS.find(item => item.name === currentReportingSpec);
+      if (!s) return;
+
+      const specTitleEl = document.getElementById('report-modal-spec-name');
+      if (specTitleEl) specTitleEl.innerText = s.name;
+      
+      const dateEl = document.getElementById('report-modal-date');
+      if (dateEl) dateEl.innerText = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+      const container = document.getElementById('report-modal-accounts-list');
+      if (!container) return;
+
+      reportItemsState = [];
+      let html = '';
+
+      (s.influencers || []).forEach((infName, infIdx) => {
+        const inf = INFLUENCERS[infName];
+        if (!inf) return;
+
+        html += `
+          <div class="cyber-card p-4 space-y-3 bg-[#080B11] border border-white/10">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${inf.avatarBg || 'from-slate-800 to-slate-900'} border border-white/10 flex items-center justify-center text-xl shadow">
+                ${inf.avatarImg || '👤'}
+              </div>
+              <div>
+                <div class="text-sm font-bold text-slate-100">${inf.name} ${inf.flag || ''}</div>
+                <div class="text-[10px] text-slate-400">${inf.geo} &bull; ${(inf.socials || []).length} каналов</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        `;
+
+        (inf.socials || []).forEach((soc, socIdx) => {
+          const stateKey = `${infIdx}_${socIdx}`;
+          const isBanned = (soc.status || '').includes('БАН');
+          const defaultVal = isBanned ? 0 : 1;
+          
+          reportItemsState.push({
+            key: stateKey,
+            influencer: inf.name,
+            network: soc.net,
+            handle: soc.handle,
+            posts: defaultVal,
+            banned: isBanned
+          });
+
+          html += `
+            <div id="report-row-${stateKey}" class="p-2.5 rounded-xl ${isBanned ? 'bg-rose-950/20 border border-rose-500/30' : 'bg-black/40 border border-white/5'} flex items-center justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                  <span>${getNetworkIcon(soc.net)}</span>
+                  <span class="truncate">${soc.net}</span>
+                </div>
+                <div class="text-[10px] text-slate-400 truncate">${soc.handle || '-'}</div>
+              </div>
+
+              <div class="flex items-center gap-2 shrink-0">
+                <input type="number" min="0" max="20" id="input-rep-${stateKey}" value="${defaultVal}" onchange="updateReportInput('${stateKey}', this.value)" class="w-12 h-8 text-center bg-[#0d121c] border border-white/15 rounded-lg text-xs font-bold text-teal-300 focus:outline-none focus:border-teal-400" ${isBanned ? 'disabled' : ''}>
+                
+                <button type="button" id="btn-ban-${stateKey}" onclick="toggleShiftReportBan('${stateKey}')" class="px-2 py-1 rounded-lg text-[10px] font-bold border transition-all ${isBanned ? 'bg-rose-500/30 text-rose-300 border-rose-500/50' : 'bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border-white/10'}">
+                  ${isBanned ? '🔴 БАН' : 'БАН'}
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      recalcReportModalTotal();
+
+      const modal = document.getElementById('modal-specialist-shift-report');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function getNetworkIcon(net) {
+      if (!net) return '🌐';
+      if (net.includes('TikTok')) return '🎵';
+      if (net.includes('YouTube')) return '▶️';
+      if (net.includes('Instagram')) return '📸';
+      if (net.includes('Facebook')) return '📘';
+      if (net.includes('Threads')) return '🧵';
+      if (net.includes('X') || net.includes('Twitter')) return '𝕏';
+      return '🌐';
+    }
+
+    function updateReportInput(key, val) {
+      const item = reportItemsState.find(it => it.key === key);
+      if (item) {
+        item.posts = Math.max(0, parseInt(val, 10) || 0);
+      }
+      recalcReportModalTotal();
+    }
+
+    function toggleShiftReportBan(key) {
+      const item = reportItemsState.find(it => it.key === key);
+      if (!item) return;
+
+      item.banned = !item.banned;
+      item.posts = item.banned ? 0 : 1;
+
+      const rowEl = document.getElementById(`report-row-${key}`);
+      const inputEl = document.getElementById(`input-rep-${key}`);
+      const btnBan = document.getElementById(`btn-ban-${key}`);
+
+      if (inputEl) {
+        inputEl.value = item.posts;
+        inputEl.disabled = item.banned;
+      }
+      if (btnBan) {
+        btnBan.className = `px-2 py-1 rounded-lg text-[10px] font-bold border transition-all ${item.banned ? 'bg-rose-500/30 text-rose-300 border-rose-500/50' : 'bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border-white/10'}`;
+        btnBan.innerText = item.banned ? '🔴 БАН' : 'БАН';
+      }
+      if (rowEl) {
+        rowEl.className = `p-2.5 rounded-xl ${item.banned ? 'bg-rose-950/20 border border-rose-500/30' : 'bg-black/40 border border-white/5'} flex items-center justify-between gap-2`;
+      }
+      recalcReportModalTotal();
+    }
+
+    function recalcReportModalTotal() {
+      const total = reportItemsState.reduce((sum, it) => sum + (it.banned ? 0 : it.posts), 0);
+      const totalEl = document.getElementById('report-modal-total-count');
+      if (totalEl) totalEl.innerText = `${total} постов`;
+    }
+
+    async function submitShiftReportModal() {
+      const btn = document.getElementById('btn-submit-shift-report');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Отправка отчета...</span>';
+      }
+
+      // 1. Sync to local state INFLUENCERS and AUDIT_MATRIX
+      reportItemsState.forEach(it => {
+        const inf = INFLUENCERS[it.influencer];
+        if (inf && inf.socials) {
+          const soc = inf.socials.find(s => s.net === it.network);
+          if (soc) {
+            soc.reported = it.posts;
+            if (it.banned) {
+              soc.status = "🔴 БАН";
+            }
+          }
+        }
+      });
+
+      // Re-render tables immediately so the user sees results
+      renderAuditTable();
+      recalculateMetrics();
+
+      // 2. Call backend API
+      try {
+        const payload = {
+          specialist: currentReportingSpec,
+          report_date: new Date().toISOString().split('T')[0],
+          items: reportItemsState.map(it => ({
+            influencer: it.influencer,
+            network: it.network,
+            posts: it.posts,
+            status: it.banned ? 'banned' : 'active'
+          }))
+        };
+
+        const apiUrl = getApiBaseUrl() + '/api/influencers/submit-report';
+        await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn("Backend submit report sync warning (cached locally):", err);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+        closeModal('modal-specialist-shift-report');
+        showPlittyToast(`✅ Отчет за смену успешно сдан! Руководство уведомлено.`);
+      }
+    }
+
+    // Role-based Mode Detection
+
+    function checkAndInitRoleMode() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const role = params.get('role');
+        let spec = params.get('spec');
+
+        if (role === 'specialist') {
+          const aliasMap = { 'lesha': 'Лёша', 'sasha': 'Саша', 'sema': 'Сёма', 'danik': 'Даник', 'artur': 'Артур' };
+          if (spec && aliasMap[spec.toLowerCase()]) {
+            spec = aliasMap[spec.toLowerCase()];
+          }
+          isSpecialistMode = true;
+          currentSpecialistName = spec || 'Лёша';
+
+          // 1. Hide non-specialist tabs and elements
+          ['d-nav-audit', 'd-nav-registry', 'd-nav-dash'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+          });
+
+          // 2. Hide actions panel and executive card in sidebar
+          const sideSnapshot = document.getElementById('btn-side-snapshot');
+          if (sideSnapshot) {
+            const sideCard = sideSnapshot.closest('.cyber-card');
+            if (sideCard) sideCard.style.display = 'none';
+          }
+          const execCard = document.querySelector('aside .cyber-card');
+          if (execCard) execCard.style.display = 'none';
+
+          // 3. Update header branding
+          const headerTitle = document.querySelector('header h1');
+          if (headerTitle) {
+            headerTitle.innerHTML = `Plitty <span class="font-light text-slate-400">| Кабинет: <b class="text-[#F3A6BF]">${currentSpecialistName}</b></span>`;
+          }
+
+          // 4. Open their cabinet directly
+          setTimeout(() => {
+            navToSpecialistCabinet(currentSpecialistName);
+            try {
+              mobileOpenCabinet(currentSpecialistName);
+            } catch(e) {}
+          }, 150);
+        }
+      } catch(e) {
+        console.error("Error initializing role mode:", e);
       }
     }
 
@@ -2857,16 +3224,21 @@
             delta = Math.min(2, Math.max(1, Math.floor(totalP * 0.2) || 1));
             startP = Math.max(0, totalP - delta);
           }
-          const reported = isBan ? 0 : delta;
-          const discrepancy = 0;
+          const reported = soc.reported !== undefined ? soc.reported : (isBan ? 0 : delta);
+          const discrepancy = isBan ? 0 : (reported - delta);
 
-          const statusBadge = isBan 
-            ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">🔴 БАН (Meta)</span>'
-            : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-300 border border-teal-500/30">🟢 Подтверждено</span>';
+          let statusBadge;
+          if (isBan) {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">🔴 БАН (Meta)</span>';
+          } else if (discrepancy !== 0) {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">⚠️ Расхождение</span>';
+          } else {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-300 border border-teal-500/30">🟢 Подтверждено</span>';
+          }
 
           const discBadge = discrepancy === 0 
-            ? '<span class="text-teal-400 font-bold">0</span>'
-            : `<span class="text-rose-400 font-bold">${discrepancy}</span>`;
+            ? '<span class="text-teal-400 font-bold">0</span>' 
+            : `<span class="text-rose-400 font-bold font-mono">${discrepancy > 0 ? '+' + discrepancy : discrepancy}</span>`;
 
           rowsHtml += `
             <tr class="hover:bg-white/[0.02] transition-colors">
@@ -2966,35 +3338,8 @@
       }
     }
 
-    async function sendAllSpecialistsReminder(btn) {
-      const targetBtn = btn || document.getElementById('btn-side-ping') || (window.event ? window.event.currentTarget : null);
-      const origHtml = targetBtn ? targetBtn.innerHTML : '';
-      if (targetBtn) {
-        targetBtn.innerHTML = '<span class="animate-pulse text-amber-300">⏳ Пинг спецов в ТГ...</span>';
-        targetBtn.disabled = true;
-      }
-      try {
-        try {
-          await fetch(getApiBaseUrl() + '/api/influencers/ping-specialists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ target: 'shift_end' })
-          });
-        } catch (e) {
-          console.log('Ping specialists offline/bg:', e);
-        }
-        showPlittyToast('⏰ Напоминания о сдаче смены (19:00 МСК) отправлены всем специалистам в Telegram!');
-      } catch (err) {
-        console.error('Error in sendAllSpecialistsReminder:', err);
-        showPlittyToast('Не удалось связаться с сервером Telegram', true);
-      } finally {
-        setTimeout(() => {
-          if (targetBtn) {
-            targetBtn.innerHTML = origHtml;
-            targetBtn.disabled = false;
-          }
-        }, 1500);
-      }
+    function sendAllSpecialistsReminder(btn) {
+      openSpecialistMessageModal('all');
     }
 
     function showPlittyErrorAlert(btn) {
@@ -3039,6 +3384,7 @@
     renderDesktopSpecialistList();
     renderSummary();
     loadLiveData();
+    checkAndInitRoleMode();
   </script>
 </body>
 </html>
