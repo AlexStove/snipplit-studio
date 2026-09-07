@@ -1175,6 +1175,7 @@
 
     // RENDER LEVEL 2: SPECIALIST CABINET
     function renderSpecialistCabinet(specName) {
+      recalculateMetrics();
       const s = SPECIALISTS.find(item => item.name === specName);
       if (!s) return;
       currentActiveSpec = s;
@@ -1186,34 +1187,32 @@
       `;
 
       document.getElementById('spec-level-2').innerHTML = `
-        <div class="cyber-card p-6 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3">
+        <!-- Specialist Header Card (Clean 1-Click Action) -->
+        <div class="cyber-card p-6 space-y-5">
+          <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl bg-[#0D111A] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-slate-200 text-2xl font-bold shadow-lg">
+              <div class="w-16 h-16 rounded-2xl bg-[#0D111A] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-slate-200 text-2xl font-bold shadow-lg">
                 ${s.order}
               </div>
               <div>
-                <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">SPECIALIST CABINET</div>
+                <div class="text-[10px] tracking-editorial text-[#E588A6] font-bold">SPECIALIST CABINET</div>
                 <div class="flex items-center gap-2.5 mt-0.5">
-                  <h2 class="text-xl font-bold text-slate-200">${s.name}</h2>
+                  <h2 class="text-2xl font-bold text-slate-100">${s.name}</h2>
                   <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${s.statusColor === 'teal' ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : s.statusColor === 'rose' ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30' : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
                     ${s.statusBadge}
                   </span>
                 </div>
-                <p class="text-xs text-slate-400 mt-0.5">${s.role} &bull; ГЕО: <b class="text-slate-200">${s.geo}</b></p>
+                <p class="text-xs text-slate-400 mt-1">${s.role} &bull; ГЕО: <b class="text-slate-200">${s.geo}</b></p>
               </div>
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="downloadSpecialistDoc('${s.name}')" class="pill-btn-dark text-xs hover:scale-105 transition-all">
-                <span>📄 Скачать досье (${s.name})</span>
-                <div class="pill-arrow-dark">&darr;</div>
-              </button>
-              <button onclick="downloadSpecialistExcel('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
-                📊 Отчет Excel (.xlsx)
+              <button onclick="openSpecialistDossier('${s.name}')" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg">
+                <span>📄 Открыть досье (${s.name})</span>
+                <div class="pill-arrow-rose">&rarr;</div>
               </button>
               <button onclick="openSpecialistMessageModal('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
-                💬 Написать специалисту
+                💬 Написать в ТГ
               </button>
               <button onclick="navToSpecialistsList()" class="cappen-btn text-xs">
                 &larr; Назад к спецам
@@ -1221,19 +1220,19 @@
             </div>
           </div>
 
-          <!-- Stats Strip -->
-          <div class="grid grid-cols-3 gap-3 pt-3 border-t border-white/5 text-center text-xs">
-            <div class="cyber-card p-3">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПУБЛИКАЦИЙ</div>
-              <div class="text-lg font-bold text-slate-200 mt-1">${s.posts} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
+          <!-- 3 Clean Horizontal Metric Boxes -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ПУБЛИКАЦИЙ ЗА СМЕНУ</div>
+              <div class="text-2xl font-extrabold text-slate-100 mt-1">${s.posts} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
             </div>
-            <div class="cyber-card p-3">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПРОСМОТРЫ</div>
-              <div class="text-lg font-bold text-[#F3A6BF] mt-1">${s.views.toLocaleString()}</div>
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">СУММАРНЫЕ ПРОСМОТРЫ</div>
+              <div class="text-2xl font-extrabold text-[#F3A6BF] mt-1">${s.views.toLocaleString()}</div>
             </div>
-            <div class="cyber-card p-3">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ИНФЛЮЕНСЕРОВ</div>
-              <div class="text-lg font-bold text-teal-400 mt-1">${s.influencers.length} персонажа</div>
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ПЕРСОНАЖЕЙ В УПРАВЛЕНИИ</div>
+              <div class="text-2xl font-extrabold text-teal-400 mt-1">${(s.influencers || []).length} персонажа (${(s.influencers || []).length * 6} аккаунтов)</div>
             </div>
           </div>
         </div>
@@ -1242,22 +1241,22 @@
         <div class="cyber-card p-6 space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">CHARACTERS</div>
-              <h3 class="text-base font-bold text-slate-200">Инфлюенсеры специалиста:</h3>
+              <div class="text-[10px] tracking-editorial text-[#E588A6] font-bold">CHARACTERS</div>
+              <h3 class="text-base font-bold text-slate-100">Инфлюенсеры специалиста:</h3>
             </div>
             <span class="text-xs text-slate-400">Нажмите на карточку для перехода в досье</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            ${s.influencers.map(infName => {
+            ${(s.influencers || []).map(infName => {
               const inf = INFLUENCERS[infName];
               if (!inf) return '';
               return `
                 <div onclick="navToInfluencerProfile('${inf.name}')" class="cyber-card cursor-pointer group p-5 hover:border-[#E588A6] transition-all">
                   <div class="flex items-start gap-4">
-                    <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-tr ${inf.avatarBg} border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-3xl shadow-lg shrink-0 group-hover:scale-105 transition-transform">
-                      ${inf.avatarImg}
-                      <span class="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded-md bg-black/80 border border-white/10">${inf.flag}</span>
+                    <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-tr ${inf.avatarBg || 'from-slate-800 to-slate-900'} border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-3xl shadow-lg shrink-0 group-hover:scale-105 transition-transform">
+                      ${inf.avatarImg || '👤'}
+                      <span class="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded-md bg-black/80 border border-white/10 font-bold">${inf.flag || ''}</span>
                     </div>
                     
                     <div class="flex-1 min-w-0">
@@ -1265,7 +1264,7 @@
                         <span class="text-base font-bold text-slate-200 group-hover:text-[#F3A6BF] transition-colors">${inf.name}</span>
                         <div class="w-7 h-7 rounded-full bg-[rgba(229,136,166,0.15)] text-[#E588A6] flex items-center justify-center text-xs group-hover:bg-[#E588A6] group-hover:text-[#06070B] transition-all">&rarr;</div>
                       </div>
-                      <div class="text-xs text-slate-400 mt-1 line-clamp-1">${inf.geo} &bull; ${inf.socials.length} соцсетей</div>
+                      <div class="text-xs text-slate-400 mt-1 line-clamp-1">${inf.geo} &bull; ${(inf.socials || []).length} соцсетей</div>
                       
                       <div class="mt-3 flex items-center gap-3 text-xs font-semibold">
                         <span class="text-slate-300">${inf.posts} постов</span>
@@ -1282,8 +1281,9 @@
       `;
     }
 
-    // RENDER LEVEL 3: INFLUENCER DETAIL PROFILE
+    // RENDER LEVEL 3: INFLUENCER DETAIL PROFILE (Exact Screenshot 1 Layout)
     function renderInfluencerCard(infName) {
+      recalculateMetrics();
       const inf = INFLUENCERS[infName];
       if (!inf) return;
 
@@ -1295,31 +1295,62 @@
         <span class="text-slate-200 font-bold">${inf.name}</span>
       `;
 
+      const socRows = (inf.socials || []).map((soc, i) => {
+        const isBan = (soc.status || '').includes('БАН');
+        const isWarning = (soc.status || '').includes('Алерт');
+        const badgeClass = isBan 
+          ? 'bg-rose-500/15 text-rose-300 border-rose-500/30' 
+          : isWarning 
+            ? 'bg-amber-500/15 text-amber-300 border-amber-500/30' 
+            : 'bg-teal-500/15 text-teal-300 border-teal-500/30';
+
+        return `
+          <tr class="hover:bg-white/[0.02] transition-colors border-b border-white/[0.05]">
+            <td class="py-3.5 px-4 text-center font-bold text-slate-400">${i + 1}</td>
+            <td class="py-3.5 px-4 font-bold text-slate-100">${soc.net}</td>
+            <td class="py-3.5 px-4 font-mono text-slate-300 text-xs">${soc.handle || '-'}</td>
+            <td class="py-3.5 px-4">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeClass}">
+                ${soc.status || 'Активен'}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right font-bold text-slate-100">${(soc.posts || 0).toLocaleString()}</td>
+            <td class="py-3.5 px-4 text-right font-bold text-[#F3A6BF]">${(soc.views || 0).toLocaleString()}</td>
+            <td class="py-3.5 px-4 text-center">
+              ${soc.url && soc.url !== '#' ? `
+                <a href="${soc.url}" target="_blank" rel="noopener noreferrer" onclick="return handleLinkClick('${soc.url}', event)" class="text-[#E588A6] hover:underline font-semibold text-xs inline-flex items-center gap-1">Перейти ↗</a>
+              ` : '<span class="text-slate-600">—</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
       document.getElementById('spec-level-3').innerHTML = `
-        <div class="cyber-card p-6 space-y-4">
+        <!-- Main Profile Card (Matches Screenshot 1) -->
+        <div class="cyber-card p-6 space-y-5">
           <div class="flex flex-wrap items-start justify-between gap-4">
-            <div class="flex items-center gap-4">
-              <div class="relative w-18 h-18 rounded-3xl bg-gradient-to-tr ${inf.avatarBg} border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-4xl shadow-xl shrink-0">
-                ${inf.avatarImg}
-                <span class="absolute -bottom-1 -right-1 text-sm px-2 py-0.5 rounded-lg bg-black/80 border border-white/10">${inf.flag}</span>
+            <div class="flex items-start gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-[#141926] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-3xl shrink-0 shadow-lg relative">
+                ${inf.avatarImg || '👤'}
+                <span class="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded-md bg-black/80 border border-white/10 font-bold">${inf.flag || ''}</span>
               </div>
               <div>
-                <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">AI INFLUENCER PROFILE</div>
-                <div class="flex items-center gap-2.5 mt-0.5">
-                  <h2 class="text-2xl font-bold text-slate-100">${inf.name}</h2>
-                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-[rgba(229,136,166,0.15)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)] font-bold">Спец: ${inf.spec}</span>
+                <div class="text-[10px] tracking-editorial text-[#E588A6] font-bold">AI INFLUENCER PROFILE</div>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <h2 class="text-2xl font-bold text-slate-100">${inf.name} <span class="text-xs text-slate-400 font-normal uppercase">${inf.flag || ''}</span></h2>
                 </div>
-                <p class="text-xs text-slate-300 mt-2 max-w-xl leading-relaxed">${inf.bio}</p>
+                <p class="text-xs text-slate-400 mt-1">
+                  Специалист: <b class="text-slate-200 font-semibold">${inf.spec}</b> &bull; Регион: <b class="text-slate-200 font-semibold">${inf.geo}</b>
+                </p>
+                <p class="text-xs text-slate-300 mt-2 max-w-2xl leading-relaxed">${inf.bio || ''}</p>
               </div>
             </div>
 
+            <!-- Single prominent action button: 1 click to open dossier -->
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="downloadInfluencerDoc('${inf.name}')" class="pill-btn-dark text-xs hover:scale-105 transition-all">
-                <span>📄 Скачать досье (Документ)</span>
-                <div class="pill-arrow-dark">&darr;</div>
-              </button>
-              <button onclick="downloadInfluencerExcel('${inf.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
-                📊 Таблица Excel (.xlsx)
+              <button onclick="openInfluencerDossier('${inf.name}')" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg">
+                <span>📄 Открыть досье</span>
+                <div class="pill-arrow-rose">&rarr;</div>
               </button>
               <button onclick="navToSpecialistCabinet('${inf.spec}')" class="cappen-btn text-xs">
                 &larr; Назад к ${inf.spec}
@@ -1327,85 +1358,68 @@
             </div>
           </div>
 
-          <!-- Creds & Key Metrics -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/5 text-xs">
-            <div class="cyber-card p-3.5">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПУБЛИКАЦИЙ</div>
-              <div class="text-2xl font-bold text-slate-200 mt-1">${inf.posts}</div>
+          <!-- 3 Clean Horizontal Metric Boxes (Exact Screenshot 1 Match) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ВСЕГО ПУБЛИКАЦИЙ</div>
+              <div class="text-2xl font-extrabold text-slate-100 mt-1">${(inf.posts || 0).toLocaleString()}</div>
             </div>
-            <div class="cyber-card p-3.5">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПРОСМОТРЫ</div>
-              <div class="text-2xl font-bold text-[#F3A6BF] mt-1">${inf.views.toLocaleString()}</div>
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ОБЩИЕ ПРОСМОТРЫ</div>
+              <div class="text-2xl font-extrabold text-[#F3A6BF] mt-1">${(inf.views || 0).toLocaleString()}</div>
             </div>
-            <div class="cyber-card p-3.5">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ЛОГИН / ПОЧТА</div>
-              <div class="text-xs font-mono font-bold truncate mt-1 text-slate-300">${inf.creds.email}</div>
+            <div class="cyber-card p-4 text-center">
+              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">КАНАЛОВ В СЕТКЕ</div>
+              <div class="text-2xl font-extrabold text-teal-400 mt-1">${(inf.socials || []).length} сетей</div>
             </div>
-            <div class="cyber-card p-3.5">
-              <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold">ПАРОЛЬ СЕТЕЙ</div>
-              <div class="text-xs font-mono font-bold mt-1 text-slate-300">${inf.creds.pass}</div>
+          </div>
+
+          <!-- Dashed Credentials Box (Exact Screenshot 1 Match) -->
+          <div class="rounded-xl border border-dashed border-[rgba(229,136,166,0.35)] bg-[rgba(229,136,166,0.03)] p-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1.5">
+                  <span>🔑 ЛОГИН / EMAIL ДЛЯ ДОСТУПА</span>
+                </div>
+                <div class="font-mono font-bold text-slate-200 mt-1 text-sm select-all">${inf.creds?.email || 'Не указан'}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1.5">
+                  <span>🔒 ПАРОЛЬ ОТ КАНАЛОВ</span>
+                </div>
+                <div class="font-mono font-bold text-slate-200 mt-1 text-sm select-all">${inf.creds?.pass || 'Не указан'}</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 6 Social Channel Cards -->
-        <div class="space-y-3.5">
-          <div class="flex items-center justify-between px-1">
-            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">CHANNELS MATRIX (${inf.socials.length})</div>
-            <span class="text-xs text-slate-400">Прямой переход в профиль</span>
+        <!-- 6 Social Channel Matrix Table (Exact Screenshot 1 Match) -->
+        <div class="cyber-card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[10px] tracking-editorial text-[#E588A6] font-bold">CHANNELS &amp; METRICS MATRIX</div>
+              <h3 class="text-base font-bold text-slate-100">Сетка из ${(inf.socials || []).length} каналов инфлюенсера:</h3>
+            </div>
+            <span class="text-xs text-slate-400">Прямой переход в соцсеть по клику на ссылку</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            ${inf.socials.map(soc => {
-              let netIcon = "🌐";
-              if (soc.net.includes("TikTok")) netIcon = "🎵";
-              else if (soc.net.includes("YouTube")) netIcon = "▶️";
-              else if (soc.net.includes("Instagram")) netIcon = "📸";
-              else if (soc.net.includes("Facebook")) netIcon = "📘";
-              else if (soc.net.includes("Threads")) netIcon = "🧵";
-
-              const isBan = soc.status.includes("БАН");
-              const isWarning = soc.status.includes("Алерт");
-
-              return `
-                <div class="cyber-card p-4 space-y-3 ${isBan ? 'border-rose-500/40' : isWarning ? 'border-amber-500/40' : ''}">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                      <span class="text-lg">${netIcon}</span>
-                      <span class="font-bold text-xs text-slate-200">${soc.net}</span>
-                    </div>
-                    <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold ${isBan ? 'bg-rose-500/20 text-rose-300' : isWarning ? 'bg-amber-500/20 text-amber-300' : 'bg-teal-500/20 text-teal-300'}">
-                      ${soc.status}
-                    </span>
-                  </div>
-
-                  <div class="text-xs">
-                    <div class="text-[10px] text-slate-400">Handle:</div>
-                    <div class="font-bold text-slate-200 truncate">${soc.handle}</div>
-                  </div>
-
-                  <div class="flex items-center justify-between text-xs pt-2 border-t border-white/5">
-                    <div>
-                      <span class="text-[10px] text-slate-400">Посты: </span>
-                      <span class="font-bold text-slate-200">${soc.posts}</span>
-                    </div>
-                    <div>
-                      <span class="text-[10px] text-slate-400">Просмотры: </span>
-                      <span class="font-bold text-[#F3A6BF]">${soc.views.toLocaleString()}</span>
-                    </div>
-                  </div>
-
-                  ${soc.url !== '#' ? `
-                    <a href="${soc.url}" target="_blank" rel="noopener noreferrer" onclick="return handleLinkClick('${soc.url}', event)" class="pill-btn-rose w-full flex items-center justify-between">
-                      <span>Открыть в ${soc.net}</span>
-                      <div class="pill-arrow-rose">&nearr;</div>
-                    </a>
-                  ` : `
-                    <div class="text-center py-2 text-[10px] text-rose-400 font-bold uppercase tracking-wider">Канал заблокирован</div>
-                  `}
-                </div>
-              `;
-            }).join('')}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-[#141926] text-slate-400 border-b border-[rgba(229,136,166,0.25)] text-[11px] uppercase tracking-wider">
+                  <th class="py-3 px-4 w-12 text-center">№</th>
+                  <th class="py-3 px-4">СОЦСЕТЬ</th>
+                  <th class="py-3 px-4">HANDLE</th>
+                  <th class="py-3 px-4">СТАТУС</th>
+                  <th class="py-3 px-4 text-right">ПОСТОВ</th>
+                  <th class="py-3 px-4 text-right">ПРОСМОТРЫ</th>
+                  <th class="py-3 px-4 text-center">ССЫЛКА</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${socRows}
+              </tbody>
+            </table>
           </div>
         </div>
       `;
@@ -2203,6 +2217,35 @@
     }
 
     // DOWNLOAD DOSSIER DOCUMENTS (Standalone HTML - Opens without 3rd party apps in default browser)
+    
+    // 1-CLICK DOSSIER OPEN (Instant new tab preview + print to PDF)
+    function openInfluencerDossier(infName) {
+      recalculateMetrics();
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+      const html = generateInfluencerDocHtml(inf);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const blobUrl = URL.createObjectURL(blob);
+      const newWin = window.open(blobUrl, '_blank');
+      if (!newWin) {
+        // Fallback if popup blocked: download directly
+        downloadInfluencerDoc(infName);
+      }
+    }
+
+    function openSpecialistDossier(specName) {
+      recalculateMetrics();
+      const s = SPECIALISTS.find(x => x.name === specName);
+      if (!s) return;
+      const html = generateSpecialistDocHtml(s);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const blobUrl = URL.createObjectURL(blob);
+      const newWin = window.open(blobUrl, '_blank');
+      if (!newWin) {
+        downloadSpecialistDoc(specName);
+      }
+    }
+
     function downloadInfluencerDoc(infName) {
       recalculateMetrics();
       const inf = INFLUENCERS[infName];
