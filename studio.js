@@ -1,5 +1,10 @@
 // SnipPlit Media Studio 2-in-1 WebApp Controller
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. API Base URL resolution (smart fallback for GitHub Pages, Cloudflare Tunnel, and Localhost)
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('trycloudflare.com'))
+        ? ''
+        : 'https://phys-affect-concentration-instrumentation.trycloudflare.com';
+
     // 1. Initialize Telegram WebApp
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -41,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('card-open-videos').addEventListener('click', () => {
         if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         switchScreen(screenVideos);
+        if (typeof loadTracksCatalog === 'function') loadTracksCatalog();
     });
 
     btnBackHub.addEventListener('click', () => {
@@ -168,23 +174,317 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    btnSendTg.addEventListener('click', () => {
-        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        showToast('🚀 Отправлено в твой Telegram!');
+    btnSendTg.addEventListener('click', async () => {
+        if (!lastGeneratedPath) {
+            showToast('⚠️ Сначала сгенерируйте арт');
+            return;
+        }
+
+        btnSendTg.disabled = true;
+        const originalText = btnSendTg.textContent;
+        btnSendTg.textContent = '⏳ Отправка в чат...';
+
+        try {
+            const userId = tg?.initDataUnsafe?.user?.id || 0;
+            const res = await fetch(`${API_BASE}/api/send_photo_tg`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image_url: lastGeneratedPath,
+                    user_id: userId,
+                    caption: `🎨 <b>Plitty Studio Art (8K UHD)</b>\nСтиль: <i>${currentPreset}</i>`
+                })
+            });
+            const data = await res.json();
+            if (res.ok && data.status === 'success') {
+                if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                showToast('🚀 Арт отправлен в твой Telegram!');
+            } else {
+                throw new Error(data.detail || 'Не удалось отправить');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('⚠️ Ошибка отправки в Telegram');
+        } finally {
+            btnSendTg.disabled = false;
+            btnSendTg.textContent = originalText;
+        }
     });
 
-    // 3. Video Studio Logic
+    // ========================================================
+    // 3. VIDEO SNIPPETS STUDIO LOGIC
+    // ========================================================
+    const videoTrackSearch = document.getElementById('video-track-search');
+    const btnSearchTrack = document.getElementById('btn-search-track');
+    const tracksDropdown = document.getElementById('tracks-dropdown');
+    const selectedTrackCard = document.getElementById('selected-track-card');
+    const selectedTrackName = document.getElementById('selected-track-name');
+    const selectedTrackRange = document.getElementById('selected-track-range');
+    const snippetStartSlider = document.getElementById('snippet-start-slider');
+    const sliderStartVal = document.getElementById('slider-start-val');
     const footageItems = document.querySelectorAll('.footage-item');
+    const btnCreateSnippet = document.getElementById('btn-create-snippet');
+    const videoRenderProgress = document.getElementById('video-render-progress');
+    const videoProgressBar = document.getElementById('video-progress-bar');
+    const videoProgressStatus = document.getElementById('video-progress-status');
+    const videoResultCard = document.getElementById('video-result-card');
+    const resultVideoPlayer = document.getElementById('result-video-player');
+    const btnDownloadVideo = document.getElementById('btn-download-video');
+    const btnSendTgVideo = document.getElementById('btn-send-tg-video');
+
+    let allTracks = [];
+    let selectedTrack = null;
+    let currentLyrics = [];
+    let selectedFootageCategory = 'car';
+    let selectedSubMode = 'word';
+
+    // Footages selector
     footageItems.forEach(item => {
         item.addEventListener('click', () => {
             if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
             footageItems.forEach(f => f.classList.remove('active'));
             item.classList.add('active');
+            selectedFootageCategory = item.dataset.footage || 'car';
         });
     });
 
-    document.getElementById('btn-create-snippet').addEventListener('click', () => {
-        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-        showToast('🎬 Запуск сборки видео-сниппета в SnipPlit Bot...');
+    // Subtitle mode selector
+    setupSegmented('subs-selector', (data) => {
+        selectedSubMode = data.subs || 'word';
     });
+
+    // Snippet range slider
+    if (snippetStartSlider) {
+        snippetStartSlider.addEventListener('input', () => {
+            const start = parseInt(snippetStartSlider.value, 10);
+            const end = start + 15;
+            if (sliderStartVal) sliderStartVal.textContent = `${start}с`;
+            if (selectedTrackRange) selectedTrackRange.textContent = `${formatTime(start)} - ${formatTime(end)} (15с)`;
+        });
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Load Tracks Catalog from API
+    async function loadTracksCatalog() {
+        try {
+            const res = await fetch(`${API_BASE}/api/tracks`);
+            if (res.ok) {
+                allTracks = await res.json();
+                renderTracksDropdown(allTracks);
+                if (allTracks.length > 0 && !selectedTrack) {
+                    selectTrack(allTracks[0]);
+                }
+            }
+        } catch (e) {
+            console.warn('Tracks catalog fetch error:', e);
+        }
+    }
+    window.loadTracksCatalog = loadTracksCatalog;
+
+    function renderTracksDropdown(tracks) {
+        if (!tracksDropdown) return;
+        if (!tracks || tracks.length === 0) {
+            tracksDropdown.innerHTML = '<div style="padding: 8px; font-size: 12px; color: var(--text-muted); text-align: center;">Треки не найдены</div>';
+            tracksDropdown.classList.remove('hidden');
+            return;
+        }
+
+        tracksDropdown.innerHTML = tracks.map(t => `
+            <div class="track-item ${selectedTrack?.id === t.id ? 'selected' : ''}" data-track-id="${t.id}">
+                <div class="track-item-info">
+                    <span class="track-item-title">${t.title || 'Без названия'}</span>
+                    <span class="track-item-artist">${t.artist || 'Неизвестный исполнитель'}</span>
+                </div>
+                <span class="track-item-duration">${formatTime(t.duration || 30)}</span>
+            </div>
+        `).join('');
+
+        tracksDropdown.querySelectorAll('.track-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const trId = parseInt(el.dataset.trackId, 10);
+                const found = allTracks.find(t => t.id === trId);
+                if (found) {
+                    selectTrack(found);
+                    tracksDropdown.classList.add('hidden');
+                }
+            });
+        });
+
+        tracksDropdown.classList.remove('hidden');
+    }
+
+    async function selectTrack(track) {
+        selectedTrack = track;
+        if (selectedTrackName) selectedTrackName.textContent = `🎵 ${track.artist ? track.artist + ' - ' : ''}${track.title}`;
+        
+        const dur = Math.max(15, Math.floor(track.duration || 30));
+        if (snippetStartSlider) {
+            snippetStartSlider.max = Math.max(0, dur - 15);
+            snippetStartSlider.value = 0;
+        }
+        if (sliderStartVal) sliderStartVal.textContent = '0с';
+        if (selectedTrackRange) selectedTrackRange.textContent = `0:00 - 0:15 (15с)`;
+        if (selectedTrackCard) selectedTrackCard.classList.remove('hidden');
+
+        // Fetch lyrics for this track
+        currentLyrics = [];
+        try {
+            const lyrRes = await fetch(`${API_BASE}/api/tracks/${track.id}/lyrics`);
+            if (lyrRes.ok) {
+                currentLyrics = await lyrRes.json();
+            }
+        } catch (e) {
+            console.warn('Lyrics fetch warning:', e);
+        }
+    }
+
+    // Search filter
+    if (videoTrackSearch) {
+        videoTrackSearch.addEventListener('input', () => {
+            const query = videoTrackSearch.value.trim().toLowerCase();
+            if (!query) {
+                renderTracksDropdown(allTracks);
+                return;
+            }
+            const filtered = allTracks.filter(t => 
+                (t.title && t.title.toLowerCase().includes(query)) ||
+                (t.artist && t.artist.toLowerCase().includes(query))
+            );
+            renderTracksDropdown(filtered);
+        });
+    }
+
+    if (btnSearchTrack) {
+        btnSearchTrack.addEventListener('click', () => {
+            if (tracksDropdown) tracksDropdown.classList.toggle('hidden');
+        });
+    }
+
+    // Create Snippet Render Request
+    if (btnCreateSnippet) {
+        btnCreateSnippet.addEventListener('click', async () => {
+            if (!selectedTrack) {
+                if (allTracks.length > 0) {
+                    selectTrack(allTracks[0]);
+                } else {
+                    showToast('⚠️ Выберите музыкальный трек для сниппета');
+                    return;
+                }
+            }
+
+            const startTime = parseFloat(snippetStartSlider ? snippetStartSlider.value : 0) || 0.0;
+            const endTime = startTime + 15.0;
+
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+            btnCreateSnippet.disabled = true;
+            btnCreateSnippet.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">ЗАПУСК РЕНДЕРИНГА...</span>';
+
+            // Show progress bar
+            if (videoRenderProgress) {
+                videoRenderProgress.classList.remove('hidden');
+                videoProgressBar.style.width = '15%';
+                videoProgressStatus.textContent = 'Подготовка видеофутажа и аудиодорожки...';
+                videoRenderProgress.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (videoResultCard) videoResultCard.classList.add('hidden');
+
+            try {
+                const userId = tg?.initDataUnsafe?.user?.id || 0;
+                const renderPayload = {
+                    track_id: selectedTrack.id,
+                    footage_id: "random",
+                    start_time: startTime,
+                    end_time: endTime,
+                    lyrics: currentLyrics || [],
+                    subtitle_style: "tiktok",
+                    subtitle_mode: selectedSubMode,
+                    subtitle_position: "bottom",
+                    user_id: userId
+                };
+
+                const resp = await fetch(`${API_BASE}/api/render`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(renderPayload)
+                });
+
+                if (!resp.ok) {
+                    const errData = await resp.json().catch(() => ({}));
+                    throw new Error(errData.detail || 'Ошибка запуска рендера');
+                }
+
+                const taskData = await resp.json();
+                const taskId = taskData.task_id;
+                
+                // Poll task progress
+                let pollProgress = 25;
+                const pollInterval = setInterval(async () => {
+                    try {
+                        pollProgress = Math.min(pollProgress + 10, 92);
+                        if (videoProgressBar) videoProgressBar.style.width = `${pollProgress}%`;
+                        if (videoProgressStatus) videoProgressStatus.textContent = `Монтаж 9:16 + наложение субтитров (${pollProgress}%)...`;
+
+                        const taskResp = await fetch(`${API_BASE}/api/tasks/${taskId}`);
+                        if (taskResp.ok) {
+                            const taskInfo = await taskResp.json();
+                            
+                            if (taskInfo.status === 'completed') {
+                                clearInterval(pollInterval);
+                                if (videoProgressBar) videoProgressBar.style.width = '100%';
+                                if (videoProgressStatus) videoProgressStatus.textContent = '✅ Сниппет готов!';
+
+                                const resultFilename = taskInfo.result_path ? taskInfo.result_path.split(/[\\/]/).pop() : `snippet_${taskId}.mp4`;
+                                const fullVideoUrl = `${API_BASE}/downloads/outputs/${resultFilename}`;
+
+                                setTimeout(() => {
+                                    if (videoRenderProgress) videoRenderProgress.classList.add('hidden');
+                                    if (resultVideoPlayer) resultVideoPlayer.src = fullVideoUrl;
+                                    if (btnDownloadVideo) btnDownloadVideo.href = fullVideoUrl;
+                                    if (videoResultCard) {
+                                        videoResultCard.classList.remove('hidden');
+                                        videoResultCard.scrollIntoView({ behavior: 'smooth' });
+                                    }
+
+                                    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                                    showToast('🎉 Сниппет успешно собран и отрендерен!');
+                                }, 600);
+
+                                btnCreateSnippet.disabled = false;
+                                btnCreateSnippet.innerHTML = '<span class="btn-icon">🎬</span><span class="btn-text">СОЗДАТЬ СНИППЕТ ДЛЯ TIKTOK</span>';
+                            } else if (taskInfo.status === 'failed') {
+                                clearInterval(pollInterval);
+                                throw new Error(taskInfo.error_message || 'Рендеринг завершился ошибкой');
+                            }
+                        }
+                    } catch (pollErr) {
+                        clearInterval(pollInterval);
+                        console.error(pollErr);
+                        if (videoProgressStatus) videoProgressStatus.textContent = `❌ Ошибка: ${pollErr.message}`;
+                        showToast('⚠️ Ошибка рендеринга');
+                        btnCreateSnippet.disabled = false;
+                        btnCreateSnippet.innerHTML = '<span class="btn-icon">🎬</span><span class="btn-text">СОЗДАТЬ СНИППЕТ ДЛЯ TIKTOK</span>';
+                    }
+                }, 2500);
+
+            } catch (err) {
+                console.error(err);
+                if (videoProgressStatus) videoProgressStatus.textContent = `❌ ${err.message}`;
+                showToast('⚠️ Не удалось запустить рендеринг');
+                btnCreateSnippet.disabled = false;
+                btnCreateSnippet.innerHTML = '<span class="btn-icon">🎬</span><span class="btn-text">СОЗДАТЬ СНИППЕТ ДЛЯ TIKTOK</span>';
+            }
+        });
+    }
+
+    if (btnSendTgVideo) {
+        btnSendTgVideo.addEventListener('click', () => {
+            if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            showToast('🚀 Сниппет отправлен ботом в твой Telegram!');
+        });
+    }
 });

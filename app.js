@@ -589,17 +589,25 @@ database.ref("devices").on("value", (snapshot) => {
     const devKeys = Object.keys(devices);
     
     // Update active badges
-    activeDevicesBadgeEl.textContent = `${devKeys.length} активных`;
+    const workerKeys = devKeys.filter(k => k !== "R5GL12V22NX" && !k.includes("31") && !devices[k]?.is_command_center);
+    activeDevicesBadgeEl.textContent = `${workerKeys.length} воркеров + 👑 HQ`;
     
     if (devKeys.length === 0) {
         devicesGridEl.innerHTML = '<div class="no-devices">Нет активных устройств</div>';
         return;
     }
     
-    // Sort devices: AWAKE (unlocked/working) FIRST, LOCKED/SLEEPING LAST
+    // Sort devices: COMMAND CENTER FIRST, AWAKE (unlocked/working) SECOND, LOCKED LAST
     devKeys.sort((a, b) => {
         const devA = devices[a] || {};
         const devB = devices[b] || {};
+        const isCommandA = a === "R5GL12V22NX" || a.includes("31") || devA.is_command_center === true;
+        const isCommandB = b === "R5GL12V22NX" || b.includes("31") || devB.is_command_center === true;
+        
+        // 0. Командный центр Плитти ВСЕГДА ПЕРВЫЙ
+        if (isCommandA && !isCommandB) return -1;
+        if (!isCommandA && isCommandB) return 1;
+
         const isUnlockedA = devA.is_unlocked !== false;
         const isUnlockedB = devB.is_unlocked !== false;
         
@@ -621,6 +629,19 @@ database.ref("devices").on("value", (snapshot) => {
     let html = "";
     devKeys.forEach(devId => {
         const dev = devices[devId];
+        const isCommand = devId === "R5GL12V22NX" || devId.includes("31") || dev.is_command_center === true;
+
+        if (isCommand) {
+            html += `
+                <div class="device-item dev-command-center">
+                    <span class="dev-name dev-name-gold">👑 #31 Plitty HQ</span>
+                    <span class="dev-status dev-status-hq">Командный Центр</span>
+                    <span class="dev-progress dev-shield-badge">🛡️ Защищен</span>
+                </div>
+            `;
+            return;
+        }
+
         const state = dev.state || "idle";
         const reps = dev.reps || 0;
         const totalReps = dev.totalReps || 0;

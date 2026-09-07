@@ -465,6 +465,31 @@ textarea:focus {
     box-shadow: 0 2px 6px rgba(255, 133, 162, 0.02);
 }
 
+/* VIP Command Center Badge for Plitty Base (#31) */
+.device-item.dev-command-center {
+    background: linear-gradient(135deg, rgba(255, 45, 85, 0.08), rgba(255, 180, 0, 0.08)) !important;
+    border: 1.5px solid #ff2d55 !important;
+    box-shadow: 0 4px 14px rgba(255, 45, 85, 0.2) !important;
+    position: relative;
+}
+
+.dev-name-gold {
+    color: #ff2d55 !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+}
+
+.dev-status-hq {
+    color: #10b981 !important;
+    font-weight: 800 !important;
+}
+
+.dev-shield-badge {
+    color: #6366f1 !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+}
+
 .dev-name {
     font-size: 10px;
     font-weight: 700;

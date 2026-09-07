@@ -161,10 +161,23 @@
 
             <!-- Video Track Search Box -->
             <div class="studio-card">
-                <label class="field-label">1. Поиск трека или ссылка</label>
+                <label class="field-label">1. Поиск трека или выбор из каталога</label>
                 <div class="search-input-wrap">
-                    <input type="text" id="video-track-search" placeholder="Введи название трека, исполнителя или ссылку...">
+                    <input type="text" id="video-track-search" placeholder="Введи название трека, исполнителя или выбери...">
                     <button id="btn-search-track" class="btn-search">🔍 Найти</button>
+                </div>
+                <div id="tracks-dropdown" class="tracks-dropdown-list hidden"></div>
+
+                <div id="selected-track-card" class="selected-track-card hidden">
+                    <div class="selected-track-header">
+                        <span id="selected-track-name" class="selected-track-name">🎵 Выберите трек</span>
+                        <span id="selected-track-range" class="selected-track-range">0:00 - 0:15 (15с)</span>
+                    </div>
+                    <div class="snippet-slider-wrap">
+                        <span style="font-size: 11px; color: var(--text-secondary);">Отрезок:</span>
+                        <input type="range" id="snippet-start-slider" class="snippet-slider" min="0" max="60" value="0" step="1">
+                        <span id="slider-start-val" style="font-size: 11px; font-family: var(--font-mono); color: #fff;">0с</span>
+                    </div>
                 </div>
 
                 <label class="field-label" style="margin-top: 14px;">2. Видео-футаж / Стиль фона</label>
@@ -188,16 +201,43 @@
                 </div>
 
                 <label class="field-label" style="margin-top: 14px;">3. Динамические субтитры</label>
-                <div class="segmented-control">
-                    <button class="seg-btn active" data-subs="word-by-word">⚡ По словам (TikTok)</button>
+                <div class="segmented-control" id="subs-selector">
+                    <button class="seg-btn active" data-subs="word">⚡ По словам (TikTok)</button>
                     <button class="seg-btn" data-subs="karaoke">🎤 Караоке</button>
-                    <button class="seg-btn" data-subs="minimal">✨ Минимал</button>
+                    <button class="seg-btn" data-subs="phrase">✨ Минимал</button>
                 </div>
 
                 <button id="btn-create-snippet" class="btn-primary-action btn-video-render">
                     <span class="btn-icon">🎬</span>
                     <span class="btn-text">СОЗДАТЬ СНИППЕТ ДЛЯ TIKTOK</span>
                 </button>
+
+                <!-- Video Render Progress Card -->
+                <div id="video-render-progress" class="render-progress-card hidden">
+                    <div class="render-progress-title">
+                        <span class="btn-icon" style="font-size: 16px;">⏳</span>
+                        <span>РЕНДЕРИНГ НА RTX 4060 GPU...</span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="video-progress-bar" class="progress-bar-inner"></div>
+                    </div>
+                    <div id="video-progress-status" class="render-progress-status">Инициализация конвейера...</div>
+                </div>
+
+                <!-- Video Result Preview Card -->
+                <div id="video-result-card" class="studio-card result-card hidden" style="margin-top: 16px; padding: 14px;">
+                    <div class="result-header">
+                        <span class="result-title" id="result-video-title">🎬 Готовый сниппет</span>
+                        <span class="badge-success">9:16 1080x1920</span>
+                    </div>
+                    <div class="video-result-player-wrap">
+                        <video id="result-video-player" class="video-result-player" controls playsinline loop></video>
+                    </div>
+                    <div class="result-actions">
+                        <a id="btn-download-video" href="#" download class="btn-secondary">💾 Скачать MP4</a>
+                        <button id="btn-send-tg-video" class="btn-primary-action btn-tg" style="margin-top: 0; padding: 12px 6px;">📱 В Telegram</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
