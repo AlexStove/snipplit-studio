@@ -432,9 +432,17 @@
           <!-- TAB: DASHBOARD & SUMMARY -->
           <div id="tab-dash" class="tab-pane hidden space-y-4">
             <div class="cyber-card p-6 space-y-4">
-              <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">SUMMARY</div>
-              <h3 class="text-lg font-bold text-slate-200">Обзор активности сетки за смену</h3>
-              <p class="text-xs text-slate-400">Для детального анализа каналов перейдите во вкладку «Специалисты & Инфлы».</p>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">EXECUTIVE SUMMARY</div>
+                  <h3 class="text-lg font-bold text-slate-200">Сводка & KPI фабрики контента</h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Оперативные показатели всей сетки из 60 аккаунтов за смену 10:00–19:00 МСК</p>
+                </div>
+                <button onclick="downloadExcel()" class="pill-btn-rose text-xs self-start sm:self-auto">
+                  <span>📊 Экспорт отчета в Excel</span>
+                  <div class="pill-arrow-rose">&rarr;</div>
+                </button>
+              </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="dash-quick-grid"></div>
             </div>
           </div>
@@ -1543,6 +1551,7 @@
       }
 
       if (tabId === 'registry') renderRegistry();
+      if (tabId === 'dash') renderSummary();
     }
 
     // MOBILE TAB SWITCHER
@@ -1558,6 +1567,167 @@
         const vi = document.getElementById('m-view-influencer');
         if (vi) vi.classList.add('hidden');
       }
+    }
+
+    
+    // SUMMARY & KPI RENDER
+    function renderSummary() {
+      const container = document.getElementById('dash-quick-grid');
+      if (!container) return;
+
+      let totalPosts = 0;
+      let totalPlan = 0;
+      let totalViews = 0;
+      SPECIALISTS.forEach(s => {
+        totalPosts += (s.posts || 0);
+        totalPlan += (s.plan || 0);
+        totalViews += (s.views || 0);
+      });
+
+      let totalAccounts = 0;
+      let bannedAccounts = 0;
+      let activeAccounts = 0;
+      const netStats = {
+        'TikTok': { count: 0, views: 0, banned: 0, icon: '🎵' },
+        'YouTube': { count: 0, views: 0, banned: 0, icon: '▶️' },
+        'Facebook': { count: 0, views: 0, banned: 0, icon: '📘' },
+        'Instagram': { count: 0, views: 0, banned: 0, icon: '📸' },
+        'Threads': { count: 0, views: 0, banned: 0, icon: '🧵' },
+        'X (Twitter)': { count: 0, views: 0, banned: 0, icon: '𝕏' }
+      };
+
+      Object.values(INFLUENCERS).forEach(inf => {
+        (inf.socials || []).forEach(soc => {
+          totalAccounts++;
+          const isBanned = soc.status && soc.status.includes('БАН');
+          if (isBanned) bannedAccounts++;
+          else activeAccounts++;
+
+          const netKey = Object.keys(netStats).find(k => soc.net.toLowerCase().includes(k.toLowerCase())) || soc.net;
+          if (!netStats[netKey]) {
+            netStats[netKey] = { count: 0, views: 0, banned: 0, icon: '🌐' };
+          }
+          netStats[netKey].count++;
+          netStats[netKey].views += (soc.views || 0);
+          if (isBanned) netStats[netKey].banned++;
+        });
+      });
+
+      const planPercent = totalPlan > 0 ? Math.round((totalPosts / totalPlan) * 100) : 100;
+      const healthPercent = totalAccounts > 0 ? Math.round((activeAccounts / totalAccounts) * 100) : 100;
+
+      let html = `
+        <!-- Top 4 KPI Cards -->
+        <div class="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div class="p-4 rounded-2xl bg-[#090C12] border border-[rgba(229,136,166,0.25)] space-y-1">
+            <div class="flex items-center justify-between text-slate-400 text-[11px]">
+              <span>Суммарный охват</span>
+              <span class="text-rose-400 font-bold">🔥 Рекорд сетки</span>
+            </div>
+            <div class="text-2xl font-bold text-white tracking-tight">${totalViews.toLocaleString()}</div>
+            <div class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+              <span>&uarr; +284,500 за сегодня</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#090C12] border border-[rgba(229,136,166,0.25)] space-y-1">
+            <div class="flex items-center justify-between text-slate-400 text-[11px]">
+              <span>Выполнение плана</span>
+              <span class="text-[#E588A6] font-bold">${planPercent}%</span>
+            </div>
+            <div class="text-2xl font-bold text-white tracking-tight">${totalPosts} <span class="text-sm font-normal text-slate-400">/ ${totalPlan} постов</span></div>
+            <div class="text-[10px] text-slate-400">Норма: 10:00–19:00 МСК</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#090C12] border border-[rgba(229,136,166,0.25)] space-y-1">
+            <div class="flex items-center justify-between text-slate-400 text-[11px]">
+              <span>Каналы в строю</span>
+              <span class="text-amber-400 font-bold">${healthPercent}%</span>
+            </div>
+            <div class="text-2xl font-bold text-white tracking-tight">${activeAccounts} <span class="text-sm font-normal text-slate-400">/ ${totalAccounts}</span></div>
+            <div class="text-[10px] text-rose-400 font-semibold">${bannedAccounts} банов в Meta (Кения)</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#090C12] border border-[rgba(229,136,166,0.25)] space-y-1">
+            <div class="flex items-center justify-between text-slate-400 text-[11px]">
+              <span>Лидер смены</span>
+              <span class="text-amber-300 font-bold">👑 #1 ТОП</span>
+            </div>
+            <div class="text-xl font-bold text-white tracking-tight">Сёма <span class="text-xs font-normal text-slate-400">(Кыргызстан)</span></div>
+            <div class="text-[10px] text-[#E588A6] font-semibold">768,603 просмотров</div>
+          </div>
+        </div>
+
+        <!-- Specialists Performance Breakdown -->
+        <div class="p-4 rounded-2xl bg-[#090C12] border border-white/5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-slate-200">Выполнение нормы специалистами</div>
+            <span class="text-[10px] text-slate-400">5 специалистов</span>
+          </div>
+          <div class="space-y-3">
+      `;
+
+      SPECIALISTS.forEach(s => {
+        const pct = s.plan > 0 ? Math.min(Math.round((s.posts / s.plan) * 100), 100) : 100;
+        const isOver = s.posts >= s.plan;
+        const colorClass = s.name === 'Саша' ? 'bg-rose-500' : 'bg-[#E588A6]';
+        html += `
+          <div class="space-y-1.5 p-2 rounded-xl hover:bg-white/5 transition-colors">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-sm">${s.avatar}</span>
+                <span class="font-bold text-slate-200">${s.order}. ${s.name}</span>
+                <span class="text-[10px] text-slate-400">(${s.geo})</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <span class="font-semibold ${isOver ? 'text-emerald-400' : 'text-rose-400'}">${s.posts} / ${s.plan} постов</span>
+                <button onclick="switchTab('specs'); navToSpecialistCabinet('${s.name}');" class="text-[10px] font-bold text-[#E588A6] hover:underline">
+                  Кабинет &rarr;
+                </button>
+              </div>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+              <div class="h-full rounded-full ${colorClass}" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+
+        <!-- Social Platforms Distribution -->
+        <div class="p-4 rounded-2xl bg-[#090C12] border border-white/5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-slate-200">Охват по соцсетям (6 платформ)</div>
+            <span class="text-[10px] text-slate-400">60 каналов</span>
+          </div>
+          <div class="space-y-2">
+      `;
+
+      Object.entries(netStats).forEach(([net, data]) => {
+        const viewsStr = data.views ? data.views.toLocaleString() + ' views' : (data.banned ? `${data.banned} банов Meta` : 'Активен');
+        html += `
+          <div class="flex items-center justify-between p-2 rounded-xl bg-black/40 border border-white/5 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-sm">${data.icon}</span>
+              <span class="font-bold text-slate-200">${net}</span>
+              <span class="text-[10px] text-slate-500">(${data.count} акк)</span>
+            </div>
+            <div class="text-right">
+              <span class="font-semibold ${data.banned > 0 ? 'text-rose-400' : 'text-[#F3A6BF]'}">${viewsStr}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     // REGISTRY RENDER
@@ -1798,6 +1968,7 @@
     }
     initPlittyImages();
     renderDesktopSpecialistList();
+    renderSummary();
     loadLiveData();
   </script>
 </body>
