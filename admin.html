@@ -1204,12 +1204,18 @@
               </div>
             </div>
             
-            <div class="flex gap-2">
-              <button onclick="sendSpecialistReminder('${s.name}', 'План смены')" class="pill-btn-dark">
-                <span>💬 Написать в ТГ</span>
-                <div class="pill-arrow-dark">&rarr;</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="downloadSpecialistDoc('${s.name}')" class="pill-btn-dark text-xs hover:scale-105 transition-all">
+                <span>📄 Скачать досье (${s.name})</span>
+                <div class="pill-arrow-dark">&darr;</div>
               </button>
-              <button onclick="navToSpecialistsList()" class="cappen-btn">
+              <button onclick="downloadSpecialistExcel('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
+                📊 Отчет Excel (.xlsx)
+              </button>
+              <button onclick="openSpecialistMessageModal('${s.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
+                💬 Написать специалисту
+              </button>
+              <button onclick="navToSpecialistsList()" class="cappen-btn text-xs">
                 &larr; Назад к спецам
               </button>
             </div>
@@ -1308,8 +1314,12 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="downloadInfluencerReport('${inf.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
-                📥 Скачать досье (${inf.name})
+              <button onclick="downloadInfluencerDoc('${inf.name}')" class="pill-btn-dark text-xs hover:scale-105 transition-all">
+                <span>📄 Скачать досье (Документ)</span>
+                <div class="pill-arrow-dark">&darr;</div>
+              </button>
+              <button onclick="downloadInfluencerExcel('${inf.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
+                📊 Таблица Excel (.xlsx)
               </button>
               <button onclick="navToSpecialistCabinet('${inf.spec}')" class="cappen-btn text-xs">
                 &larr; Назад к ${inf.spec}
@@ -1888,85 +1898,511 @@
       });
     }
 
-    // SPECIALIST INDIVIDUAL REPORT (CSV/Excel)
-    function downloadSpecialistReport(specName) {
-      recalculateMetrics();
-      const s = SPECIALISTS.find(item => item.name === specName);
-      if (!s) return;
+    // STANDALONE EXECUTIVE DOSSIER (HTML Document - Opens in any browser without 3rd party software)
+    function generateInfluencerDocHtml(inf) {
+      const printDate = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+      const rows = (inf.socials || []).map((soc, i) => {
+        const isBan = (soc.status || '').includes('БАН');
+        const isWarning = (soc.status || '').includes('Алерт');
+        const badgeColor = isBan ? '#F43F5E' : isWarning ? '#F59E0B' : '#2DD4BF';
+        const badgeBg = isBan ? 'rgba(244,63,94,0.15)' : isWarning ? 'rgba(245,158,11,0.15)' : 'rgba(45,212,191,0.15)';
+        return `
+          <tr>
+            <td style="text-align:center;font-weight:bold;color:#94A3B8;">${i + 1}</td>
+            <td style="font-weight:bold;color:#F1F5F9;">${soc.net}</td>
+            <td style="font-family:monospace;color:#CBD5E1;">${soc.handle || '-'}</td>
+            <td>
+              <span style="display:inline-block;padding:3px 8px;border-radius:9999px;font-size:11px;font-weight:bold;color:${badgeColor};background:${badgeBg};">
+                ${soc.status || 'Активен'}
+              </span>
+            </td>
+            <td style="text-align:right;font-weight:bold;color:#F1F5F9;">${(soc.posts || 0).toLocaleString()}</td>
+            <td style="text-align:right;font-weight:bold;color:#F3A6BF;">${(soc.views || 0).toLocaleString()}</td>
+            <td>
+              ${soc.url ? `<a href="${soc.url}" target="_blank" style="color:#E588A6;text-decoration:none;font-weight:600;">Перейти ↗</a>` : '<span style="color:#64748B;">—</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Служебное досье: ${inf.name} — Plitty Studio</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #0A0D14; color: #F1F5F9; padding: 25px; margin: 0; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .no-print { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(229,136,166,0.25); }
+    .btn { background: #1E293B; color: #FFF; border: 1px solid rgba(229,136,166,0.3); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: #334155; border-color: #E588A6; }
+    .btn-accent { background: #E588A6; color: #000; border: none; }
+    .btn-accent:hover { background: #F3A6BF; }
+    .card { background: #0F131C; border: 1px solid rgba(229,136,166,0.25); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+    .header-row { display: flex; align-items: center; gap: 18px; }
+    .avatar-box { width: 68px; height: 68px; border-radius: 16px; background: #181F2E; border: 1px solid rgba(229,136,166,0.35); display: flex; align-items: center; justify-content: center; font-size: 36px; }
+    .name-title { font-size: 24px; font-weight: 800; color: #FFF; margin-bottom: 4px; }
+    .grid-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .stat-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; text-align: center; }
+    .stat-lbl { font-size: 10px; color: #94A3B8; text-transform: uppercase; font-weight: 700; }
+    .stat-num { font-size: 20px; font-weight: 800; margin-top: 2px; }
+    .creds-box { background: rgba(229,136,166,0.05); border: 1px dashed rgba(229,136,166,0.35); border-radius: 12px; padding: 14px 18px; margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    th { background: #141925; color: #94A3B8; font-size: 11px; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid rgba(229,136,166,0.25); text-align: left; }
+    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    @media print {
+      body { background: #FFF !important; color: #000 !important; padding: 0 !important; }
+      .no-print { display: none !important; }
+      .card { background: #FFF !important; border: 1px solid #CCC !important; color: #000 !important; box-shadow: none !important; page-break-inside: avoid; }
+      .name-title, .stat-num { color: #000 !important; }
+      th { background: #F1F5F9 !important; color: #333 !important; }
+      td { border-color: #DDD !important; color: #000 !important; }
+      .creds-box { background: #F8FAFC !important; border-color: #999 !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="no-print">
+      <div>
+        <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:#E588A6;">PLITTY STUDIO • СЛУЖЕБНОЕ ДОСЬЕ ИНФЛЮЕНСЕРА</span>
+        <div style="font-size:12px;color:#94A3B8;">Сформировано: ${printDate}</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-accent" onclick="window.print()">🖨️ Распечатать / Сохранить в PDF</button>
+        <button class="btn" onclick="window.close()">Закрыть</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="header-row">
+        <div class="avatar-box">${inf.avatarImg || '👤'}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:#E588A6;font-weight:700;letter-spacing:1px;">AI INFLUENCER PROFILE</div>
+          <div class="name-title">${inf.name} ${inf.flag || ''}</div>
+          <div style="font-size:13px;color:#94A3B8;">Специалист: <b style="color:#FFF;">${inf.spec}</b> &bull; Регион: <b style="color:#FFF;">${inf.geo}</b></div>
+          <div style="font-size:12px;color:#CBD5E1;margin-top:6px;line-height:1.5;">${inf.bio || ''}</div>
+        </div>
+      </div>
+
+      <div class="grid-stats">
+        <div class="stat-item">
+          <div class="stat-lbl">Всего публикаций</div>
+          <div class="stat-num" style="color:#FFF;">${(inf.posts || 0).toLocaleString()}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Общие просмотры</div>
+          <div class="stat-num" style="color:#F3A6BF;">${(inf.views || 0).toLocaleString()}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Каналов в сетке</div>
+          <div class="stat-num" style="color:#2DD4BF;">${(inf.socials || []).length} сетей</div>
+        </div>
+      </div>
+
+      <div class="creds-box">
+        <div>
+          <span style="font-size:10px;color:#94A3B8;text-transform:uppercase;font-weight:700;">🔑 Логин / Email для доступа</span>
+          <div style="font-family:monospace;font-weight:700;color:#FFF;margin-top:2px;">${inf.creds?.email || 'Не указан'}</div>
+        </div>
+        <div>
+          <span style="font-size:10px;color:#94A3B8;text-transform:uppercase;font-weight:700;">🔒 Пароль от каналов</span>
+          <div style="font-family:monospace;font-weight:700;color:#FFF;margin-top:2px;">${inf.creds?.pass || 'Не указан'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:11px;color:#E588A6;font-weight:700;letter-spacing:1px;margin-bottom:4px;">CHANNELS &amp; METRICS MATRIX</div>
+      <div style="font-size:14px;font-weight:700;color:#FFF;margin-bottom:12px;">Сетка из 6 каналов инфлюенсера:</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px;text-align:center;">№</th>
+            <th>Соцсеть</th>
+            <th>Handle</th>
+            <th>Статус</th>
+            <th style="text-align:right;">Постов</th>
+            <th style="text-align:right;">Просмотры</th>
+            <th>Ссылка</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function generateSpecialistDocHtml(s) {
+      const printDate = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
       
-      const headers = ['№', 'Специалист', 'Персонаж', 'Страна', 'Соцсеть', 'Статус', 'Всего постов', 'Просмотры', 'Логин/Почта', 'Пароль сетей', 'Ссылка на канал'];
-      let csv = '\uFEFF' + headers.join(';') + '\r\n';
-      let idx = 1;
-
-      s.influencers.forEach(infName => {
+      const infSections = (s.influencers || []).map(infName => {
         const inf = INFLUENCERS[infName];
-        if (!inf) return;
-        inf.socials.forEach(soc => {
-          const row = [
-            idx++,
-            `"${s.name}"`,
-            `"${inf.name}"`,
-            `"${inf.geo}"`,
-            `"${soc.net}"`,
-            `"${soc.status || 'Активен'}"`,
-            soc.posts || 0,
-            soc.views || 0,
-            `"${inf.creds?.email || ''}"`,
-            `"${inf.creds?.pass || ''}"`,
-            `"${soc.url || ''}"`
-          ];
-          csv += row.join(';') + '\r\n';
-        });
-      });
+        if (!inf) return '';
+        const socRows = (inf.socials || []).map((soc, i) => {
+          const isBan = (soc.status || '').includes('БАН');
+          const isWarning = (soc.status || '').includes('Алерт');
+          const badgeColor = isBan ? '#F43F5E' : isWarning ? '#F59E0B' : '#2DD4BF';
+          const badgeBg = isBan ? 'rgba(244,63,94,0.15)' : isWarning ? 'rgba(245,158,11,0.15)' : 'rgba(45,212,191,0.15)';
+          return `
+            <tr>
+              <td style="text-align:center;font-weight:bold;color:#94A3B8;">${i + 1}</td>
+              <td style="font-weight:bold;color:#F1F5F9;">${soc.net}</td>
+              <td style="font-family:monospace;color:#CBD5E1;">${soc.handle || '-'}</td>
+              <td>
+                <span style="display:inline-block;padding:3px 8px;border-radius:9999px;font-size:11px;font-weight:bold;color:${badgeColor};background:${badgeBg};">
+                  ${soc.status || 'Активен'}
+                </span>
+              </td>
+              <td style="text-align:right;font-weight:bold;color:#F1F5F9;">${(soc.posts || 0).toLocaleString()}</td>
+              <td style="text-align:right;font-weight:bold;color:#F3A6BF;">${(soc.views || 0).toLocaleString()}</td>
+              <td>
+                ${soc.url ? `<a href="${soc.url}" target="_blank" style="color:#E588A6;text-decoration:none;font-weight:600;">Перейти ↗</a>` : '<span style="color:#64748B;">—</span>'}
+              </td>
+            </tr>
+          `;
+        }).join('');
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        return `
+          <div class="card" style="margin-top:20px;">
+            <div class="header-row">
+              <div class="avatar-box">${inf.avatarImg || '👤'}</div>
+              <div style="flex:1;">
+                <div style="font-size:11px;color:#E588A6;font-weight:700;letter-spacing:1px;">AI INFLUENCER</div>
+                <div class="name-title" style="font-size:20px;">${inf.name} ${inf.flag || ''}</div>
+                <div style="font-size:12px;color:#94A3B8;">ГЕО: <b style="color:#FFF;">${inf.geo}</b> &bull; Постов: <b style="color:#FFF;">${inf.posts}</b> &bull; Просмотров: <b style="color:#F3A6BF;">${inf.views.toLocaleString()}</b></div>
+                <div style="font-size:12px;color:#CBD5E1;margin-top:4px;">${inf.bio || ''}</div>
+              </div>
+            </div>
+
+            <div class="creds-box">
+              <div>
+                <span style="font-size:10px;color:#94A3B8;text-transform:uppercase;font-weight:700;">🔑 Логин / Email</span>
+                <div style="font-family:monospace;font-weight:700;color:#FFF;margin-top:2px;">${inf.creds?.email || 'Не указан'}</div>
+              </div>
+              <div>
+                <span style="font-size:10px;color:#94A3B8;text-transform:uppercase;font-weight:700;">🔒 Пароль соцсетей</span>
+                <div style="font-family:monospace;font-weight:700;color:#FFF;margin-top:2px;">${inf.creds?.pass || 'Не указан'}</div>
+              </div>
+            </div>
+
+            <table style="margin-top:14px;">
+              <thead>
+                <tr>
+                  <th style="width:40px;text-align:center;">№</th>
+                  <th>Соцсеть</th>
+                  <th>Handle</th>
+                  <th>Статус</th>
+                  <th style="text-align:right;">Постов</th>
+                  <th style="text-align:right;">Просмотры</th>
+                  <th>Ссылка</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${socRows}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }).join('');
+
+      return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Служебное досье специалиста — ${s.name}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #0A0D14; color: #F1F5F9; padding: 25px; margin: 0; }
+    .container { max-width: 960px; margin: 0 auto; }
+    .no-print { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(229,136,166,0.25); }
+    .btn { background: #1E293B; color: #FFF; border: 1px solid rgba(229,136,166,0.3); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: #334155; border-color: #E588A6; }
+    .btn-accent { background: #E588A6; color: #000; border: none; }
+    .btn-accent:hover { background: #F3A6BF; }
+    .card { background: #0F131C; border: 1px solid rgba(229,136,166,0.25); border-radius: 14px; padding: 22px; margin-bottom: 16px; }
+    .header-row { display: flex; align-items: center; gap: 18px; }
+    .avatar-box { width: 68px; height: 68px; border-radius: 16px; background: #181F2E; border: 1px solid rgba(229,136,166,0.35); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: #F1F5F9; }
+    .name-title { font-size: 24px; font-weight: 800; color: #FFF; margin-bottom: 4px; }
+    .grid-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .stat-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; text-align: center; }
+    .stat-lbl { font-size: 10px; color: #94A3B8; text-transform: uppercase; font-weight: 700; }
+    .stat-num { font-size: 20px; font-weight: 800; margin-top: 2px; }
+    .creds-box { background: rgba(229,136,166,0.05); border: 1px dashed rgba(229,136,166,0.35); border-radius: 12px; padding: 12px 16px; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    th { background: #141925; color: #94A3B8; font-size: 10px; text-transform: uppercase; padding: 8px 10px; border-bottom: 1px solid rgba(229,136,166,0.25); text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    @media print {
+      body { background: #FFF !important; color: #000 !important; padding: 0 !important; }
+      .no-print { display: none !important; }
+      .card { background: #FFF !important; border: 1px solid #CCC !important; color: #000 !important; box-shadow: none !important; page-break-inside: avoid; }
+      .name-title, .stat-num { color: #000 !important; }
+      th { background: #F1F5F9 !important; color: #333 !important; }
+      td { border-color: #DDD !important; color: #000 !important; }
+      .creds-box { background: #F8FAFC !important; border-color: #999 !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="no-print">
+      <div>
+        <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:#E588A6;">PLITTY STUDIO • СВОДНОЕ ДОСЬЕ СПЕЦИАЛИСТА</span>
+        <div style="font-size:12px;color:#94A3B8;">Сформировано: ${printDate}</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-accent" onclick="window.print()">🖨️ Распечатать / В PDF</button>
+        <button class="btn" onclick="window.close()">Закрыть</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="header-row">
+        <div class="avatar-box">${s.order}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:#E588A6;font-weight:700;letter-spacing:1px;">SPECIALIST OVERVIEW</div>
+          <div class="name-title">${s.name}</div>
+          <div style="font-size:13px;color:#94A3B8;">Должность: <b style="color:#FFF;">${s.role}</b> &bull; Регион: <b style="color:#FFF;">${s.geo}</b></div>
+          <div style="margin-top:6px;">
+            <span style="display:inline-block;padding:3px 8px;border-radius:9999px;font-size:11px;font-weight:bold;color:${s.statusColor === 'teal' ? '#2DD4BF' : s.statusColor === 'rose' ? '#FDA4AF' : '#FCD34D'};background:rgba(255,255,255,0.08);">
+              ${s.statusBadge}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-stats">
+        <div class="stat-item">
+          <div class="stat-lbl">Публикаций за смену</div>
+          <div class="stat-num" style="color:#FFF;">${s.posts} <span style="font-size:12px;color:#94A3B8;font-weight:normal;">/ план ${s.plan}</span></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Суммарные просмотры</div>
+          <div class="stat-num" style="color:#F3A6BF;">${s.views.toLocaleString()}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Персонажей в управлении</div>
+          <div class="stat-num" style="color:#2DD4BF;">${s.influencers.length} персонажа (${s.influencers.length * 6} аккаунтов)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:25px;margin-bottom:10px;">
+      <h3 style="font-size:16px;font-weight:800;color:#FFF;">Детальные досье инфлюенсеров специалиста:</h3>
+    </div>
+
+    ${infSections}
+  </div>
+</body>
+</html>`;
+    }
+
+    // DOWNLOAD DOSSIER DOCUMENTS (Standalone HTML - Opens without 3rd party apps in default browser)
+    function downloadInfluencerDoc(infName) {
+      recalculateMetrics();
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+      const html = generateInfluencerDocHtml(inf);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
       const blobUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = blobUrl;
-      a.download = `Отчет_Специалист_${specName}.csv`;
+      a.download = `Досье_Инфлюенсер_${infName.replace(/\s+/g, '_')}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
     }
 
-    // INFLUENCER INDIVIDUAL REPORT (CSV/Excel)
-    function downloadInfluencerReport(infName) {
+    function downloadSpecialistDoc(specName) {
       recalculateMetrics();
-      const inf = INFLUENCERS[infName];
-      if (!inf) return;
-
-      const headers = ['№', 'Инфлюенсер', 'Специалист', 'Страна', 'Соцсеть', 'Handle', 'Статус', 'Посты', 'Просмотры', 'Логин/Почта', 'Пароль', 'Ссылка на канал'];
-      let csv = '\uFEFF' + headers.join(';') + '\r\n';
-      let idx = 1;
-
-      inf.socials.forEach(soc => {
-        const row = [
-          idx++,
-          `"${inf.name}"`,
-          `"${inf.spec}"`,
-          `"${inf.geo}"`,
-          `"${soc.net}"`,
-          `"${soc.handle || ''}"`,
-          `"${soc.status || 'Активен'}"`,
-          soc.posts || 0,
-          soc.views || 0,
-          `"${inf.creds?.email || ''}"`,
-          `"${inf.creds?.pass || ''}"`,
-          `"${soc.url || ''}"`
-        ];
-        csv += row.join(';') + '\r\n';
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const s = SPECIALISTS.find(x => x.name === specName);
+      if (!s) return;
+      const html = generateSpecialistDocHtml(s);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
       const blobUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = blobUrl;
-      a.download = `Досье_Инфлюенсер_${infName}.csv`;
+      a.download = `Досье_Специалист_${specName.replace(/\s+/g, '_')}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    }
+
+    // DOWNLOAD EXCEL SPREADSHEETS (.xlsx via backend openpyxl, or fallback XML Spreadsheet .xls)
+    async function downloadInfluencerExcel(infName) {
+      recalculateMetrics();
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+
+      const headers = ['№', 'Инфлюенсер', 'Специалист', 'Страна', 'Соцсеть', 'Handle', 'Статус', 'Посты', 'Просмотры', 'Логин/Почта', 'Пароль', 'Ссылка'];
+      const rows = [];
+      let idx = 1;
+      (inf.socials || []).forEach(soc => {
+        rows.push([
+          idx++,
+          inf.name,
+          inf.spec,
+          inf.geo,
+          soc.net,
+          soc.handle || '',
+          soc.status || 'Активен',
+          soc.posts || 0,
+          soc.views || 0,
+          inf.creds?.email || '',
+          inf.creds?.pass || '',
+          soc.url || ''
+        ]);
+      });
+
+      const payload = {
+        title: `Досье_${inf.name}`,
+        filename: `Досье_Инфлюенсер_${inf.name.replace(/\s+/g, '_')}.xlsx`,
+        sheet_name: inf.name.substring(0, 30),
+        headers: headers,
+        rows: rows
+      };
+
+      try {
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/export-custom-excel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = payload.filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+          return;
+        }
+      } catch (e) {
+        console.warn("[Excel Export] Backend fallback to XML Spreadsheet:", e);
+      }
+
+      downloadXmlExcelDirect(payload.filename, payload.sheet_name, headers, rows);
+    }
+
+    async function downloadSpecialistExcel(specName) {
+      recalculateMetrics();
+      const s = SPECIALISTS.find(x => x.name === specName);
+      if (!s) return;
+
+      const headers = ['№', 'Специалист', 'Инфлюенсер', 'Страна', 'Соцсеть', 'Handle', 'Статус', 'Посты', 'Просмотры', 'Логин/Почта', 'Пароль', 'Ссылка'];
+      const rows = [];
+      let idx = 1;
+      (s.influencers || []).forEach(infName => {
+        const inf = INFLUENCERS[infName];
+        if (!inf) return;
+        (inf.socials || []).forEach(soc => {
+          rows.push([
+            idx++,
+            s.name,
+            inf.name,
+            inf.geo,
+            soc.net,
+            soc.handle || '',
+            soc.status || 'Активен',
+            soc.posts || 0,
+            soc.views || 0,
+            inf.creds?.email || '',
+            inf.creds?.pass || '',
+            soc.url || ''
+          ]);
+        });
+      });
+
+      const payload = {
+        title: `Отчет_${s.name}`,
+        filename: `Отчет_Специалист_${s.name.replace(/\s+/g, '_')}.xlsx`,
+        sheet_name: s.name.substring(0, 30),
+        headers: headers,
+        rows: rows
+      };
+
+      try {
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/export-custom-excel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = payload.filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+          return;
+        }
+      } catch (e) {
+        console.warn("[Excel Export] Backend fallback to XML Spreadsheet:", e);
+      }
+
+      downloadXmlExcelDirect(payload.filename, payload.sheet_name, headers, rows);
+    }
+
+    function downloadXmlExcelDirect(filename, sheetName, headers, rows) {
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\r\n' +
+        '<?mso-application progid="Excel.Sheet"?>\r\n' +
+        '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"\r\n' +
+        ' xmlns:o="urn:schemas-microsoft-com:office:office"\r\n' +
+        ' xmlns:x="urn:schemas-microsoft-com:office:excel"\r\n' +
+        ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\r\n' +
+        ' <Styles>\r\n' +
+        '  <Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#0F172A" ss:Pattern="Solid"/></Style>\r\n' +
+        ' </Styles>\r\n' +
+        ` <Worksheet ss:Name="${sheetName}">\r\n` +
+        '  <Table>\r\n';
+
+      xml += '   <Row ss:StyleID="Header">\r\n';
+      headers.forEach(h => {
+        xml += `    <Cell><Data ss:Type="String">${h}</Data></Cell>\r\n`;
+      });
+      xml += '   </Row>\r\n';
+
+      rows.forEach(r => {
+        xml += '   <Row>\r\n';
+        r.forEach(v => {
+          const isNum = typeof v === 'number';
+          xml += `    <Cell><Data ss:Type="${isNum ? 'Number' : 'String'}">${v}</Data></Cell>\r\n`;
+        });
+        xml += '   </Row>\r\n';
+      });
+
+      xml += '  </Table>\r\n </Worksheet>\r\n</Workbook>';
+
+      const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename.replace('.xlsx', '.xls');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    }
+
+    // Backward-compatible wrappers
+    function downloadSpecialistReport(specName) {
+      downloadSpecialistDoc(specName);
+    }
+    function downloadInfluencerReport(infName) {
+      downloadInfluencerDoc(infName);
     }
 
     // DIRECT SPECIALIST CUSTOM MESSAGING
