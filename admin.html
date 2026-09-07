@@ -1816,60 +1816,110 @@
       }
     }
 
-    async function sendExcelToTelegramChat() {
-      closeModal('modal-excel-export');
-      
-      if (window.Telegram && window.Telegram.WebApp) {
-        try {
-          window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-        } catch(e) {}
+        async function sendExcelToTelegramChat() {
+      const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+      const targetChatId = tgUser && tgUser.id ? tgUser.id : 234658540;
+
+      // 1. Send via local API directly to Telegram chat
+      try {
+        const res = await fetch('/api/influencers/export-excel-tg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: targetChatId })
+        });
+        if (res.ok) {
+          closeModal('modal-excel-export');
+          if (window.Telegram && window.Telegram.WebApp) {
+            try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } catch(e) {}
+          }
+          alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно отправлен в твой Telegram! Проверь чат с ботом.");
+          return;
+        }
+      } catch(e) {
+        console.warn("[Plitty Export] API error:", e);
       }
 
-      // 1. If inside Telegram Mini App, trigger export via bot deep link
+      // 2. Fallback: If API wasn't reached (e.g. offline on github pages)
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        closeModal('modal-excel-export');
         window.Telegram.WebApp.openTelegramLink("https://t.me/SnipPlit_bot?start=excel");
         return;
       }
 
-      // 2. Fallback to local server endpoint if running on localhost
-      try {
-        const res = await fetch('/api/influencers/export-excel-tg', { method: 'POST' });
-        if (res.ok) {
-          alert("✅ Файл 'Отчет_Инфлюенсеры_База.xlsx' успешно сформирован и отправлен в Telegram!");
-          return;
-        }
-      } catch(e) {}
-
-      // 3. Fallback to direct Excel download
       downloadExcelFileDirect('xlsx');
     }
 
-    function downloadExcelFileDirect(format = 'xlsx') {
+    async function downloadExcelFileDirect(format = 'xlsx') {
       closeModal('modal-excel-export');
 
       if (window.Telegram && window.Telegram.WebApp) {
-        try {
-          window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        } catch(e) {}
+        try { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e) {}
       }
 
-      const xlsxUrl = "https://alexstove.github.io/snipplit-studio/plitty_influencers_report.xlsx";
-      const csvUrl = "https://alexstove.github.io/snipplit-studio/plitty_influencers_report.csv";
-      const targetUrl = format === 'csv' ? csvUrl : xlsxUrl;
-      const fileName = format === 'csv' ? 'plitty_influencers_report.csv' : 'Отчет_Инфлюенсеры_База.xlsx';
-
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        window.Telegram.WebApp.openLink(targetUrl);
+      if (format === 'csv') {
+        downloadCSVDirect();
         return;
       }
 
+      // 1. Fetch genuine binary XLSX generated from backend
+      try {
+        const res = await fetch('/api/influencers/export-excel');
+        if (res.ok) {
+          const blob = await res.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = 'Отчет_Инфлюенсеры_База.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+          return;
+        }
+      } catch(e) {
+        console.warn("[Plitty Export] Fetch API fallback:", e);
+      }
+
+      // 2. Fallback direct download
       const a = document.createElement('a');
-      a.href = targetUrl;
-      a.download = fileName;
-      a.target = '_blank';
+      a.href = 'plitty_influencers_report.xlsx';
+      a.download = 'Отчет_Инфлюенсеры_База.xlsx';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+    }
+
+    function downloadCSVDirect() {
+      // UTF-8 BOM + Semicolon delimiter (for native Russian Windows Excel support)
+      const headers = ['№', 'Инфлюенсер', 'Специалист', 'Соцсеть', 'Статус', 'Всего постов', 'Общие просмотры', 'Ссылка'];
+      let csv = '\uFEFF' + headers.join(';') + '\r\n';
+      let idx = 1;
+
+      Object.values(INFLUENCERS).forEach(inf => {
+        (inf.socials || []).forEach(soc => {
+          const row = [
+            idx++,
+            `"${inf.name} (${inf.geo})"`,
+            `"${inf.spec}"`,
+            `"${soc.net}"`,
+            `"${soc.status || 'Активен'}"`,
+            soc.posts || 0,
+            soc.views || 0,
+            `"${soc.url || ''}"`
+          ];
+          csv += row.join(';') + '\r\n';
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'Отчет_Инфлюенсеры_60_аккаунтов.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
     }
 
     async function sendSpecialistReminder(spec, target) {
