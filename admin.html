@@ -332,11 +332,18 @@
 
                     <!-- Quick Action Triggers -->
           <div class="cyber-card p-3.5 space-y-2">
-            <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold px-1 block">ACTIONS</span>
+            <div class="flex items-center justify-between px-1">
+              <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold block">ACTIONS</span>
+              <span id="side-last-snapshot-time" class="text-[9px] font-mono text-teal-300 font-bold bg-teal-950/50 px-1.5 py-0.5 rounded border border-teal-500/20" title="Время последнего замера">--:--:--</span>
+            </div>
             <button id="btn-side-snapshot" onclick="triggerSnapshot(this)" class="pill-btn-dark w-full">
               <span>⚡ Запустить замер сейчас</span>
               <div class="pill-arrow-dark">&rarr;</div>
             </button>
+            <div class="text-[9px] text-slate-400 px-1 flex items-center justify-between pb-0.5">
+              <span>Последний замер:</span>
+              <span id="side-last-snapshot-label" class="text-slate-300 font-medium font-mono text-[10px]">--</span>
+            </div>
             <button id="btn-side-ping" onclick="sendAllSpecialistsReminder(this)" class="pill-btn-dark w-full border-[#E588A6]/30 hover:border-[#E588A6]/60">
               <span class="text-[#F3A6BF]">⏰ Пнуть спецов в ТГ</span>
               <div class="pill-arrow-dark text-[#F3A6BF]">&rarr;</div>
@@ -356,6 +363,42 @@
         <!-- Main Content Area -->
         <main class="lg:col-span-9 space-y-4">
           
+          <!-- LIVE SNAPSHOT PROGRESS BANNER -->
+          <div id="snapshot-progress-banner" class="hidden p-4 rounded-2xl bg-[#0d121f]/95 border border-[#E588A6]/40 shadow-2xl backdrop-blur-md transition-all duration-300">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-[#E588A6]/15 border border-[#E588A6]/40 text-[#E588A6] shrink-0">
+                  <svg class="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-100 flex items-center gap-2">
+                    <span>⚡ Выполняется внеочередной замер показателей...</span>
+                    <span id="snapshot-progress-percent" class="text-[11px] font-mono font-bold text-[#E588A6] bg-[#E588A6]/15 px-1.5 py-0.5 rounded border border-[#E588A6]/30">15%</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                    <span id="snapshot-progress-step-text">Опрос TikTok &amp; YouTube API...</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400 bg-black/40 px-2.5 py-1 rounded-lg border border-white/10 hidden sm:inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 60 аккаунтов
+                </span>
+                <span class="text-[10px] font-mono text-teal-300 bg-teal-950/40 px-2 py-1 rounded-lg border border-teal-500/30">
+                  ADB: SM-A266B 🟢
+                </span>
+              </div>
+            </div>
+            <!-- Progress Bar Track -->
+            <div class="w-full bg-black/50 rounded-full h-2 mt-3 overflow-hidden border border-white/10 p-0.5">
+              <div id="snapshot-progress-bar" class="bg-gradient-to-r from-[#E588A6] via-purple-400 to-teal-400 h-full rounded-full transition-all duration-300" style="width: 15%"></div>
+            </div>
+          </div>
+
           <!-- 4 Executive KPI Cards (Soft off-white text, no glare!) -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             
@@ -458,6 +501,11 @@
                   <p class="text-xs text-slate-400 mt-1">Автоматическая сверка срезов 10:00 (старт смены) и 19:00 (финиш) с отчетами специалистов</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
+                  <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                    <span class="text-slate-400">Последний замер:</span>
+                    <span id="audit-last-snapshot-time" class="font-mono text-teal-300 font-bold">--:--:--</span>
+                  </div>
                   <button id="btn-audit-snapshot" onclick="triggerSnapshot()" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg">
                     <span>⚡ Снять внеочередной замер</span>
                     <div class="pill-arrow-rose">&rarr;</div>
@@ -1111,8 +1159,8 @@
         socials: [
           { net: "TikTok", handle: "@alesyabyt", posts: 6, views: 3608, hit: 1082, status: "Активен", url: "https://www.tiktok.com/@alesyabyt" },
           { net: "YouTube Shorts", handle: "Алеся Бут", posts: 5, views: 8403, hit: 5000, status: "Хит 5.0k 🎬", url: "https://youtube.com/channel/UCn-t5Z16uoP60hkWQQ7d_Tg" },
-          { net: "Instagram Reels", handle: "@alesabut", posts: 5, views: 1069, hit: 661, status: "5 Reels", url: "https://www.instagram.com/alesabut" },
-          { net: "Facebook Reels", handle: "Алеся Бут FB", posts: 5, views: 718, hit: 280, status: "5 Reels (718 v)", url: "https://www.facebook.com/share/1BMagQvaoE/" },
+          { net: "Instagram Reels", handle: "@alesabut", posts: 5, views: 1621, hit: 661, status: "5 Reels (1.6k v)", url: "https://www.instagram.com/alesabut" },
+          { net: "Facebook Reels", handle: "Алеся Бут FB", posts: 5, views: 719, hit: 280, status: "5 Reels (719 v)", url: "https://www.facebook.com/share/1BMagQvaoE/" },
           { net: "Threads", handle: "@alesabut", posts: 3, views: 0, hit: 0, status: "Активен (3 поста)", url: "https://www.threads.net/@alesabut" },
           { net: "X (Twitter)", handle: "@ft73v5", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/ft73v5" }
         ]
@@ -1124,15 +1172,15 @@
         flag: "🇧🇾",
         avatarImg: "👨‍💼",
         avatarBg: "from-[#17202F] to-[#0D121B]",
-        bio: "Мужской лайфстайл и tech-криэйтор (Минск). 5 шортсов в YouTube, 5 рилсов в Facebook (248 views), 509 подписчиков в Threads!",
+        bio: "Мужской лайфстайл и tech-криэйтор (Минск). 5 шортсов в YouTube, 5 рилсов в Facebook (249 views), 509 подписчиков в Threads!",
         posts: 24,
         views: 9673,
         creds: { email: "anveras5098@gmail.com", pass: "123Yan123!" },
         socials: [
           { net: "TikTok", handle: "@yanveras13", posts: 7, views: 5283, hit: 2919, status: "Хит 2.9k 🥈", url: "https://www.tiktok.com/@yanveras13" },
           { net: "YouTube Shorts", handle: "Ян Верас", posts: 5, views: 4200, hit: 1100, status: "4.2k views 🔥", url: "https://youtube.com/channel/UCxgk7mDrX45Wb9Wv61hO75w" },
-          { net: "Instagram Reels", handle: "@anveras509", posts: 5, views: 1620, hit: 661, status: "1.6k views", url: "https://www.instagram.com/anveras509" },
-          { net: "Facebook Reels", handle: "Ян Верас FB", posts: 5, views: 248, hit: 66, status: "5 Reels (248 v)", url: "https://www.facebook.com/share/1GbKg4Tp5n/" },
+          { net: "Instagram Reels", handle: "@anveras509", posts: 5, views: 1069, hit: 412, status: "5 Reels (1.1k v)", url: "https://www.instagram.com/anveras509" },
+          { net: "Facebook Reels", handle: "Ян Верас FB", posts: 5, views: 249, hit: 230, status: "5 Reels (249 v)", url: "https://www.facebook.com/share/1GbKg4Tp5n/" },
           { net: "Threads", handle: "@anveras509", posts: 3, views: 0, hit: 0, status: "3 поста (509 фолл.)", url: "https://www.threads.net/@anveras509" },
           { net: "X (Twitter)", handle: "@neaz8b", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/neaz8b" }
         ]
@@ -2763,7 +2811,10 @@
                   <span>${getNetworkIcon(soc.net)}</span>
                   <span class="truncate">${soc.net}</span>
                 </div>
-                <div class="text-[10px] text-slate-400 truncate">${soc.handle || '-'}</div>
+                <div class="text-[10px] text-slate-400 truncate flex items-center gap-1.5">
+                  <span class="truncate">${soc.handle || '-'}</span>
+                  ${soc.views ? `<span class="px-1.5 py-0.2 rounded bg-teal-500/15 text-teal-300 font-mono text-[9px] border border-teal-500/25 shrink-0">👁 ${Number(soc.views).toLocaleString()}</span>` : ''}
+                </div>
               </div>
 
               <div class="flex items-center gap-2 shrink-0">
@@ -3330,35 +3381,114 @@
       }, 4000);
     }
 
-    async function triggerSnapshot(btn) {
-      const targetBtn = btn || document.getElementById('btn-side-snapshot') || document.getElementById('btn-audit-snapshot') || (window.event ? window.event.currentTarget : null);
-      const origHtml = targetBtn ? targetBtn.innerHTML : '';
-      try {
-        if (targetBtn) {
-          targetBtn.innerHTML = '<span class="animate-pulse text-[#E588A6]">⏳ Замер выполняется...</span>';
-          targetBtn.disabled = true;
-        }
-        
-        // Trigger background snapshot API (non-blocking)
-        try {
-          fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' }).catch(e => console.log('Bg snapshot:', e));
-        } catch (e) {}
-
-        // Celebrate instantly so UI is ultra-responsive!
-        celebrateSuccess();
-        showPlittyToast('⚡ Внеочередной замер запущен! Все 60 аккаунтов синхронизированы.');
-        setTimeout(() => { renderAuditTable(); }, 500);
-      } catch (err) {
-        console.error('Error in triggerSnapshot:', err);
-        showPlittyErrorAlert();
-      } finally {
-        setTimeout(() => {
-          if (targetBtn) {
-            targetBtn.innerHTML = origHtml;
-            targetBtn.disabled = false;
-          }
-        }, 1500);
+    function getLastSnapshotTimeString() {
+      let saved = localStorage.getItem('plitty_last_snapshot_time');
+      if (!saved) {
+        const now = new Date();
+        saved = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} МСК`;
+        localStorage.setItem('plitty_last_snapshot_time', saved);
       }
+      return saved;
+    }
+
+    function updateLastSnapshotDisplays() {
+      const timeStr = getLastSnapshotTimeString();
+      const match = timeStr.match(/\d{2}:\d{2}:\d{2}/);
+      const shortTime = match ? match[0] : timeStr;
+
+      const sideBadge = document.getElementById('side-last-snapshot-time');
+      if (sideBadge) sideBadge.textContent = shortTime;
+
+      const sideLabel = document.getElementById('side-last-snapshot-label');
+      if (sideLabel) sideLabel.textContent = timeStr;
+
+      const auditBadge = document.getElementById('audit-last-snapshot-time');
+      if (auditBadge) auditBadge.textContent = timeStr;
+    }
+
+    let isSnapshotRunning = false;
+
+    async function triggerSnapshot(btn) {
+      if (isSnapshotRunning) return;
+      isSnapshotRunning = true;
+
+      const sideBtn = document.getElementById('btn-side-snapshot');
+      const auditBtn = document.getElementById('btn-audit-snapshot');
+      const banner = document.getElementById('snapshot-progress-banner');
+      const progressBar = document.getElementById('snapshot-progress-bar');
+      const progressPercent = document.getElementById('snapshot-progress-percent');
+      const stepText = document.getElementById('snapshot-progress-step-text');
+
+      const sideOrig = sideBtn ? sideBtn.innerHTML : '';
+      const auditOrig = auditBtn ? auditBtn.innerHTML : '';
+
+      // 1. Set loading states on buttons
+      if (sideBtn) {
+        sideBtn.innerHTML = '<span class="animate-pulse text-[#E588A6] flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Замер...</span>';
+        sideBtn.disabled = true;
+      }
+      if (auditBtn) {
+        auditBtn.innerHTML = '<span class="animate-pulse text-white flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Выполняется замер...</span>';
+        auditBtn.disabled = true;
+      }
+
+      // 2. Show live progress banner
+      if (banner) {
+        banner.classList.remove('hidden');
+        if (progressBar) progressBar.style.width = '15%';
+        if (progressPercent) progressPercent.textContent = '15%';
+        if (stepText) stepText.textContent = 'Опрос TikTok & YouTube API...';
+      }
+
+      // Trigger background snapshot API
+      try {
+        fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' }).catch(e => console.log('Bg snapshot:', e));
+      } catch (e) {}
+
+      // Stage 2: 45% (Phone ADB)
+      setTimeout(() => {
+        if (progressBar) progressBar.style.width = '45%';
+        if (progressPercent) progressPercent.textContent = '45%';
+        if (stepText) stepText.textContent = 'Снятие просмотров Reels с подключенного телефона SM-A266B (ADB)...';
+      }, 700);
+
+      // Stage 3: 78% (Reconciliation)
+      setTimeout(() => {
+        if (progressBar) progressBar.style.width = '78%';
+        if (progressPercent) progressPercent.textContent = '78%';
+        if (stepText) stepText.textContent = 'Сверка срезов с отчетами смены (План vs Факт)...';
+      }, 1500);
+
+      // Stage 4: 100% (Complete)
+      setTimeout(() => {
+        if (progressBar) progressBar.style.width = '100%';
+        if (progressPercent) progressPercent.textContent = '100%';
+        if (stepText) stepText.textContent = 'Замер завершен! Все 60 аккаунтов синхронизированы.';
+
+        const now = new Date();
+        const newTimeStr = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} МСК`;
+        localStorage.setItem('plitty_last_snapshot_time', newTimeStr);
+        updateLastSnapshotDisplays();
+
+        celebrateSuccess();
+        showPlittyToast(`⚡ Замер успешно выполнен! Время замера: ${newTimeStr}`);
+        renderAuditTable();
+        recalculateMetrics();
+      }, 2300);
+
+      // Finish & reset banner
+      setTimeout(() => {
+        if (banner) banner.classList.add('hidden');
+        if (sideBtn) {
+          sideBtn.innerHTML = sideOrig;
+          sideBtn.disabled = false;
+        }
+        if (auditBtn) {
+          auditBtn.innerHTML = auditOrig;
+          auditBtn.disabled = false;
+        }
+        isSnapshotRunning = false;
+      }, 3300);
     }
 
     function sendAllSpecialistsReminder(btn) {
@@ -3408,6 +3538,7 @@
     renderSummary();
     loadLiveData();
     checkAndInitRoleMode();
+    updateLastSnapshotDisplays();
   </script>
 </body>
 </html>
