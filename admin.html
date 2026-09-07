@@ -489,28 +489,36 @@
 
               <!-- Live Incidents Cards -->
               <div class="space-y-2.5 pt-1">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Текущие инциденты и предупреждения:</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <!-- Incident 1 -->
-                  <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start justify-between gap-3">
+                                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Текущие инциденты и предупреждения:</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="audit-incidents-container">
+                  <!-- Incident 1: FB Reels (RESOLVED) -->
+                  <div id="incident-lesha-fb" class="p-3.5 rounded-xl bg-teal-500/10 border border-teal-500/25 flex items-start justify-between gap-3 transition-all">
                     <div class="flex items-start gap-2.5">
-                      <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-sm shrink-0">⚠️</div>
+                      <div class="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold text-sm shrink-0">✅</div>
                       <div>
-                        <div class="text-xs font-bold text-amber-200">FB Reels: Метрики подключены</div>
-                        <div class="text-[11px] text-slate-400 mt-0.5">21 Reels, 6,036 просмотров. Лёша, Сёма подтверждены парсером.</div>
+                        <div class="text-xs font-bold text-teal-200 flex items-center gap-2">
+                          <span>FB Reels: Доступ открыт</span>
+                          <span class="text-[9px] px-1.5 py-0.5 bg-teal-500/20 text-teal-300 rounded border border-teal-500/30 font-semibold uppercase">РЕШЕНО</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">Лёша подтвердил доступ. 21 Reels (6,036 просмотров) собираются парсером в штатном режиме.</div>
                       </div>
                     </div>
-                    <button onclick="openSpecialistMessageModal('Лёша')" class="cappen-btn text-[11px] py-1 px-2.5 text-amber-300 border-amber-500/40 hover:bg-amber-500/20 shrink-0">
-                      Пнуть Лёшу
-                    </button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <button onclick="dismissIncident('incident-lesha-fb')" class="cappen-btn text-[11px] py-1 px-2 text-slate-400 hover:text-slate-200 border-white/10 hover:bg-white/10" title="Скрыть в архив">
+                        ✕ Скрыть
+                      </button>
+                    </div>
                   </div>
-                  <!-- Incident 2 -->
-                  <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-start justify-between gap-3">
+                  <!-- Incident 2: Meta Bans (ACTIVE) -->
+                  <div id="incident-sasha-meta" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-start justify-between gap-3 transition-all">
                     <div class="flex items-start gap-2.5">
                       <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-sm shrink-0">🔴</div>
                       <div>
-                        <div class="text-xs font-bold text-rose-200">Meta Блокировки (7 аккаунтов)</div>
-                        <div class="text-[11px] text-slate-400 mt-0.5">Саша: Kaan Turan, Melissa Kara (Inst, FB, Threads). Требуется перепривязка.</div>
+                        <div class="text-xs font-bold text-rose-200 flex items-center gap-2">
+                          <span>Meta Блокировки (7 аккаунтов)</span>
+                          <span class="text-[9px] px-1.5 py-0.5 bg-rose-500/20 text-rose-300 rounded border border-rose-500/30 font-semibold uppercase">ТРЕБУЕТ ДЕЙСТВИЯ</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">Саша: Kaan Turan, Melissa Kara (Inst, FB, Threads). Требуется перепривязка прокси.</div>
                       </div>
                     </div>
                     <button onclick="openSpecialistMessageModal('Саша')" class="cappen-btn text-[11px] py-1 px-2.5 text-rose-300 border-rose-500/40 hover:bg-rose-500/20 shrink-0">
@@ -2937,6 +2945,17 @@
       });
 
       tbody.innerHTML = rowsHtml;
+    }
+
+
+    
+    function dismissIncident(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.95)';
+        setTimeout(() => { el.remove(); }, 300);
+      }
     }
 
 
