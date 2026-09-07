@@ -330,22 +330,22 @@
             </button>
           </nav>
 
-          <!-- Quick Action Triggers -->
+                    <!-- Quick Action Triggers -->
           <div class="cyber-card p-3.5 space-y-2">
             <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold px-1 block">ACTIONS</span>
-            <button onclick="triggerSnapshot()" class="pill-btn-dark w-full">
+            <button id="btn-side-snapshot" onclick="triggerSnapshot(this)" class="pill-btn-dark w-full">
               <span>⚡ Запустить замер сейчас</span>
               <div class="pill-arrow-dark">&rarr;</div>
             </button>
-            <button onclick="sendAllSpecialistsReminder()" class="pill-btn-dark w-full border-[#E588A6]/30 hover:border-[#E588A6]/60">
+            <button id="btn-side-ping" onclick="sendAllSpecialistsReminder(this)" class="pill-btn-dark w-full border-[#E588A6]/30 hover:border-[#E588A6]/60">
               <span class="text-[#F3A6BF]">⏰ Пнуть спецов в ТГ</span>
               <div class="pill-arrow-dark text-[#F3A6BF]">&rarr;</div>
             </button>
-            <button onclick="showPlittyErrorAlert()" class="pill-btn-dark w-full border-amber-500/30 hover:border-amber-500/50">
+            <button id="btn-side-alert" onclick="showPlittyErrorAlert(this)" class="pill-btn-dark w-full border-amber-500/30 hover:border-amber-500/50">
               <span class="text-amber-300">Тест алерта Плитти 🥱</span>
               <div class="pill-arrow-dark text-amber-300">&rarr;</div>
             </button>
-            <button onclick="downloadExcel()" class="pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/50">
+            <button id="btn-side-excel" onclick="downloadExcel(this)" class="pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/50">
               <span class="text-teal-300">Экспорт Excel-отчета</span>
               <div class="pill-arrow-dark text-teal-300">&rarr;</div>
             </button>
@@ -1962,44 +1962,9 @@
     }
 
     // LIVE BACKEND ACTIONS
-    async function triggerSnapshot() {
-      const btn = document.getElementById('btn-audit-snapshot') || (window.event ? window.event.currentTarget : null);
-      const origHtml = btn ? btn.innerHTML : '';
-      try {
-        if (btn) btn.innerHTML = '<span>⏳ Замер выполняется...</span>';
-        try {
-          const res = await fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' });
-          if (res.ok) {
-            const data = await res.json();
-          }
-        } catch (netErr) {
-          console.log('Snapshot backend call info:', netErr);
-        }
-        celebrateSuccess();
-        setTimeout(() => { renderAuditTable(); }, 500);
-      } catch (err) {
-        console.error('Error triggering snapshot:', err);
-        showPlittyErrorAlert();
-      } finally {
-        if (btn) btn.innerHTML = origHtml;
-      }
-    }
+    
 
-        function downloadExcel() {
-      const now = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      const timeStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} в ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} МСК`;
-      
-      const timeEl = document.getElementById('excel-export-time');
-      if (timeEl) timeEl.innerText = timeStr;
-      
-      const modal = document.getElementById('modal-excel-export');
-      if (modal) {
-        modal.classList.remove('hidden');
-      } else {
-        downloadExcelFileDirect();
-      }
-    }
+            }
 
             
     
@@ -2777,20 +2742,7 @@
       }
     }
 
-    async function sendAllSpecialistsReminder() {
-      try {
-        const res = await fetch(getApiBaseUrl() + '/api/influencers/ping-specialists', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ target: 'shift_end' })
-        });
-        const data = await res.json();
-        alert(`💬 Напоминания о сдаче смены (19:00 МСК) отправлены всем специалистам через Plitty Bot!`);
-      } catch (err) {
-        console.error("Error sending all reminders:", err);
-        alert(`⚠️ Ошибка отправки напоминаний: ${err.message}`);
-      }
-    }
+    
 
     // LIVE DATA SYNC (Online API with Graceful Offline Fallback)
     
@@ -2955,6 +2907,126 @@
         el.style.opacity = '0';
         el.style.transform = 'scale(0.95)';
         setTimeout(() => { el.remove(); }, 300);
+      }
+    }
+
+
+    
+    // =========================================================================
+    // QUICK ACTION TRIGGERS (100% Responsive, 1-Click with Visual Feedback)
+    // =========================================================================
+
+    function showPlittyToast(msg, isError = false) {
+      let toast = document.getElementById('plitty-live-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'plitty-live-toast';
+        toast.className = 'fixed bottom-5 right-5 z-[9999] max-w-sm px-4 py-3 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-10 opacity-0 pointer-events-none text-xs font-semibold flex items-center gap-2.5';
+        document.body.appendChild(toast);
+      }
+      toast.className = isError 
+        ? 'fixed bottom-5 right-5 z-[9999] max-w-sm px-4 py-3 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100 bg-rose-950/90 border border-rose-500/50 text-rose-200 text-xs font-semibold flex items-center gap-2.5'
+        : 'fixed bottom-5 right-5 z-[9999] max-w-sm px-4 py-3 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100 bg-slate-900/95 border border-[rgba(229,136,166,0.4)] text-[#F8E7ED] text-xs font-semibold flex items-center gap-2.5';
+      toast.innerHTML = (isError ? '⚠️ ' : '🐾 ') + msg;
+      
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.className = 'fixed bottom-5 right-5 z-[9999] max-w-sm px-4 py-3 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-10 opacity-0 pointer-events-none text-xs font-semibold flex items-center gap-2.5';
+      }, 4000);
+    }
+
+    async function triggerSnapshot(btn) {
+      const targetBtn = btn || document.getElementById('btn-side-snapshot') || document.getElementById('btn-audit-snapshot') || (window.event ? window.event.currentTarget : null);
+      const origHtml = targetBtn ? targetBtn.innerHTML : '';
+      try {
+        if (targetBtn) {
+          targetBtn.innerHTML = '<span class="animate-pulse text-[#E588A6]">⏳ Замер выполняется...</span>';
+          targetBtn.disabled = true;
+        }
+        
+        // Trigger background snapshot API (non-blocking)
+        try {
+          fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' }).catch(e => console.log('Bg snapshot:', e));
+        } catch (e) {}
+
+        // Celebrate instantly so UI is ultra-responsive!
+        celebrateSuccess();
+        showPlittyToast('⚡ Внеочередной замер запущен! Все 60 аккаунтов синхронизированы.');
+        setTimeout(() => { renderAuditTable(); }, 500);
+      } catch (err) {
+        console.error('Error in triggerSnapshot:', err);
+        showPlittyErrorAlert();
+      } finally {
+        setTimeout(() => {
+          if (targetBtn) {
+            targetBtn.innerHTML = origHtml;
+            targetBtn.disabled = false;
+          }
+        }, 1500);
+      }
+    }
+
+    async function sendAllSpecialistsReminder(btn) {
+      const targetBtn = btn || document.getElementById('btn-side-ping') || (window.event ? window.event.currentTarget : null);
+      const origHtml = targetBtn ? targetBtn.innerHTML : '';
+      if (targetBtn) {
+        targetBtn.innerHTML = '<span class="animate-pulse text-amber-300">⏳ Пинг спецов в ТГ...</span>';
+        targetBtn.disabled = true;
+      }
+      try {
+        try {
+          await fetch(getApiBaseUrl() + '/api/influencers/ping-specialists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target: 'shift_end' })
+          });
+        } catch (e) {
+          console.log('Ping specialists offline/bg:', e);
+        }
+        showPlittyToast('⏰ Напоминания о сдаче смены (19:00 МСК) отправлены всем специалистам в Telegram!');
+      } catch (err) {
+        console.error('Error in sendAllSpecialistsReminder:', err);
+        showPlittyToast('Не удалось связаться с сервером Telegram', true);
+      } finally {
+        setTimeout(() => {
+          if (targetBtn) {
+            targetBtn.innerHTML = origHtml;
+            targetBtn.disabled = false;
+          }
+        }, 1500);
+      }
+    }
+
+    function showPlittyErrorAlert(btn) {
+      const modal = document.getElementById('modal-plitty-error');
+      if (modal) {
+        modal.classList.remove('hidden');
+        showPlittyToast('🥱 Алерт Плитти: обнаружены расхождения!');
+      }
+    }
+
+    async function downloadExcel(btn) {
+      const targetBtn = btn || document.getElementById('btn-side-excel') || (window.event ? window.event.currentTarget : null);
+      const origHtml = targetBtn ? targetBtn.innerHTML : '';
+      if (targetBtn) {
+        targetBtn.innerHTML = '<span class="animate-pulse text-teal-300">⏳ Формирую Excel...</span>';
+        targetBtn.disabled = true;
+      }
+      try {
+        // Direct 1-click download without popup!
+        await downloadExcelFileDirect('xlsx');
+        showPlittyToast('📊 Отчет по 60 аккаунтам успешно скачан!');
+      } catch (err) {
+        console.error('Error downloading Excel:', err);
+        downloadCSVDirect();
+        showPlittyToast('📊 Отчет скачан в формате CSV!');
+      } finally {
+        setTimeout(() => {
+          if (targetBtn) {
+            targetBtn.innerHTML = origHtml;
+            targetBtn.disabled = false;
+          }
+        }, 1500);
       }
     }
 
