@@ -757,6 +757,32 @@
   <!-- JAVASCRIPT LOGIC                                                  -->
   <!-- ================================================================= -->
   <script>
+    // Универсальный обработчик открытия внешних ссылок (Telegram WebApp + Desktop + Mobile)
+    function handleLinkClick(url, event) {
+      if (!url || url === '#' || url.trim() === '') return false;
+      try {
+        if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function') {
+          window.Telegram.WebApp.openLink(url);
+          if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          return false;
+        }
+      } catch (e) {
+        console.warn('Telegram WebApp openLink error, fallback to window.open:', e);
+      }
+      try {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } catch (e) {
+        window.location.href = url;
+      }
+      if (event) {
+        event.preventDefault();
+      }
+      return false;
+    }
+
     function initPlittyImages() {
       const serverSrc = 'img/plitty/plitty_server.jpg';
       const avatarSrc = 'img/plitty/plitty_avatar_official.jpg';
@@ -866,9 +892,9 @@
         views: 15458,
         creds: { email: "alesyabyt18@gmail.com", pass: "123Byt123!" },
         socials: [
-          { net: "TikTok", handle: "@yanveras13", posts: 7, views: 5268, hit: 2903, status: "Активен", url: "https://www.tiktok.com/@yanveras13" },
+          { net: "TikTok", handle: "@alesyabyt", posts: 7, views: 5268, hit: 2903, status: "Активен", url: "https://www.tiktok.com/@alesyabyt" },
           { net: "YouTube Shorts", handle: "Алеся Бут", posts: 5, views: 8403, hit: 5000, status: "Хит 5.0k 🎬", url: "https://youtube.com/channel/UCn-t5Z16uoP60hkWQQ7d_Tg" },
-          { net: "Instagram Reels", handle: "@anveras509", posts: 5, views: 1069, hit: 661, status: "5 Reels", url: "https://www.instagram.com/anveras509" },
+          { net: "Instagram Reels", handle: "@alesabut", posts: 5, views: 1069, hit: 661, status: "5 Reels", url: "https://www.instagram.com/alesabut" },
           { net: "Facebook Reels", handle: "Алеся Бут FB", posts: 5, views: 718, hit: 280, status: "5 Reels (718 v)", url: "https://www.facebook.com/share/1BMagQvaoE/" },
           { net: "Threads", handle: "@alesabut", posts: 3, views: 0, hit: 0, status: "Активен (3 поста)", url: "https://www.threads.net/@alesabut" },
           { net: "X (Twitter)", handle: "@ft73v5", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/ft73v5" }
@@ -886,9 +912,9 @@
         views: 9673,
         creds: { email: "anveras5098@gmail.com", pass: "123Yan123!" },
         socials: [
-          { net: "TikTok", handle: "@alesyabyt", posts: 6, views: 3605, hit: 2903, status: "Хит 2.9k 🥈", url: "https://www.tiktok.com/@alesyabyt" },
+          { net: "TikTok", handle: "@yanveras13", posts: 6, views: 3605, hit: 2903, status: "Хит 2.9k 🥈", url: "https://www.tiktok.com/@yanveras13" },
           { net: "YouTube Shorts", handle: "Ян Верас", posts: 5, views: 4200, hit: 1100, status: "4.2k views 🔥", url: "https://youtube.com/channel/UCxgk7mDrX45Wb9Wv61hO75w" },
-          { net: "Instagram Reels", handle: "@alesabut", posts: 5, views: 1620, hit: 661, status: "1.6k views", url: "https://www.instagram.com/alesabut" },
+          { net: "Instagram Reels", handle: "@anveras509", posts: 5, views: 1620, hit: 661, status: "1.6k views", url: "https://www.instagram.com/anveras509" },
           { net: "Facebook Reels", handle: "Ян Верас FB", posts: 5, views: 248, hit: 66, status: "5 Reels (248 v)", url: "https://www.facebook.com/share/1GbKg4Tp5n/" },
           { net: "Threads", handle: "@anveras509", posts: 3, views: 0, hit: 0, status: "3 поста (509 фолл.)", url: "https://www.threads.net/@anveras509" },
           { net: "X (Twitter)", handle: "@neaz8b", posts: 0, views: 0, hit: 0, status: "Активен", url: "https://x.com/neaz8b" }
@@ -909,7 +935,7 @@
           { net: "TikTok", handle: "@baraka.otieno8", posts: 5, views: 2495, hit: 2100, status: "Активен", url: "https://www.tiktok.com/@baraka.otieno8" },
           { net: "YouTube Shorts", handle: "@BarakaOtieno-t9y", posts: 1, views: 2, hit: 2, status: "Активен", url: "https://www.youtube.com/@BarakaOtieno-t9y" },
           { net: "Instagram", handle: "@otienobarakaa", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://www.instagram.com/otienobarakaa" },
-          { net: "Threads", handle: "@otienobarakaa", posts: 3, views: 0, hit: 0, status: "Активен", url: "https://www.threads.com/@otienobarakaa" },
+          { net: "Threads", handle: "@otienobarakaa", posts: 3, views: 0, hit: 0, status: "Активен", url: "https://www.threads.net/@otienobarakaa" },
           { net: "Facebook", handle: "Baraka Otieno", posts: 0, views: 0, hit: 0, status: "🔴 БАН (404)", url: "https://www.facebook.com/profile.php?id=61594225224413" }
         ]
       },
@@ -929,7 +955,7 @@
           { net: "YouTube Shorts", handle: "@GraceMuthioni", posts: 1, views: 11, hit: 11, status: "Активен", url: "https://www.youtube.com/@GraceMuthioni" },
           { net: "Instagram", handle: "@gracemuthioni", posts: 4, views: 0, hit: 0, status: "Активен", url: "https://www.instagram.com/gracemuthioni" },
           { net: "Facebook Reels", handle: "Grace Muthioni FB", posts: 3, views: 791, hit: 340, status: "3 Reels (791 views)", url: "https://www.facebook.com/share/19Yipg1q9R/" },
-          { net: "Threads", handle: "@gracemuthioni", posts: 2, views: 0, hit: 0, status: "Активен", url: "https://www.threads.com/@gracemuthioni" }
+          { net: "Threads", handle: "@gracemuthioni", posts: 2, views: 0, hit: 0, status: "Активен", url: "https://www.threads.net/@gracemuthioni" }
         ]
       },
       "Kaan Turan": {
