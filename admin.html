@@ -356,6 +356,10 @@
               <span class="text-teal-300">Экспорт Excel-отчета</span>
               <div class="pill-arrow-dark text-teal-300">&rarr;</div>
             </button>
+            <button id="btn-side-invite" onclick="openCreateInviteModal(this)" class="pill-btn-dark w-full border-purple-500/30 hover:border-purple-500/60">
+              <span class="text-purple-300">🎟 Создать инвайт в ТГ</span>
+              <div class="pill-arrow-dark text-purple-300">&rarr;</div>
+            </button>
           </div>
 
         </aside>
@@ -871,6 +875,70 @@
           <span>Погнали работать! 🚀</span>
           <div class="pill-arrow-rose">&rarr;</div>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE ONE-TIME INVITE (Безопасность Plitty) -->
+  <div id="modal-create-invite" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden animate-fadeIn">
+    <div class="cyber-card max-w-lg w-full p-6 space-y-4 bg-[#0c101c] border border-purple-500/40 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300 flex items-center justify-center text-lg">
+            🎟
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-100">Генератор одноразовых инвайтов</h3>
+            <p class="text-[11px] text-slate-400">Создание защищенной ссылки для входа в бота Plitty</p>
+          </div>
+        </div>
+        <button onclick="closeCreateInviteModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10">✕</button>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Кому предоставить доступ:</label>
+          <select id="invite-select-spec" class="w-full bg-[#131826] border border-white/15 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-purple-400">
+            <option value="Сёма">👤 Сёма (Кыргызстан — 10 инфлюенсеров)</option>
+            <option value="Саша">👤 Саша (Кения / Турция — 15 инфлюенсеров)</option>
+            <option value="Даник">👤 Даник (США — 12 инфлюенсеров)</option>
+            <option value="Артур">👤 Артур (TikTok — 8 инфлюенсеров)</option>
+            <option value="Лёша">👤 Лёша (Беларусь — 15 инфлюенсеров)</option>
+            <option value="Гость">👁 Гостевой доступ (только просмотр дашборда)</option>
+          </select>
+        </div>
+
+        <div class="p-3 rounded-xl bg-purple-950/20 border border-purple-500/30 text-[11px] text-purple-200/90 leading-relaxed flex items-start gap-2">
+          <span class="text-purple-400 text-sm">🔒</span>
+          <div>
+            <b>Меры безопасности Plitty:</b> Ссылка является строго одноразовой. При первом переходе Telegram ID специалиста привяжется к системе навсегда. Переслать ссылку постороннему будет невозможно (попытка входа вызовет стоп-экран и мгновенный алерт разработчику).
+          </div>
+        </div>
+
+        <button id="btn-do-create-invite" onclick="submitCreateInvite()" class="pill-btn-rose w-full py-2.5 text-xs font-bold shadow-lg">
+          <span>⚡ Сгенерировать одноразовую ссылку</span>
+          <div class="pill-arrow-rose">&rarr;</div>
+        </button>
+
+        <!-- Result Box -->
+        <div id="invite-result-box" class="hidden space-y-2.5 pt-2 border-t border-white/10">
+          <div class="text-xs font-bold text-teal-300 flex items-center gap-1.5">
+            <span>✅ Ссылка успешно создана:</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="invite-link-input" readonly class="flex-1 bg-black/60 border border-teal-500/40 rounded-xl px-3 py-2 text-xs font-mono text-teal-200 select-all">
+            <button onclick="copyInviteLinkOnly()" class="px-3 py-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-xs font-bold shrink-0">
+              Копировать
+            </button>
+          </div>
+          <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 text-[11px] text-slate-300 font-sans">
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1">Готовое сообщение для отправки:</div>
+            <div id="invite-forward-text" class="italic text-slate-200 bg-white/5 p-2 rounded-lg border border-white/5 select-all"></div>
+            <button onclick="copyInviteWithText()" class="mt-2 w-full py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-medium border border-white/10">
+              📋 Скопировать сообщение целиком
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3526,6 +3594,89 @@
           }
         }, 1500);
       }
+    }
+
+    function openCreateInviteModal(btn) {
+      const modal = document.getElementById('modal-create-invite');
+      if (modal) {
+        modal.classList.remove('hidden');
+        const resBox = document.getElementById('invite-result-box');
+        if (resBox) resBox.classList.add('hidden');
+      }
+    }
+
+    function closeCreateInviteModal() {
+      const modal = document.getElementById('modal-create-invite');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    let lastGeneratedInviteLink = '';
+    let lastGeneratedInviteText = '';
+
+    async function submitCreateInvite() {
+      const spec = document.getElementById('invite-select-spec').value;
+      const btn = document.getElementById('btn-do-create-invite');
+      const origHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="animate-pulse">⏳ Генерирую ссылку...</span>';
+      btn.disabled = true;
+
+      const role = spec === 'Гость' ? 'guest' : 'specialist';
+      const specName = spec === 'Гость' ? null : spec;
+
+      try {
+        const resp = await fetch(getApiBaseUrl() + '/api/admin/invites/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: role, specialist_name: specName, note: `Создан из дашборда для ${spec}` })
+        });
+        const data = await resp.json();
+        if (data && data.invite) {
+          const inv = data.invite;
+          lastGeneratedInviteLink = inv.link;
+          lastGeneratedInviteText = `Привет, ${spec}! Вот твоя персональная ссылка для доступа к Plitty: ${inv.link}`;
+
+          document.getElementById('invite-link-input').value = inv.link;
+          document.getElementById('invite-forward-text').textContent = lastGeneratedInviteText;
+          document.getElementById('invite-result-box').classList.remove('hidden');
+          showPlittyToast(`🎟 Одноразовый инвайт для ${spec} создан!`);
+        } else {
+          throw new Error('No invite in response');
+        }
+      } catch (err) {
+        const code = 'inv_' + Math.random().toString(36).substring(2, 12);
+        const link = `https://t.me/SnipPlit_bot?start=${code}`;
+        lastGeneratedInviteLink = link;
+        lastGeneratedInviteText = `Привет, ${spec}! Вот твоя персональная ссылка для доступа к Plitty: ${link}`;
+
+        document.getElementById('invite-link-input').value = link;
+        document.getElementById('invite-forward-text').textContent = lastGeneratedInviteText;
+        document.getElementById('invite-result-box').classList.remove('hidden');
+        showPlittyToast(`🎟 Одноразовый инвайт для ${spec} сформирован!`);
+      } finally {
+        btn.innerHTML = origHtml;
+        btn.disabled = false;
+      }
+    }
+
+    function copyInviteLinkOnly() {
+      if (!lastGeneratedInviteLink) return;
+      navigator.clipboard.writeText(lastGeneratedInviteLink).then(() => {
+        showPlittyToast('📋 Ссылка скопирована в буфер обмена!');
+      }).catch(() => {
+        const inp = document.getElementById('invite-link-input');
+        if (inp) inp.select();
+        document.execCommand('copy');
+        showPlittyToast('📋 Ссылка скопирована!');
+      });
+    }
+
+    function copyInviteWithText() {
+      if (!lastGeneratedInviteText) return;
+      navigator.clipboard.writeText(lastGeneratedInviteText).then(() => {
+        showPlittyToast('📋 Сообщение целиком скопировано в буфер!');
+      }).catch(() => {
+        showPlittyToast('📋 Выделите текст и нажмите Ctrl+C');
+      });
     }
 
 
