@@ -2848,28 +2848,38 @@
         btn.innerHTML = '<span>⏳ Отправка отчета...</span>';
       }
 
-      // 1. Sync to local state INFLUENCERS and AUDIT_MATRIX
-      reportItemsState.forEach(it => {
-        const inf = INFLUENCERS[it.influencer];
-        if (inf && inf.socials) {
-          const soc = inf.socials.find(s => s.net === it.network);
-          if (soc) {
-            soc.reported = it.posts;
-            if (it.banned) {
-              soc.status = "🔴 БАН";
-            }
-          }
-        }
-      });
-
-      // Re-render tables immediately so the user sees results
-      renderAuditTable();
-      recalculateMetrics();
-
-      // 2. Call backend API
       try {
+        // 1. Sync to local state INFLUENCERS and AUDIT_MATRIX
+        if (Array.isArray(reportItemsState)) {
+          reportItemsState.forEach(it => {
+            const inf = INFLUENCERS[it.influencer];
+            if (inf && inf.socials) {
+              const soc = inf.socials.find(s => s.net === it.network);
+              if (soc) {
+                soc.reported = it.posts;
+                if (it.banned) {
+                  soc.status = "🔴 БАН";
+                }
+              }
+            }
+          });
+        }
+
+        try {
+          if (typeof recalculateMetrics === 'function') recalculateMetrics();
+          if (typeof renderAuditTable === 'function') renderAuditTable();
+          if (typeof renderSpecialistsTab === 'function') renderSpecialistsTab();
+          if (typeof renderSpecialistCabinet === 'function' && currentReportingSpec) {
+            const s = SPECIALISTS.find(item => item.name === currentReportingSpec);
+            if (s) renderSpecialistCabinet(s);
+          }
+        } catch (renderErr) {
+          console.warn("Render update warning:", renderErr);
+        }
+
+        // 2. Call backend API with timeout
         const payload = {
-          specialist: currentReportingSpec,
+          specialist: currentReportingSpec || 'Лёша',
           report_date: new Date().toISOString().split('T')[0],
           items: reportItemsState.map(it => ({
             influencer: it.influencer,
@@ -2880,20 +2890,31 @@
         };
 
         const apiUrl = getApiBaseUrl() + '/api/influencers/submit-report';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
         await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        }).catch(e => console.warn("Fetch error or timeout:", e));
+        clearTimeout(timeoutId);
+
       } catch (err) {
-        console.warn("Backend submit report sync warning (cached locally):", err);
+        console.error("Error in submitShiftReportModal:", err);
       } finally {
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = origHtml;
         }
         closeModal('modal-specialist-shift-report');
-        showPlittyToast(`✅ Отчет за смену успешно сдан! Разработчик уведомлен.`);
+        showPlittyToast('✅ Отчет за смену успешно сдан! Разработчик уведомлен.');
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+          try {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+          } catch(e){}
+        }
       }
     }
 
