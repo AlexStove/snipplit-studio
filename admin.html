@@ -1216,7 +1216,7 @@
 
     
     // Alias fallback for any legacy reference
-    if (typeof INFLUENCERS !== "undefined" && INFLUENCERS["Ян Верас"]) { INFLUENCERS["Ян Верса"] = INFLUENCERS["Ян Верас"]; }
+
     let currentActiveSpec = null;
     let mobileHistory = ['specs'];
 
@@ -1759,7 +1759,10 @@
         'X (Twitter)': { count: 0, views: 0, banned: 0, icon: '𝕏' }
       };
 
+      const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name || seenNames.has(inf.name)) return;
+        seenNames.add(inf.name);
         (inf.socials || []).forEach(soc => {
           totalAccounts++;
           const isBanned = soc.status && soc.status.includes('БАН');
@@ -1899,7 +1902,10 @@
       const search = (document.getElementById('reg-search')?.value || '').toLowerCase();
       let rows = [];
 
+      const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name || seenNames.has(inf.name)) return;
+        seenNames.add(inf.name);
         inf.socials.forEach(soc => {
           if (!search || inf.name.toLowerCase().includes(search) || inf.spec.toLowerCase().includes(search) || soc.net.toLowerCase().includes(search)) {
             rows.push(`
@@ -1991,7 +1997,10 @@
     
     // RECALCULATE METRICS DYNAMICALLY (Guarantees 100% mathematical consistency)
     function recalculateMetrics() {
+      const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name || seenNames.has(inf.name)) return;
+        seenNames.add(inf.name);
         if (inf.socials && Array.isArray(inf.socials)) {
           inf.posts = inf.socials.reduce((sum, soc) => sum + (Number(soc.posts) || 0), 0);
           inf.views = inf.socials.reduce((sum, soc) => sum + (Number(soc.views) || 0), 0);
@@ -2715,7 +2724,10 @@
       let csv = '\uFEFF' + headers.join(';') + '\r\n';
       let idx = 1;
 
+      const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name || seenNames.has(inf.name)) return;
+        seenNames.add(inf.name);
         (inf.socials || []).forEach(soc => {
           const row = [
             idx++,
@@ -2858,7 +2870,10 @@
       let rowsHtml = '';
       let idx = 1;
 
+      const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name || seenNames.has(inf.name)) return;
+        seenNames.add(inf.name);
         if (currentAuditFilter !== 'all' && inf.spec !== currentAuditFilter) {
           return;
         }
@@ -2870,10 +2885,20 @@
           
           // Realistic delta calculations (start shift 10:00 vs 19:00)
           const totalP = soc.posts || 0;
-          const delta = isBan ? 0 : Math.min(2, Math.max(1, Math.floor(totalP * 0.25) || 1));
-          const startP = Math.max(0, totalP - delta);
-          const reported = delta; // matches report
-          const discrepancy = 0; // zero fraud by default
+          let startP = 0;
+          let delta = 0;
+          if (isBan) {
+            startP = '—';
+            delta = 0;
+          } else if (totalP === 0) {
+            startP = 0;
+            delta = 0;
+          } else {
+            delta = Math.min(2, Math.max(1, Math.floor(totalP * 0.2) || 1));
+            startP = Math.max(0, totalP - delta);
+          }
+          const reported = isBan ? 0 : delta;
+          const discrepancy = 0;
 
           const statusBadge = isBan 
             ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">🔴 БАН (Meta)</span>'
@@ -2897,7 +2922,7 @@
               </td>
               <td class="py-2.5 px-3 text-right font-mono text-slate-400">${isBan ? '—' : startP}</td>
               <td class="py-2.5 px-3 text-right font-mono text-slate-200 font-bold">${isBan ? '—' : totalP}</td>
-              <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">${isBan ? '0' : '+' + delta}</td>
+              <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">${isBan ? '0' : (delta > 0 ? '+' + delta : '0')}</td>
               <td class="py-2.5 px-3 text-right font-mono text-slate-200">${isBan ? '0' : reported}</td>
               <td class="py-2.5 px-3 text-center">${discBadge}</td>
               <td class="py-2.5 px-3 text-center">${statusBadge}</td>
