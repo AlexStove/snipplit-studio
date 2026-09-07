@@ -1790,7 +1790,7 @@
         const btn = window.event ? window.event.currentTarget : null;
         const origHtml = btn ? btn.innerHTML : '';
         if (btn) btn.innerHTML = '<span>⏳ Замер выполняется...</span>';
-        const res = await fetch('/api/influencers/trigger-snapshot', { method: 'POST' });
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' });
         const data = await res.json();
         celebrateSuccess();
         setTimeout(() => { loadLiveData(); }, 3000);
@@ -1816,7 +1816,16 @@
       }
     }
 
-            async function sendExcelToTelegramChat() {
+            
+    // API BASE RESOLVER (Supports Localhost, Cloudflare Tunnel & GitHub Pages)
+    function getApiBaseUrl() {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return '';
+      }
+      return 'https://phys-affect-concentration-instrumentation.trycloudflare.com';
+    }
+
+    async function sendExcelToTelegramChat() {
       const btn = document.getElementById('btn-send-tg-doc');
       const origHtml = btn ? btn.innerHTML : '';
       if (btn) {
@@ -1835,8 +1844,9 @@
       const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
       const targetChatId = (tgUser && tgUser.id) ? tgUser.id : 234658540;
 
+      const apiUrl = getApiBaseUrl() + '/api/influencers/export-excel-tg';
       try {
-        const res = await fetch('/api/influencers/export-excel-tg', {
+        const res = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: targetChatId })
@@ -1892,7 +1902,7 @@
 
       // 1. Fetch genuine binary XLSX generated from backend
       try {
-        const res = await fetch('/api/influencers/export-excel');
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/export-excel');
         if (res.ok) {
           const blob = await res.blob();
           const blobUrl = window.URL.createObjectURL(blob);
@@ -1953,7 +1963,7 @@
 
     async function sendSpecialistReminder(spec, target) {
       try {
-        const res = await fetch('/api/influencers/ping-specialists', {
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/ping-specialists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ specialist: spec, target: target || 'shift_end' })
@@ -1968,7 +1978,7 @@
 
     async function sendAllSpecialistsReminder() {
       try {
-        const res = await fetch('/api/influencers/ping-specialists', {
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/ping-specialists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ target: 'shift_end' })
@@ -2005,8 +2015,8 @@
     async function loadLiveData() {
       try {
         const [accRes, recRes] = await Promise.allSettled([
-          fetch('/api/influencers/accounts'),
-          fetch('/api/influencers/reconciliation')
+          fetch(getApiBaseUrl() + '/api/influencers/accounts'),
+          fetch(getApiBaseUrl() + '/api/influencers/reconciliation')
         ]);
 
         if (accRes.status === 'fulfilled' && accRes.value.ok) {
