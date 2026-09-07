@@ -582,6 +582,55 @@
   <!-- MODALS (Plitty Guide, Tired Error Alert, Beer Done)               -->
   <!-- ================================================================= -->
 
+  
+  <!-- 4. SPECIALIST CUSTOM MESSAGE MODAL (Direct Telegram) -->
+  <div id="modal-specialist-message" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cyber-card border-[rgba(229,136,166,0.35)] max-w-lg w-full p-6 shadow-2xl relative space-y-4">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#090C12] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-xl">
+            💬
+          </div>
+          <div>
+            <div class="text-[9px] tracking-editorial text-[#E588A6] font-bold">DIRECT TELEGRAM MESSAGE</div>
+            <h4 class="text-base font-bold text-slate-200">Написать специалисту: <span id="msg-spec-name" class="text-[#F3A6BF]"></span></h4>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-specialist-message')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white">&times;</button>
+      </div>
+
+      <!-- Quick Template Chips -->
+      <div class="space-y-1.5">
+        <div class="text-[10px] font-bold text-slate-400">Быстрые шаблоны:</div>
+        <div class="flex flex-wrap gap-1.5 text-[11px]">
+          <button type="button" onclick="setSpecialistMsgTemplate('⏰ Привет! Не забудь сдать отчет по смене до 19:00 МСК.')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition-colors">⏰ Сдача смены 19:00</button>
+          <button type="button" onclick="setSpecialistMsgTemplate('⚠️ Проверь публикации за день: есть расхождения по факту постов.')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition-colors">⚠️ Расхождения постов</button>
+          <button type="button" onclick="setSpecialistMsgTemplate('🔥 Отличные показатели охватов за смену! Так держать.')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition-colors">🔥 Похвалить за охваты</button>
+        </div>
+      </div>
+
+      <!-- Custom Text Input -->
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold text-slate-400">Текст сообщения:</label>
+        <textarea id="spec-custom-msg-input" rows="4" placeholder="Введите любое поручение, вопрос или комментарий специалисту..." class="w-full bg-[#090C12] border border-[rgba(229,136,166,0.25)] rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#E588A6]"></textarea>
+      </div>
+
+      <div class="text-[10px] text-slate-400 flex items-center gap-1.5">
+        <span>🔒 Сообщение отправляется напрямую в личный Telegram специалиста.</span>
+      </div>
+
+      <div class="flex gap-2.5 pt-1">
+        <button id="btn-submit-spec-msg" onclick="submitSpecialistCustomMessage()" class="pill-btn-rose flex-1 justify-center py-2.5">
+          <span>✈️ Отправить в Telegram</span>
+          <div class="pill-arrow-rose">&rarr;</div>
+        </button>
+        <button type="button" onclick="closeModal('modal-specialist-message')" class="cappen-btn px-4 text-slate-400">
+          Отмена
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 1. PLITTY GUIDE MODAL (Smirking Cyber Plitty) -->
   <div id="modal-plitty-guide" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="cyber-card border-[rgba(229,136,166,0.35)] max-w-lg w-full p-6 shadow-2xl relative overflow-hidden space-y-4">
@@ -1258,9 +1307,14 @@
               </div>
             </div>
 
-            <button onclick="navToSpecialistCabinet('${inf.spec}')" class="cappen-btn">
-              &larr; Назад к ${inf.spec}
-            </button>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="downloadInfluencerReport('${inf.name}')" class="cappen-btn text-xs hover:border-[#E588A6] transition-all">
+                📥 Скачать досье (${inf.name})
+              </button>
+              <button onclick="navToSpecialistCabinet('${inf.spec}')" class="cappen-btn text-xs">
+                &larr; Назад к ${inf.spec}
+              </button>
+            </div>
           </div>
 
           <!-- Creds & Key Metrics -->
@@ -1817,6 +1871,161 @@
     }
 
             
+    
+    // RECALCULATE METRICS DYNAMICALLY (Guarantees 100% mathematical consistency)
+    function recalculateMetrics() {
+      Object.values(INFLUENCERS).forEach(inf => {
+        if (inf.socials && Array.isArray(inf.socials)) {
+          inf.posts = inf.socials.reduce((sum, soc) => sum + (Number(soc.posts) || 0), 0);
+          inf.views = inf.socials.reduce((sum, soc) => sum + (Number(soc.views) || 0), 0);
+        }
+      });
+      SPECIALISTS.forEach(s => {
+        if (s.influencers && Array.isArray(s.influencers)) {
+          s.posts = s.influencers.reduce((sum, name) => sum + (Number(INFLUENCERS[name]?.posts) || 0), 0);
+          s.views = s.influencers.reduce((sum, name) => sum + (Number(INFLUENCERS[name]?.views) || 0), 0);
+        }
+      });
+    }
+
+    // SPECIALIST INDIVIDUAL REPORT (CSV/Excel)
+    function downloadSpecialistReport(specName) {
+      recalculateMetrics();
+      const s = SPECIALISTS.find(item => item.name === specName);
+      if (!s) return;
+      
+      const headers = ['№', 'Специалист', 'Персонаж', 'Страна', 'Соцсеть', 'Статус', 'Всего постов', 'Просмотры', 'Логин/Почта', 'Пароль сетей', 'Ссылка на канал'];
+      let csv = '\uFEFF' + headers.join(';') + '\r\n';
+      let idx = 1;
+
+      s.influencers.forEach(infName => {
+        const inf = INFLUENCERS[infName];
+        if (!inf) return;
+        inf.socials.forEach(soc => {
+          const row = [
+            idx++,
+            `"${s.name}"`,
+            `"${inf.name}"`,
+            `"${inf.geo}"`,
+            `"${soc.net}"`,
+            `"${soc.status || 'Активен'}"`,
+            soc.posts || 0,
+            soc.views || 0,
+            `"${inf.creds?.email || ''}"`,
+            `"${inf.creds?.pass || ''}"`,
+            `"${soc.url || ''}"`
+          ];
+          csv += row.join(';') + '\r\n';
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `Отчет_Специалист_${specName}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    }
+
+    // INFLUENCER INDIVIDUAL REPORT (CSV/Excel)
+    function downloadInfluencerReport(infName) {
+      recalculateMetrics();
+      const inf = INFLUENCERS[infName];
+      if (!inf) return;
+
+      const headers = ['№', 'Инфлюенсер', 'Специалист', 'Страна', 'Соцсеть', 'Handle', 'Статус', 'Посты', 'Просмотры', 'Логин/Почта', 'Пароль', 'Ссылка на канал'];
+      let csv = '\uFEFF' + headers.join(';') + '\r\n';
+      let idx = 1;
+
+      inf.socials.forEach(soc => {
+        const row = [
+          idx++,
+          `"${inf.name}"`,
+          `"${inf.spec}"`,
+          `"${inf.geo}"`,
+          `"${soc.net}"`,
+          `"${soc.handle || ''}"`,
+          `"${soc.status || 'Активен'}"`,
+          soc.posts || 0,
+          soc.views || 0,
+          `"${inf.creds?.email || ''}"`,
+          `"${inf.creds?.pass || ''}"`,
+          `"${soc.url || ''}"`
+        ];
+        csv += row.join(';') + '\r\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `Досье_Инфлюенсер_${infName}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    }
+
+    // DIRECT SPECIALIST CUSTOM MESSAGING
+    let currentTargetSpecForMsg = null;
+    function openSpecialistMessageModal(specName) {
+      currentTargetSpecForMsg = specName;
+      const nameEl = document.getElementById('msg-spec-name');
+      if (nameEl) nameEl.innerText = specName;
+      const input = document.getElementById('spec-custom-msg-input');
+      if (input) input.value = '';
+      const modal = document.getElementById('modal-specialist-message');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function setSpecialistMsgTemplate(txt) {
+      const input = document.getElementById('spec-custom-msg-input');
+      if (input) input.value = txt;
+    }
+
+    async function submitSpecialistCustomMessage() {
+      const input = document.getElementById('spec-custom-msg-input');
+      const text = input ? input.value.trim() : '';
+      if (!text) {
+        alert("Пожалуйста, введите текст сообщения.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-spec-msg');
+      const origText = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Отправка...</span>';
+      }
+
+      try {
+        const apiUrl = getApiBaseUrl() + '/api/influencers/ping-specialists';
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ specialist: currentTargetSpecForMsg, message: text })
+        });
+        const data = await res.json();
+        closeModal('modal-specialist-message');
+        if (data && data.direct) {
+          alert(`✅ Личное сообщение успешно доставлено в Telegram специалисту ${currentTargetSpecForMsg}!`);
+        } else {
+          alert(`✅ Сообщение для ${currentTargetSpecForMsg} отправлено в Telegram!\n\n(Пока специалист не привязал свой Telegram через персональный старт, копия направлена руководству)`);
+        }
+      } catch(e) {
+        console.error("Error sending custom msg:", e);
+        alert("⚠️ Ошибка отправки сообщения: " + e.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
+      }
+    }
+
     // API BASE RESOLVER (Supports Localhost, Cloudflare Tunnel & GitHub Pages)
     function getApiBaseUrl() {
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
