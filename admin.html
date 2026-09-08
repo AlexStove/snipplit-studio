@@ -414,8 +414,8 @@
             
             <div class="cyber-card p-4 space-y-1">
               <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">ПОСТЫ ЗА СМЕНУ (09:00–19:00)</div>
-              <div id="kpi-shift-posts" class="text-3xl font-black text-slate-100 tracking-tight mt-1">+40 <span class="text-xs font-bold text-teal-400">LIVE</span></div>
-              <div id="kpi-shift-breakdown" class="text-[10px] text-slate-400 mt-1">Сбор метрик в 09:00 МСК</div>
+              <div id="kpi-shift-posts" class="text-3xl font-black text-slate-100 tracking-tight mt-1">40 <span class="text-xs font-normal text-slate-400">/ план 58</span></div>
+              <div id="kpi-shift-breakdown" class="text-[10px] text-teal-400/90 mt-1 font-medium">Общий план: 58 постов (по 1 на активную соцсеть)</div>
             </div>
 
             <div class="cyber-card-active p-4 space-y-1 relative overflow-hidden">
@@ -1227,7 +1227,12 @@
         avatar: "👨‍💻",
         role: "Специалист по Беларуси",
         posts: 49,
-        plan: 40,
+        shiftPosts: 16,
+        defaultShiftPosts: 16,
+        plan: 12,
+        totalAccounts: 12,
+        activeAccounts: 12,
+        bannedAccounts: 0,
         views: 25131,
         statusBadge: "🟢 FB Reels подключены",
         statusColor: "teal",
@@ -1240,7 +1245,12 @@
         avatar: "👨‍💻",
         role: "Специалист (Кения/Турция)",
         posts: 27,
-        plan: 48,
+        shiftPosts: 13,
+        defaultShiftPosts: 13,
+        plan: 17,
+        totalAccounts: 24,
+        activeAccounts: 17,
+        bannedAccounts: 7,
         views: 15266,
         statusBadge: "🔴 7 банов в Meta",
         statusColor: "rose",
@@ -1253,7 +1263,12 @@
         avatar: "👨‍💻",
         role: "Топ-специалист (Кыргызстан)",
         posts: 58,
-        plan: 48,
+        shiftPosts: 8,
+        defaultShiftPosts: 8,
+        plan: 12,
+        totalAccounts: 12,
+        activeAccounts: 12,
+        bannedAccounts: 0,
         views: 768603,
         statusBadge: "🟢 Топ охваты + FB Reels",
         statusColor: "teal",
@@ -1266,7 +1281,12 @@
         avatar: "👨‍💻",
         role: "Специалист по США",
         posts: 17,
-        plan: 15,
+        shiftPosts: 3,
+        defaultShiftPosts: 3,
+        plan: 6,
+        totalAccounts: 6,
+        activeAccounts: 6,
+        bannedAccounts: 0,
         views: 4440,
         statusBadge: "🟢 100% стабильность",
         statusColor: "teal",
@@ -1279,7 +1299,12 @@
         avatar: "👨‍💻",
         role: "Специалист по США (TikTok)",
         posts: 56,
-        plan: 56,
+        shiftPosts: 0,
+        defaultShiftPosts: 0,
+        plan: 6,
+        totalAccounts: 6,
+        activeAccounts: 6,
+        bannedAccounts: 0,
         views: 645952,
         statusBadge: "🔥 Мегахит 245k (646k views)",
         statusColor: "teal",
@@ -1513,8 +1538,8 @@
 
           <div class="flex items-center gap-4">
             <div class="text-right">
-              <div class="text-base font-bold text-[#F3A6BF]">${s.posts} постов</div>
-              <div class="text-[11px] text-slate-400">${s.views.toLocaleString()} просмотров</div>
+              <div class="text-base font-bold text-slate-100">${s.shiftPosts !== undefined ? s.shiftPosts : 0} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
+              <div class="text-[11px] text-slate-400">${s.activeAccounts || s.plan} акт. сетей &bull; ${(s.views || 0).toLocaleString()} просм.</div>
             </div>
             
             <button onclick="navToSpecialistCabinet('${s.name}')" class="pill-btn-rose">
@@ -1588,15 +1613,18 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
             <div class="cyber-card p-4 text-center">
               <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ПУБЛИКАЦИЙ ЗА СМЕНУ</div>
-              <div class="text-2xl font-extrabold text-slate-100 mt-1">${s.posts} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
+              <div class="text-2xl font-extrabold text-slate-100 mt-1">${s.shiftPosts !== undefined ? s.shiftPosts : 0} <span class="text-xs font-normal text-slate-400">/ план ${s.plan}</span></div>
+              <div class="text-[10px] text-teal-400/90 mt-1 font-medium">План: ${s.plan} постов (${s.activeAccounts || s.plan} активных соцсетей)</div>
             </div>
             <div class="cyber-card p-4 text-center">
               <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">СУММАРНЫЕ ПРОСМОТРЫ</div>
-              <div class="text-2xl font-extrabold text-[#F3A6BF] mt-1">${s.views.toLocaleString()}</div>
+              <div class="text-2xl font-extrabold text-[#F3A6BF] mt-1">${(s.views || 0).toLocaleString()}</div>
+              <div class="text-[10px] text-slate-400 mt-1 font-medium">Охват закреплённых персонажей</div>
             </div>
             <div class="cyber-card p-4 text-center">
               <div class="text-[10px] tracking-wide-tight text-slate-400 font-bold uppercase">ПЕРСОНАЖЕЙ В УПРАВЛЕНИИ</div>
-              <div class="text-2xl font-extrabold text-teal-400 mt-1">${(s.influencers || []).length} персонажа (${(s.influencers || []).length * 6} аккаунтов)</div>
+              <div class="text-2xl font-extrabold text-teal-400 mt-1">${(s.influencers || []).length} персонажа (${s.totalAccounts || (s.influencers || []).length * 6} аккаунтов)</div>
+              <div class="text-[10px] text-slate-400 mt-1">${s.activeAccounts || s.plan} активных ${s.bannedAccounts ? `&bull; <span class="text-rose-400 font-semibold">${s.bannedAccounts} в бане</span>` : ''}</div>
             </div>
           </div>
         </div>
@@ -2229,19 +2257,11 @@
       try {
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
-        if (window.innerWidth < 768) {
-          setViewMode('mobile');
-        }
       } catch (e) {
         console.warn("[Plitty WebApp] Init warning:", e);
       }
     }
 
-    // LIVE BACKEND ACTIONS
-
-
-            
-    
     // RECALCULATE METRICS DYNAMICALLY (Guarantees 100% mathematical consistency)
     function recalculateMetrics() {
       const seenNames = new Set();
@@ -2253,12 +2273,58 @@
           inf.views = inf.socials.reduce((sum, soc) => sum + (Number(soc.views) || 0), 0);
         }
       });
+
+      let netPlanTotal = 0;
+      let netShiftTotal = 0;
+
       SPECIALISTS.forEach(s => {
+        let activeCount = 0;
+        let bannedCount = 0;
+        let totalAccCount = 0;
+        let totalViews = 0;
+        let totalPosts = 0;
+
         if (s.influencers && Array.isArray(s.influencers)) {
-          s.posts = s.influencers.reduce((sum, name) => sum + (Number(INFLUENCERS[name]?.posts) || 0), 0);
-          s.views = s.influencers.reduce((sum, name) => sum + (Number(INFLUENCERS[name]?.views) || 0), 0);
+          s.influencers.forEach(name => {
+            const inf = INFLUENCERS[name];
+            if (inf) {
+              totalViews += (Number(inf.views) || 0);
+              totalPosts += (Number(inf.posts) || 0);
+              if (inf.socials && Array.isArray(inf.socials)) {
+                inf.socials.forEach(soc => {
+                  totalAccCount++;
+                  const st = (soc.status || '').toLowerCase();
+                  const u = (soc.url || '').toLowerCase();
+                  const isBan = st.includes('бан') || st.includes('ban') || st.includes('block') || u.includes('бан');
+                  if (isBan) {
+                    bannedCount++;
+                  } else {
+                    activeCount++;
+                  }
+                });
+              }
+            }
+          });
         }
+
+        s.totalAccounts = totalAccCount || (s.influencers || []).length * 6;
+        s.activeAccounts = activeCount;
+        s.bannedAccounts = bannedCount;
+        // ФОРМУЛА ПЛАНА: план = кол-во активных соцсетей (по 1 публикации на каждую активную соцсеть)
+        s.plan = activeCount;
+        s.totalPosts = totalPosts;
+        if (!s.views || s.views < totalViews) s.views = totalViews;
+
+        if (s.shiftPosts === undefined) {
+          s.shiftPosts = s.defaultShiftPosts !== undefined ? s.defaultShiftPosts : 0;
+        }
+
+        netPlanTotal += s.plan;
+        netShiftTotal += s.shiftPosts;
       });
+
+      window._calculatedNetPlan = netPlanTotal;
+      window._calculatedNetShift = netShiftTotal;
     }
 
     // STANDALONE EXECUTIVE DOSSIER (HTML Document - Opens in any browser without 3rd party software)
@@ -3160,6 +3226,29 @@
               mobileOpenCabinet(currentSpecialistName);
             } catch(e) {}
           }, 150);
+        } else {
+          // ADMIN OR DEFAULT MODE -> ALWAYS START ON MAIN SCREEN
+          isSpecialistMode = false;
+          ['d-nav-audit', 'd-nav-registry', 'd-nav-dash', 'd-nav-specs'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = '';
+          });
+          const sideSnapshot = document.getElementById('btn-side-snapshot');
+          if (sideSnapshot) {
+            const sideCard = sideSnapshot.closest('.cyber-card');
+            if (sideCard) sideCard.style.display = '';
+          }
+          const execCard = document.querySelector('aside .cyber-card');
+          if (execCard) execCard.style.display = '';
+
+          const headerTitle = document.querySelector('header h1');
+          if (headerTitle) {
+            headerTitle.innerHTML = `Plitty <span class="font-light text-slate-400">| Command Center 3.0</span>`;
+          }
+
+          // ALWAYS START ON MAIN SCREEN (spec-level-1 with KPI cards and Summary Table)
+          navToSpecialistsList();
+          switchTab('specs');
         }
       } catch(e) {
         console.error("Error initializing role mode:", e);
@@ -3501,6 +3590,30 @@
           const sumData = await sumRes.value.json();
           if (sumData && sumData.status === 'success') {
             window._liveSummary = sumData;
+            
+            // 1. Update KPI Cards with exact plan formula (Общий план = кол-во активных соцсетей)
+            const totalPlan = (sumData.totals && sumData.totals.active_accounts) || window._calculatedNetPlan || 58;
+            const totalShift = (sumData.totals && sumData.totals.total_shift_posts !== undefined) ? sumData.totals.total_shift_posts : 40;
+            const kpiPostsEl = document.getElementById('kpi-shift-posts');
+            const kpiBreakdownEl = document.getElementById('kpi-shift-breakdown');
+            if (kpiPostsEl) {
+              kpiPostsEl.innerHTML = `${totalShift} <span class="text-xs font-normal text-slate-400">/ план ${totalPlan}</span>`;
+            }
+            if (kpiBreakdownEl) {
+              kpiBreakdownEl.innerText = `Выложено всеми сотрудниками • План: ${totalPlan} постов (по 1 на активную соцсеть)`;
+            }
+
+            // 2. Update Specialists shift_posts and views from summary
+            if (sumData.by_specialist && Array.isArray(sumData.by_specialist)) {
+              sumData.by_specialist.forEach(bs => {
+                const sObj = SPECIALISTS.find(s => s.name === bs.specialist || (bs.specialist && bs.specialist.includes(s.name)));
+                if (sObj) {
+                  sObj.shiftPosts = bs.shift_posts;
+                  if (bs.views) sObj.views = bs.views;
+                }
+              });
+            }
+
             renderAllInfluencersSummaryTable(sumData);
           }
         }
@@ -3544,10 +3657,25 @@
             window._liveRecRecords = recData.records;
 
             const totalShiftPosts = recData.records.reduce((sum, r) => sum + (Number(r.delta_posts) || 0), 0);
+            const totalPlan = window._calculatedNetPlan || 58;
             const kpiPostsEl = document.getElementById('kpi-shift-posts');
             if (kpiPostsEl) {
-              kpiPostsEl.innerHTML = `${totalShiftPosts} <span class="text-xs font-bold text-teal-400">LIVE</span>`;
+              kpiPostsEl.innerHTML = `${totalShiftPosts} <span class="text-xs font-normal text-slate-400">/ план ${totalPlan}</span>`;
             }
+
+            // Calculate per-specialist shift posts from reconciliation
+            const specShiftMap = {};
+            recData.records.forEach(r => {
+              const spec = (r.specialist || '').split(' ')[0];
+              if (spec) {
+                specShiftMap[spec] = (specShiftMap[spec] || 0) + (Number(r.delta_posts) || 0);
+              }
+            });
+            SPECIALISTS.forEach(s => {
+              if (specShiftMap[s.name] !== undefined) {
+                s.shiftPosts = specShiftMap[s.name];
+              }
+            });
 
             if (window._liveAccounts) {
               const totalViews = window._liveAccounts.reduce((sum, a) => sum + (Number(a.views) || 0), 0);
@@ -3564,6 +3692,9 @@
         if (typeof renderSummary === 'function') renderSummary();
         if (typeof renderRegistry === 'function') renderRegistry();
         if (typeof renderDesktopSpecialistList === 'function') renderDesktopSpecialistList();
+        if (currentActiveSpec && typeof renderSpecialistCabinet === 'function') {
+          renderSpecialistCabinet(currentActiveSpec.name);
+        }
       } catch (e) {
         console.warn("[Plitty Admin] Live sync fallback to cached state:", e);
       }
