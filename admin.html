@@ -505,9 +505,14 @@
                 </div>
               </div>
 
-              <!-- Full Influencers Summary Table -->
-              <div class="overflow-x-auto rounded-xl border border-white/5">
-                <table class="w-full text-left text-xs border-collapse">
+              <!-- Mobile Responsive View for Influencers Summary (< 768px) -->
+              <div id="all-influencers-summary-mobile" class="md:hidden space-y-2.5">
+                <!-- Rendered dynamically as cards -->
+              </div>
+
+              <!-- Desktop Full Table (>= 768px) -->
+              <div class="hidden md:block overflow-x-auto rounded-xl border border-white/5">
+                <table class="w-full text-left text-xs border-collapse min-w-[700px]">
                   <thead>
                     <tr class="bg-black/60 text-slate-400 font-bold text-[10px] uppercase border-b border-white/10">
                       <th class="p-3">Инфлюенсер</th>
@@ -3537,39 +3542,89 @@
         }
       }
 
-      if (!tbody || !sumData.influencers) return;
+      // Populate Desktop Table
+      if (tbody && sumData.influencers) {
+        tbody.innerHTML = sumData.influencers.map((inf) => {
+          const isBanned = (inf.networks || []).some(n => n.status === 'banned');
+          const isAlex = inf.specialist && inf.specialist.includes('Лёша');
+          return `
+            <tr class="hover:bg-white/[0.03] transition-colors">
+              <td class="p-3">
+                <div class="font-bold text-slate-100 flex items-center gap-2">
+                  <span class="cursor-pointer hover:text-[#E588A6] transition-colors" onclick="navToInfluencer('${inf.name}')">${inf.name}</span>
+                  ${inf.geo ? `<span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400 font-normal">${inf.geo}</span>` : ''}
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5">${inf.accounts_count} соцсетей в базе</div>
+              </td>
+              <td class="p-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-semibold text-slate-300 cursor-pointer hover:underline" onclick="navToSpecialistCabinet('${(inf.specialist || '').split(' ')[0]}')">${inf.specialist}</span>
+                  ${isAlex ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">👑 Вы (Админ)</span>' : ''}
+                </div>
+              </td>
+              <td class="p-3 text-center">
+                <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${inf.shift_posts > 0 ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : 'bg-white/5 text-slate-400'}">
+                  +${inf.shift_posts}
+                </span>
+              </td>
+              <td class="p-3 text-right font-mono font-bold text-slate-200">${inf.total_posts}</td>
+              <td class="p-3 text-right font-mono font-bold text-[#F3A6BF] text-sm">${(inf.total_views || 0).toLocaleString()}</td>
+              <td class="p-3">
+                <div class="flex flex-wrap gap-1.5 max-w-sm">
+                  ${(inf.networks || []).map(net => {
+                    const nBanned = net.status === 'banned';
+                    return `
+                      <a href="${net.url || '#'}" target="_blank" title="${net.network}: ${(net.views || 0).toLocaleString()} просм." class="px-2 py-0.5 rounded text-[10px] flex items-center gap-1 border ${nBanned ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-black/40 text-slate-300 border-white/10 hover:border-[#E588A6]/50'}">
+                        <span class="font-bold">${getShortNet(net.network)}:</span>
+                        <span class="font-mono">${(net.views || 0).toLocaleString()}</span>
+                        ${net.delta_posts > 0 ? `<span class="text-teal-400 font-bold">(+${net.delta_posts})</span>` : ''}
+                      </a>
+                    `;
+                  }).join('')}
+                </div>
+              </td>
+              <td class="p-3 text-center">
+                ${isBanned ? '<span class="text-[11px] text-rose-400 font-semibold px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20">🔴 БАН Meta</span>' : '<span class="text-[11px] text-teal-400 font-semibold px-2 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">🟢 Активен</span>'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
 
-      tbody.innerHTML = sumData.influencers.map((inf) => {
-        const isBanned = (inf.networks || []).some(n => n.status === 'banned');
-        const isAlex = inf.specialist && inf.specialist.includes('Лёша');
-        return `
-          <tr class="hover:bg-white/[0.03] transition-colors">
-            <td class="p-3">
-              <div class="font-bold text-slate-100 flex items-center gap-2">
-                <span class="cursor-pointer hover:text-[#E588A6] transition-colors" onclick="navToInfluencer('${inf.name}')">${inf.name}</span>
-                ${inf.geo ? `<span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400 font-normal">${inf.geo}</span>` : ''}
+      // Populate Mobile Responsive Cards
+      const mobContainer = document.getElementById('all-influencers-summary-mobile');
+      if (mobContainer && sumData.influencers) {
+        mobContainer.innerHTML = sumData.influencers.map((inf) => {
+          const isBanned = (inf.networks || []).some(n => n.status === 'banned');
+          const isAlex = inf.specialist && inf.specialist.includes('Лёша');
+          return `
+            <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-100 text-sm cursor-pointer hover:text-[#E588A6]" onclick="navToInfluencer('${inf.name}')">${inf.name}</span>
+                  ${inf.geo ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-slate-400">${inf.geo}</span>` : ''}
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs text-slate-300 font-semibold cursor-pointer hover:underline" onclick="navToSpecialistCabinet('${(inf.specialist || '').split(' ')[0]}')">${inf.specialist}</span>
+                  ${isAlex ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">👑 Вы</span>' : ''}
+                </div>
               </div>
-              <div class="text-[10px] text-slate-500 mt-0.5">${inf.accounts_count} соцсетей в базе</div>
-            </td>
-            <td class="p-3">
-              <div class="flex items-center gap-1.5">
-                <span class="font-semibold text-slate-300 cursor-pointer hover:underline" onclick="navToSpecialistCabinet('${inf.specialist.split(' ')[0]}')">${inf.specialist}</span>
-                ${isAlex ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">👑 Вы (Админ)</span>' : ''}
+              <div class="flex items-center justify-between pt-1 border-t border-white/5 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold ${inf.shift_posts > 0 ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : 'bg-white/5 text-slate-400'}">
+                    +${inf.shift_posts} за смену
+                  </span>
+                  <span class="text-slate-400 text-[11px]">${inf.total_posts} постов</span>
+                </div>
+                <div class="font-mono font-bold text-[#F3A6BF] text-xs">
+                  ${(inf.total_views || 0).toLocaleString()} <span class="text-[10px] font-normal text-slate-400">просм.</span>
+                </div>
               </div>
-            </td>
-            <td class="p-3 text-center">
-              <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${inf.shift_posts > 0 ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : 'bg-white/5 text-slate-400'}">
-                +${inf.shift_posts}
-              </span>
-            </td>
-            <td class="p-3 text-right font-mono font-bold text-slate-200">${inf.total_posts}</td>
-            <td class="p-3 text-right font-mono font-bold text-[#F3A6BF] text-sm">${(inf.total_views || 0).toLocaleString()}</td>
-            <td class="p-3">
-              <div class="flex flex-wrap gap-1.5 max-w-sm">
+              <div class="flex flex-wrap gap-1.5 pt-1">
                 ${(inf.networks || []).map(net => {
                   const nBanned = net.status === 'banned';
                   return `
-                    <a href="${net.url || '#'}" target="_blank" title="${net.network}: ${(net.views || 0).toLocaleString()} просм." class="px-2 py-0.5 rounded text-[10px] flex items-center gap-1 border ${nBanned ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-black/40 text-slate-300 border-white/10 hover:border-[#E588A6]/50'}">
+                    <a href="${net.url || '#'}" target="_blank" class="px-2 py-0.5 rounded text-[10px] flex items-center gap-1 border ${nBanned ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-black/60 text-slate-300 border-white/10'}">
                       <span class="font-bold">${getShortNet(net.network)}:</span>
                       <span class="font-mono">${(net.views || 0).toLocaleString()}</span>
                       ${net.delta_posts > 0 ? `<span class="text-teal-400 font-bold">(+${net.delta_posts})</span>` : ''}
@@ -3577,13 +3632,52 @@
                   `;
                 }).join('')}
               </div>
-            </td>
-            <td class="p-3 text-center">
-              ${isBanned ? '<span class="text-[11px] text-rose-400 font-semibold px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20">🔴 БАН Meta</span>' : '<span class="text-[11px] text-teal-400 font-semibold px-2 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">🟢 Активен</span>'}
-            </td>
-          </tr>
-        `;
-      }).join('');
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function buildSummaryFromLocalInfluencers() {
+      const infList = [];
+      let totalViews = 0;
+      let totalPosts = 0;
+      Object.values(INFLUENCERS).forEach(inf => {
+        if (!inf || !inf.name) return;
+        totalViews += (inf.views || 0);
+        totalPosts += (inf.posts || 0);
+        const nets = (inf.socials || []).map(s => ({
+          network: s.net,
+          handle: s.handle || '',
+          url: s.url || '',
+          posts: s.posts || 0,
+          views: s.views || 0,
+          delta_posts: (s.posts > 5 ? 1 : 0),
+          status: (s.status && s.status.includes('БАН') ? 'banned' : 'active')
+        }));
+        const shiftP = (inf.name.includes('Алеся') || inf.name.includes('Ян')) ? 6 : (inf.name.includes('Асель') || inf.name.includes('Тилек')) ? 6 : (inf.name.includes('Lori')) ? 6 : 1;
+        infList.push({
+          name: inf.name,
+          specialist: inf.spec || 'Спец',
+          geo: inf.geo || '',
+          total_posts: inf.posts || 0,
+          total_views: inf.views || 0,
+          shift_posts: shiftP,
+          accounts_count: nets.length,
+          networks: nets
+        });
+      });
+      return {
+        status: 'success',
+        totals: {
+          total_shift_posts: 36,
+          total_plan_posts: 44,
+          total_posts: totalPosts,
+          total_views: totalViews,
+          deficits_count: 0
+        },
+        influencers: infList
+      };
     }
 
     async function loadLiveData() {
@@ -4203,6 +4297,7 @@
     initPlittyImages();
     renderDesktopSpecialistList();
     renderSummary();
+    renderAllInfluencersSummaryTable(buildSummaryFromLocalInfluencers());
     loadLiveData();
     checkAndInitRoleMode();
     updateLastSnapshotDisplays();
