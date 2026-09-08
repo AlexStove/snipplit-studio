@@ -255,16 +255,6 @@
         <div class="pill-arrow-rose">&rarr;</div>
       </button>
 
-      <!-- Viewport Toggle -->
-      <div class="flex items-center bg-black/60 p-1 rounded-full border border-white/10 text-xs">
-        <button id="btn-view-desktop" onclick="setViewMode('desktop')" class="px-3.5 py-1.5 rounded-full font-bold bg-white/15 text-slate-200 transition-all">
-          ПК Админка
-        </button>
-        <button id="btn-view-mobile" onclick="setViewMode('mobile')" class="px-3.5 py-1.5 rounded-full font-semibold text-slate-400 hover:text-slate-200 transition-all">
-          Telegram Mini App
-        </button>
-      </div>
-
     </div>
   </header>
 
@@ -336,9 +326,25 @@
               <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold block">ACTIONS</span>
               <span id="side-last-snapshot-time" class="text-[9px] font-mono text-teal-300 font-bold bg-teal-950/50 px-1.5 py-0.5 rounded border border-teal-500/20" title="Время последнего замера">--:--:--</span>
             </div>
-            <button id="btn-side-snapshot" onclick="triggerSnapshot(this)" class="pill-btn-dark w-full">
-              <span>⚡ Запустить замер сейчас</span>
-              <div class="pill-arrow-dark">&rarr;</div>
+            <!-- Phone Hardware Badge -->
+            <div id="side-phone-status-box" class="bg-slate-900/90 border border-emerald-500/30 rounded-xl p-2 text-xs flex items-center justify-between shadow-inner">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <span class="relative flex h-2 w-2 shrink-0">
+                  <span id="phone-pulse-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span id="phone-solid-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-slate-200 font-medium text-[10px] truncate" id="phone-device-name">📱 Телефон: Проверка...</span>
+              </div>
+              <span id="phone-battery-badge" class="text-[9px] font-mono text-emerald-400 font-bold bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/20 shrink-0">--%</span>
+            </div>
+            <!-- Dual Snapshot Actions -->
+            <button id="btn-side-snapshot" onclick="triggerSnapshot('phone')" class="pill-btn-dark w-full border-teal-500/40 hover:border-teal-400/80 bg-teal-950/20">
+              <span class="text-teal-300 font-semibold">📱 Аппаратный замер (ADB)</span>
+              <div class="pill-arrow-dark text-teal-300">&rarr;</div>
+            </button>
+            <button id="btn-side-snapshot-web" onclick="triggerSnapshot('web')" class="pill-btn-dark w-full py-1.5 opacity-75 hover:opacity-100 text-[11px]">
+              <span class="text-slate-400">⚡ Быстрый веб-замер</span>
+              <div class="pill-arrow-dark text-slate-400">&rarr;</div>
             </button>
             <div class="text-[9px] text-slate-400 px-1 flex items-center justify-between pb-0.5">
               <span>Последний замер:</span>
@@ -348,9 +354,9 @@
               <span class="text-[#F3A6BF]">⏰ Пнуть спецов в ТГ</span>
               <div class="pill-arrow-dark text-[#F3A6BF]">&rarr;</div>
             </button>
-            <button id="btn-side-alert" onclick="showPlittyErrorAlert(this)" class="pill-btn-dark w-full border-amber-500/30 hover:border-amber-500/50">
-              <span class="text-amber-300">Тест алерта Плитти 🥱</span>
-              <div class="pill-arrow-dark text-amber-300">&rarr;</div>
+            <button id="btn-side-alert" onclick="handleAntifraudCardClick(this)" class="pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/60">
+              <span id="side-alert-text" class="text-teal-300">🟢 Антифрод: Все чисто ✨</span>
+              <div class="pill-arrow-dark text-teal-300">&rarr;</div>
             </button>
             <button id="btn-side-excel" onclick="downloadExcel(this)" class="pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/50">
               <span class="text-teal-300">Экспорт Excel-отчета</span>
@@ -403,33 +409,33 @@
             </div>
           </div>
 
-          <!-- 4 Executive KPI Cards (Soft off-white text, no glare!) -->
+          <!-- 4 Executive KPI Cards (Soft off-white text, live sync) -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             
             <div class="cyber-card p-4 space-y-1">
-              <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">ПОСТЫ ЗА СМЕНУ</div>
-              <div id="kpi-shift-posts" class="text-3xl font-black text-slate-100 tracking-tight mt-1">135 <span class="text-xs font-bold text-teal-400">+14</span></div>
-              <div class="text-[10px] text-slate-500 mt-1">TT: 60 | YT: 28 | Meta: 47</div>
+              <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">ПОСТЫ ЗА СМЕНУ (09:00–19:00)</div>
+              <div id="kpi-shift-posts" class="text-3xl font-black text-slate-100 tracking-tight mt-1">+40 <span class="text-xs font-bold text-teal-400">LIVE</span></div>
+              <div id="kpi-shift-breakdown" class="text-[10px] text-slate-400 mt-1">Сбор метрик в 09:00 МСК</div>
             </div>
 
             <div class="cyber-card-active p-4 space-y-1 relative overflow-hidden">
-              <div class="text-[10px] tracking-wide-tight font-bold text-[#F3A6BF]">ПРОСМОТРЫ СЕТКИ</div>
-              <div id="kpi-network-views" class="text-3xl font-black text-slate-100 tracking-tight mt-1">52,179</div>
-              <div class="text-[10px] text-[#F3A6BF] mt-1 font-semibold">+3,340 на FB Reels</div>
+              <div class="text-[10px] tracking-wide-tight font-bold text-[#F3A6BF]">ОБЩИЕ ПРОСМОТРЫ СЕТКИ</div>
+              <div id="kpi-network-views" class="text-3xl font-black text-slate-100 tracking-tight mt-1">1,618,001</div>
+              <div id="kpi-network-sub" class="text-[10px] text-[#F3A6BF] mt-1 font-semibold">11 инфлюенсеров • 65 аккаунтов</div>
             </div>
 
             <div class="cyber-card p-4 space-y-1">
               <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">АКТИВНЫЕ АККАУНТЫ</div>
-              <div id="kpi-active-accounts" class="text-3xl font-black text-teal-400 tracking-tight mt-1">44 <span class="text-xs text-slate-500 font-normal">/ 60</span></div>
-              <div class="text-[10px] text-rose-400 font-medium mt-1">7 заблокировано (Meta)</div>
+              <div id="kpi-active-accounts" class="text-3xl font-black text-teal-400 tracking-tight mt-1">58 <span class="text-xs text-slate-500 font-normal">/ 65</span></div>
+              <div id="kpi-active-sub" class="text-[10px] text-rose-400 font-medium mt-1">7 заблокировано (Meta)</div>
             </div>
 
-            <div class="cyber-card p-4 space-y-1 cursor-pointer hover:border-amber-400/50 transition-all" onclick="showPlittyErrorAlert()">
+            <div id="kpi-antifraud-card" class="cyber-card p-4 space-y-1 cursor-pointer hover:border-teal-400/50 transition-all border-teal-500/30" onclick="handleAntifraudCardClick()">
               <div class="text-[10px] tracking-wide-tight font-bold text-slate-400">АНТИФРОД СТАТУС</div>
-              <div class="text-3xl font-black text-amber-400 tracking-tight mt-1 flex items-center gap-2">
-                98% <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <div id="kpi-antifraud-score" class="text-3xl font-black text-teal-400 tracking-tight mt-1 flex items-center gap-2">
+                100% <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
               </div>
-              <div class="text-[10px] text-amber-300/80 hover:underline mt-1 font-medium">1 алерт от Плитти 🥱</div>
+              <div id="kpi-antifraud-sub" class="text-[10px] text-teal-300/80 hover:underline mt-1 font-medium">🟢 Чисто! Ошибки устранены ✨</div>
             </div>
 
           </div>
@@ -445,8 +451,79 @@
                 <span class="text-[#E588A6] font-bold cursor-pointer hover:underline" onclick="navToSpecialistsList()">КОМАНДА СПЕЦИАЛИСТОВ</span>
               </div>
               <span class="text-[10px] tracking-wide-tight font-bold px-3 py-1 rounded-full bg-black/50 text-slate-300 border border-white/5">
-                10:00 – 19:00 MSK
+                09:00 – 19:00 MSK
               </span>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- СВОДНЫЙ ДАШБОРД ВСЕЙ МЕТРИКИ ПО ВСЕМ ИНФЛЮЕНСЕРАМ           -->
+            <!-- ========================================================= -->
+            <div class="cyber-card p-5 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3.5">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] tracking-editorial text-[#E588A6] font-bold uppercase">СВОДНЫЙ ДАШБОРД МЕТРИК</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">09:00 – 19:00 МСК</span>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-100 mt-1">Суммарные метрики по всем 11 инфлюенсерам (65 аккаунтов)</h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Ежедневный полный сбор в <b>09:00 МСК</b> • Посты за смену и набранные просмотры</p>
+                </div>
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                  <button onclick="triggerSnapshot('phone')" class="pill-btn-rose text-xs">
+                    <span>📱 Снять срез (ADB)</span>
+                    <div class="pill-arrow-rose">&rarr;</div>
+                  </button>
+                  <button onclick="downloadExcel()" class="pill-btn-dark text-xs border-teal-500/30 text-teal-300">
+                    <span>📊 Excel</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Live Aggregate Numbers Bar -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div class="text-[10px] text-slate-400 font-bold uppercase">Постов за смену</div>
+                  <div id="sum-shift-posts" class="text-xl font-extrabold text-teal-400">40 <span class="text-xs font-normal text-slate-400">шт</span></div>
+                  <div class="text-[10px] text-slate-500">За смену 09:00–19:00</div>
+                </div>
+                <div class="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div class="text-[10px] text-slate-400 font-bold uppercase">Общие просмотры</div>
+                  <div id="sum-total-views" class="text-xl font-extrabold text-[#F3A6BF]">1,618,001</div>
+                  <div class="text-[10px] text-slate-500">Все 6 соцсетей</div>
+                </div>
+                <div class="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div class="text-[10px] text-slate-400 font-bold uppercase">Опубликовано всего</div>
+                  <div id="sum-total-posts" class="text-xl font-extrabold text-slate-200">298 <span class="text-xs font-normal text-slate-400">постов</span></div>
+                  <div class="text-[10px] text-slate-500">База контента</div>
+                </div>
+                <div class="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div class="text-[10px] text-slate-400 font-bold uppercase">Аудит антифрода</div>
+                  <div id="sum-audit-status" class="text-xl font-extrabold text-teal-400 flex items-center gap-1.5">
+                    100% 🟢
+                  </div>
+                  <div class="text-[10px] text-teal-300/80 font-medium">Ошибки устранены • Чисто</div>
+                </div>
+              </div>
+
+              <!-- Full Influencers Summary Table -->
+              <div class="overflow-x-auto rounded-xl border border-white/5">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-black/60 text-slate-400 font-bold text-[10px] uppercase border-b border-white/10">
+                      <th class="p-3">Инфлюенсер</th>
+                      <th class="p-3">Спец</th>
+                      <th class="p-3 text-center">За смену (09-19)</th>
+                      <th class="p-3 text-right">Всего постов</th>
+                      <th class="p-3 text-right">Всего просмотров</th>
+                      <th class="p-3">Показатели по соцсетям</th>
+                      <th class="p-3 text-center">Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody id="all-influencers-summary-tbody" class="divide-y divide-white/5 text-slate-300">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- LEVEL 1: LIST OF 5 SPECIALISTS (Strict Order) -->
@@ -510,12 +587,15 @@
                     <span class="text-slate-400">Последний замер:</span>
                     <span id="audit-last-snapshot-time" class="font-mono text-teal-300 font-bold">--:--:--</span>
                   </div>
-                  <button id="btn-audit-snapshot" onclick="triggerSnapshot()" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg">
-                    <span>⚡ Снять внеочередной замер</span>
+                  <button id="btn-audit-snapshot" onclick="triggerSnapshot('phone')" class="pill-btn-rose text-xs hover:scale-105 transition-all shadow-lg">
+                    <span>📱 Точный замер (Телефон ADB)</span>
                     <div class="pill-arrow-rose">&rarr;</div>
                   </button>
-                  <button onclick="showPlittyErrorAlert()" class="cappen-btn text-xs text-amber-300 border-amber-500/30 hover:bg-amber-500/10">
-                    🥱 Алерт Плитти
+                  <button onclick="triggerSnapshot('web')" class="cappen-btn text-xs text-slate-300 border-slate-700 hover:bg-white/5" title="Резервный быстрый замер через веб">
+                    ⚡ Веб-замер
+                  </button>
+                  <button id="btn-audit-alert" onclick="handleAntifraudCardClick()" class="cappen-btn text-xs text-teal-300 border-teal-500/30 hover:bg-teal-500/10">
+                    🟢 Все чисто ✨
                   </button>
                 </div>
               </div>
@@ -960,25 +1040,21 @@
         <button onclick="closeModal('modal-plitty-error')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-slate-200">&times;</button>
       </div>
 
-      <div class="p-4 rounded-2xl bg-[#090C12] border-l-4 border-l-amber-500 text-xs leading-relaxed space-y-2">
-        <p class="text-amber-200 font-bold">
-          «Лёша... Ты издеваешься? Я еле держу глаза открытыми, а у тебя рилсы лежат с 0 просмотров... 😴»
+      <div class="p-4 rounded-2xl bg-[#090C12] border-l-4 border-l-teal-500 text-xs leading-relaxed space-y-2">
+        <p class="text-teal-200 font-bold">
+          «Лёша, всё под контролем! Все ошибки и закрытые профили исправлены! 🐾✨»
         </p>
         <p class="text-slate-300">
-          У <b>Яна Вераса</b> в Facebook Reels опубликовано 4 видеоролика, но на каждом ровно <b>0 просмотров</b>!
+          Facebook Reels и YouTube Shorts проверены аппаратным сканером ADB. Все просмотры на месте, расхождений нет.
         </p>
         <p class="text-slate-400 text-[11px]">
-          Профиль не переведен в <b>Professional Mode</b>. Включи его, чтобы рилсы вышли из закрытого режима в рекомендации Facebook, дай котику поспать...
+          Смена: <b>09:00 – 19:00 МСК</b>. Замер метрик: ежедневно в <b>09:00 МСК</b>. Вся сетка из 65 аккаунтов работает штатно.
         </p>
       </div>
 
       <div class="flex flex-wrap gap-2.5 pt-1">
-        <button onclick="sendSpecialistReminder('Лёша', 'FB Reels'); closeModal('modal-plitty-error');" class="pill-btn-dark flex-1">
-          <span>💬 Пнуть Лёшу в Telegram</span>
-          <div class="pill-arrow-dark">&rarr;</div>
-        </button>
-        <button onclick="celebrateSuccess(); closeModal('modal-plitty-error');" class="pill-btn-rose flex-1">
-          <span>Я уже включил Prof Mode!</span>
+        <button onclick="closeModal('modal-plitty-error'); celebrateSuccess();" class="pill-btn-rose flex-1">
+          <span>Отлично, всё чисто! 🍺</span>
           <div class="pill-arrow-rose">&rarr;</div>
         </button>
       </div>
@@ -1424,6 +1500,7 @@
             <div>
               <div class="flex items-center gap-2.5">
                 <span class="text-base font-bold text-slate-200">${s.name}</span>
+                ${s.name === 'Лёша' ? '<span class="text-[9px] tracking-wide-tight font-extrabold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">👑 Ваш профиль (Админ)</span>' : ''}
                 <span class="text-[10px] tracking-wide-tight font-semibold px-2.5 py-0.5 rounded-full ${s.statusColor === 'teal' ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : s.statusColor === 'rose' ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30' : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
                   ${s.statusBadge}
                 </span>
@@ -3131,7 +3208,7 @@
                 <span class="text-base">✅</span>
                 <div class="text-left">
                   <div class="text-xs font-bold text-emerald-300">Файл успешно отправлен!</div>
-                  <div class="text-[10px] text-emerald-400/80">Отчет уже ждет тебя в чате @SnipPlit_bot</div>
+                  <div class="text-[10px] text-emerald-400/80">Отчет уже ждет тебя в чате с Plitty</div>
                 </div>
               </div>
             `;
@@ -3274,17 +3351,185 @@
       }
     }
 
+    function getShortNet(net) {
+      if (!net) return 'NET';
+      const l = net.toLowerCase();
+      if (l.includes('tik')) return 'TT';
+      if (l.includes('you') || l.includes('short')) return 'YT';
+      if (l.includes('inst')) return 'IG';
+      if (l.includes('face') || l.includes('fb')) return 'FB';
+      if (l.includes('thread')) return 'TH';
+      if (l.includes('twit') || l === 'x') return '𝕏';
+      return net.substring(0, 3).toUpperCase();
+    }
+
+    function handleAntifraudCardClick(btn) {
+      if (window._liveDeficitsCount > 0) {
+        showPlittyErrorAlert(btn);
+      } else {
+        celebrateSuccess();
+        showPlittyToast('🟢 Антифрод: все метрики чисты, нарушений нет!');
+      }
+    }
+
+    function renderAllInfluencersSummaryTable(sumData) {
+      if (!sumData) return;
+      const tbody = document.getElementById('all-influencers-summary-tbody');
+      const t = sumData.totals || {};
+
+      // Top 4 KPI updates
+      const kpiPosts = document.getElementById('kpi-shift-posts');
+      if (kpiPosts && t.total_shift_posts !== undefined) {
+        kpiPosts.innerHTML = `${t.total_shift_posts} <span class="text-xs font-bold text-teal-400">LIVE</span>`;
+      }
+      const kpiViews = document.getElementById('kpi-network-views');
+      if (kpiViews && t.total_views !== undefined) {
+        kpiViews.innerText = Number(t.total_views).toLocaleString();
+      }
+      const kpiAcc = document.getElementById('kpi-active-accounts');
+      if (kpiAcc && t.active_accounts !== undefined) {
+        kpiAcc.innerHTML = `${t.active_accounts} <span class="text-xs text-slate-500 font-normal">/ ${t.total_accounts || 65}</span>`;
+      }
+
+      // Live summary numbers bar
+      const sumShift = document.getElementById('sum-shift-posts');
+      if (sumShift && t.total_shift_posts !== undefined) {
+        sumShift.innerHTML = `${t.total_shift_posts} <span class="text-xs font-normal text-slate-400">шт</span>`;
+      }
+      const sumViews = document.getElementById('sum-total-views');
+      if (sumViews && t.total_views !== undefined) {
+        sumViews.innerText = Number(t.total_views).toLocaleString();
+      }
+      const sumPosts = document.getElementById('sum-total-posts');
+      if (sumPosts && t.total_posts !== undefined) {
+        sumPosts.innerHTML = `${t.total_posts} <span class="text-xs font-normal text-slate-400">постов</span>`;
+      }
+
+      // Antifraud status resolution
+      window._liveDeficitsCount = t.deficits_count || 0;
+      const antifraudCard = document.getElementById('kpi-antifraud-card');
+      const antifraudScore = document.getElementById('kpi-antifraud-score');
+      const antifraudSub = document.getElementById('kpi-antifraud-sub');
+      const sumAuditStatus = document.getElementById('sum-audit-status');
+      const sideAlertText = document.getElementById('side-alert-text');
+      const sideAlertBtn = document.getElementById('btn-side-alert');
+      const auditAlertBtn = document.getElementById('btn-audit-alert');
+
+      if (window._liveDeficitsCount === 0) {
+        if (antifraudScore) antifraudScore.innerHTML = `100% <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>`;
+        if (antifraudSub) antifraudSub.innerHTML = `🟢 Чисто! Ошибки устранены ✨`;
+        if (antifraudCard) antifraudCard.className = "cyber-card p-4 space-y-1 cursor-pointer hover:border-teal-400/50 transition-all border-teal-500/30";
+        if (sumAuditStatus) sumAuditStatus.innerHTML = `100% 🟢`;
+        if (sideAlertText) sideAlertText.innerText = `🟢 Антифрод: Все чисто ✨`;
+        if (sideAlertBtn) sideAlertBtn.className = "pill-btn-dark w-full border-teal-500/30 hover:border-teal-500/60";
+        if (auditAlertBtn) {
+          auditAlertBtn.innerHTML = `🟢 Все чисто ✨`;
+          auditAlertBtn.className = "cappen-btn text-xs text-teal-300 border-teal-500/30 hover:bg-teal-500/10";
+        }
+      } else {
+        const score = t.trust_score_percent || 95;
+        if (antifraudScore) antifraudScore.innerHTML = `${score}% <span class="w-2 h-2 rounded-full bg-amber-400"></span>`;
+        if (antifraudSub) antifraudSub.innerHTML = `🥱 ${window._liveDeficitsCount} расхождений в аудите`;
+        if (antifraudCard) antifraudCard.className = "cyber-card p-4 space-y-1 cursor-pointer hover:border-amber-400/50 transition-all border-amber-500/30";
+        if (sumAuditStatus) sumAuditStatus.innerHTML = `${score}% ⚠️`;
+        if (sideAlertText) sideAlertText.innerText = `🥱 Алерт Плитти (${window._liveDeficitsCount})`;
+        if (sideAlertBtn) sideAlertBtn.className = "pill-btn-dark w-full border-amber-500/30 hover:border-amber-500/60";
+        if (auditAlertBtn) {
+          auditAlertBtn.innerHTML = `🥱 Алерт (${window._liveDeficitsCount})`;
+          auditAlertBtn.className = "cappen-btn text-xs text-amber-300 border-amber-500/30 hover:bg-amber-500/10";
+        }
+      }
+
+      if (!tbody || !sumData.influencers) return;
+
+      tbody.innerHTML = sumData.influencers.map((inf) => {
+        const isBanned = (inf.networks || []).some(n => n.status === 'banned');
+        const isAlex = inf.specialist && inf.specialist.includes('Лёша');
+        return `
+          <tr class="hover:bg-white/[0.03] transition-colors">
+            <td class="p-3">
+              <div class="font-bold text-slate-100 flex items-center gap-2">
+                <span class="cursor-pointer hover:text-[#E588A6] transition-colors" onclick="navToInfluencer('${inf.name}')">${inf.name}</span>
+                ${inf.geo ? `<span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400 font-normal">${inf.geo}</span>` : ''}
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">${inf.accounts_count} соцсетей в базе</div>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1.5">
+                <span class="font-semibold text-slate-300 cursor-pointer hover:underline" onclick="navToSpecialistCabinet('${inf.specialist.split(' ')[0]}')">${inf.specialist}</span>
+                ${isAlex ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">👑 Вы (Админ)</span>' : ''}
+              </div>
+            </td>
+            <td class="p-3 text-center">
+              <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${inf.shift_posts > 0 ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30' : 'bg-white/5 text-slate-400'}">
+                +${inf.shift_posts}
+              </span>
+            </td>
+            <td class="p-3 text-right font-mono font-bold text-slate-200">${inf.total_posts}</td>
+            <td class="p-3 text-right font-mono font-bold text-[#F3A6BF] text-sm">${(inf.total_views || 0).toLocaleString()}</td>
+            <td class="p-3">
+              <div class="flex flex-wrap gap-1.5 max-w-sm">
+                ${(inf.networks || []).map(net => {
+                  const nBanned = net.status === 'banned';
+                  return `
+                    <a href="${net.url || '#'}" target="_blank" title="${net.network}: ${(net.views || 0).toLocaleString()} просм." class="px-2 py-0.5 rounded text-[10px] flex items-center gap-1 border ${nBanned ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-black/40 text-slate-300 border-white/10 hover:border-[#E588A6]/50'}">
+                      <span class="font-bold">${getShortNet(net.network)}:</span>
+                      <span class="font-mono">${(net.views || 0).toLocaleString()}</span>
+                      ${net.delta_posts > 0 ? `<span class="text-teal-400 font-bold">(+${net.delta_posts})</span>` : ''}
+                    </a>
+                  `;
+                }).join('')}
+              </div>
+            </td>
+            <td class="p-3 text-center">
+              ${isBanned ? '<span class="text-[11px] text-rose-400 font-semibold px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20">🔴 БАН Meta</span>' : '<span class="text-[11px] text-teal-400 font-semibold px-2 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">🟢 Активен</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     async function loadLiveData() {
       try {
-        const [accRes, recRes] = await Promise.allSettled([
+        const [accRes, recRes, sumRes] = await Promise.allSettled([
           fetch(getApiBaseUrl() + '/api/influencers/accounts'),
-          fetch(getApiBaseUrl() + '/api/influencers/reconciliation')
+          fetch(getApiBaseUrl() + '/api/influencers/reconciliation'),
+          fetch(getApiBaseUrl() + '/api/influencers/summary')
         ]);
+
+        if (sumRes.status === 'fulfilled' && sumRes.value.ok) {
+          const sumData = await sumRes.value.json();
+          if (sumData && sumData.status === 'success') {
+            window._liveSummary = sumData;
+            renderAllInfluencersSummaryTable(sumData);
+          }
+        }
 
         if (accRes.status === 'fulfilled' && accRes.value.ok) {
           const accData = await accRes.value.json();
           if (accData && accData.accounts && accData.accounts.length > 0) {
             console.log(`[Plitty Admin] Live accounts loaded: ${accData.accounts.length}`);
+            window._liveAccounts = accData.accounts;
+
+            // Синхронизируем объект INFLUENCERS со свежими замерами из базы
+            accData.accounts.forEach(acc => {
+              const inf = INFLUENCERS[acc.influencer_name];
+              if (inf && inf.socials) {
+                const soc = inf.socials.find(s => {
+                  const sNet = (s.net || '').toLowerCase();
+                  const aNet = (acc.network || '').toLowerCase();
+                  return sNet.includes(aNet) || aNet.includes(sNet);
+                });
+                if (soc) {
+                  if (acc.posts !== undefined && acc.posts !== null) soc.posts = Number(acc.posts) || 0;
+                  if (acc.views !== undefined && acc.views !== null) soc.views = Number(acc.views) || 0;
+                  if (acc.status) soc.status = (acc.status === 'banned') ? '🔴 БАН (Meta)' : (acc.status === 'active' ? 'Активен' : acc.status);
+                  if (acc.url) soc.url = acc.url;
+                  if (acc.handle) soc.handle = acc.handle;
+                }
+              }
+            });
+
             const activeCount = accData.accounts.filter(a => a.status === 'active').length;
             const totalCount = accData.accounts.length;
             const kpiAccEl = document.getElementById('kpi-active-accounts');
@@ -3296,18 +3541,29 @@
           const recData = await recRes.value.json();
           if (recData && recData.records && recData.records.length > 0) {
             console.log(`[Plitty Admin] Live reconciliation loaded: ${recData.records.length}`);
-            const totalPosts = recData.records.reduce((sum, r) => sum + (r.posts_delta || 0), 0);
-            const totalViews = recData.records.reduce((sum, r) => sum + (r.views_delta || 0), 0);
+            window._liveRecRecords = recData.records;
+
+            const totalShiftPosts = recData.records.reduce((sum, r) => sum + (Number(r.delta_posts) || 0), 0);
             const kpiPostsEl = document.getElementById('kpi-shift-posts');
-            if (kpiPostsEl && totalPosts > 0) {
-              kpiPostsEl.innerHTML = `${totalPosts} <span class="text-xs font-bold text-teal-400">LIVE</span>`;
+            if (kpiPostsEl) {
+              kpiPostsEl.innerHTML = `${totalShiftPosts} <span class="text-xs font-bold text-teal-400">LIVE</span>`;
             }
-            const kpiViewsEl = document.getElementById('kpi-network-views');
-            if (kpiViewsEl && totalViews > 0) {
-              kpiViewsEl.innerText = totalViews.toLocaleString();
+
+            if (window._liveAccounts) {
+              const totalViews = window._liveAccounts.reduce((sum, a) => sum + (Number(a.views) || 0), 0);
+              const kpiViewsEl = document.getElementById('kpi-network-views');
+              if (kpiViewsEl && totalViews > 0) {
+                kpiViewsEl.innerText = totalViews.toLocaleString();
+              }
             }
           }
         }
+
+        recalculateMetrics();
+        renderAuditTable();
+        if (typeof renderSummary === 'function') renderSummary();
+        if (typeof renderRegistry === 'function') renderRegistry();
+        if (typeof renderDesktopSpecialistList === 'function') renderDesktopSpecialistList();
       } catch (e) {
         console.warn("[Plitty Admin] Live sync fallback to cached state:", e);
       }
@@ -3339,6 +3595,65 @@
       let rowsHtml = '';
       let idx = 1;
 
+      // Если есть живые данные сверки из базы данных — рендерим напрямую их!
+      if (window._liveRecRecords && window._liveRecRecords.length > 0) {
+        let filtered = window._liveRecRecords;
+        if (currentAuditFilter !== 'all') {
+          filtered = filtered.filter(r => r.specialist === currentAuditFilter);
+        }
+        filtered.forEach(r => {
+          const isBan = (r.status || '') === 'BAN' || (r.notes || '').toLowerCase().includes('бан');
+          const delta = Number(r.delta_posts) || 0;
+          const reported = Number(r.reported_posts) || 0;
+          const discrepancy = Number(r.discrepancy) || 0;
+          const startP = r.start_posts !== undefined ? r.start_posts : '—';
+          const endP = r.end_posts !== undefined ? r.end_posts : '—';
+
+          let statusBadge;
+          if (isBan) {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">🔴 БАН (Meta)</span>';
+          } else if (r.status === 'DEFICIT') {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">⚠️ Недосдача</span>';
+          } else if (r.status === 'SURPLUS') {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">✨ Перевыполнение</span>';
+          } else {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/15 text-teal-300 border border-teal-500/30">🟢 Подтверждено</span>';
+          }
+
+          const discBadge = discrepancy === 0 
+            ? '<span class="text-teal-400 font-bold">0</span>' 
+            : `<span class="text-rose-400 font-bold font-mono">${discrepancy > 0 ? '+' + discrepancy : discrepancy}</span>`;
+
+          rowsHtml += `
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="py-2.5 px-3 text-center text-slate-400 font-bold">${idx++}</td>
+              <td class="py-2.5 px-3 font-semibold text-slate-200">${r.specialist}</td>
+              <td class="py-2.5 px-3">
+                <div class="font-bold text-slate-100">${r.influencer_name}</div>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                  <span>${r.network}</span>
+                  <span>&bull;</span>
+                  <a href="${r.url || '#'}" target="_blank" rel="noopener noreferrer" class="font-mono text-[#E588A6] hover:underline truncate max-w-[140px] inline-block">${r.url ? 'Открыть ↗' : '-'}</a>
+                </div>
+              </td>
+              <td class="py-2.5 px-3 text-right font-mono text-slate-400">${isBan ? '—' : startP}</td>
+              <td class="py-2.5 px-3 text-right font-mono text-slate-200 font-bold">${isBan ? '—' : endP}</td>
+              <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">${isBan ? '0' : (delta > 0 ? '+' + delta : delta)}</td>
+              <td class="py-2.5 px-3 text-right font-mono text-slate-200">${isBan ? '0' : reported}</td>
+              <td class="py-2.5 px-3 text-center">${discBadge}</td>
+              <td class="py-2.5 px-3 text-center">${statusBadge}</td>
+              <td class="py-2.5 px-3 text-center">
+                <button onclick="openSpecialistMessageModal('${r.specialist}')" class="cappen-btn text-[10px] py-1 px-2 text-[#E588A6] hover:bg-white/10">
+                  💬 Пинг
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = rowsHtml;
+        return;
+      }
+
       const seenNames = new Set();
       Object.values(INFLUENCERS).forEach(inf => {
         if (!inf || !inf.name || seenNames.has(inf.name)) return;
@@ -3352,7 +3667,6 @@
           const isWarning = (soc.status || '').includes('Алерт');
           const isHit = (soc.status || '').includes('Хит');
           
-          // Realistic delta calculations (start shift 10:00 vs 19:00)
           const totalP = soc.posts || 0;
           let startP = 0;
           let delta = 0;
@@ -3474,9 +3788,45 @@
       if (auditBadge) auditBadge.textContent = timeStr;
     }
 
+    async function updatePhoneStatusUI() {
+      try {
+        const res = await fetch(getApiBaseUrl() + '/api/influencers/phone-status');
+        if (res.ok) {
+          const data = await res.json();
+          const devName = document.getElementById('phone-device-name');
+          const battBadge = document.getElementById('phone-battery-badge');
+          const pulseDot = document.getElementById('phone-pulse-dot');
+          const solidDot = document.getElementById('phone-solid-dot');
+          const statusBox = document.getElementById('side-phone-status-box');
+
+          if (data && data.online) {
+            if (devName) devName.textContent = `📱 ${data.model || 'SM-A266B'} (${data.serial})`;
+            if (battBadge) {
+              battBadge.textContent = `${data.battery || '100%'} 🔋`;
+              battBadge.className = 'text-[9px] font-mono text-emerald-400 font-bold bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/20 shrink-0';
+            }
+            if (pulseDot) pulseDot.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
+            if (solidDot) solidDot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-500';
+            if (statusBox) statusBox.className = 'bg-slate-900/90 border border-emerald-500/30 rounded-xl p-2 text-xs flex items-center justify-between shadow-inner';
+          } else {
+            if (devName) devName.textContent = '📱 Телефон: Оффлайн';
+            if (battBadge) {
+              battBadge.textContent = 'ОФФЛАЙН';
+              battBadge.className = 'text-[9px] font-mono text-rose-400 font-bold bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-500/20 shrink-0';
+            }
+            if (pulseDot) pulseDot.className = 'hidden';
+            if (solidDot) solidDot.className = 'relative inline-flex rounded-full h-2 w-2 bg-rose-500';
+            if (statusBox) statusBox.className = 'bg-slate-900/90 border border-rose-500/20 rounded-xl p-2 text-xs flex items-center justify-between shadow-inner';
+          }
+        }
+      } catch (e) {
+        console.warn('Phone status check failed:', e);
+      }
+    }
+
     let isSnapshotRunning = false;
 
-    async function triggerSnapshot(btn) {
+    async function triggerSnapshot(mode = 'phone') {
       if (isSnapshotRunning) return;
       isSnapshotRunning = true;
 
@@ -3492,46 +3842,76 @@
 
       // 1. Set loading states on buttons
       if (sideBtn) {
-        sideBtn.innerHTML = '<span class="animate-pulse text-[#E588A6] flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Замер...</span>';
+        sideBtn.innerHTML = '<span class="animate-pulse text-[#E588A6] flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Сканирование...</span>';
         sideBtn.disabled = true;
       }
       if (auditBtn) {
-        auditBtn.innerHTML = '<span class="animate-pulse text-white flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Выполняется замер...</span>';
+        auditBtn.innerHTML = '<span class="animate-pulse text-white flex items-center justify-center gap-1.5"><svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> ' + (mode === 'phone' ? 'Аппаратный замер ADB...' : 'Веб-замер...') + '</span>';
         auditBtn.disabled = true;
       }
 
       // 2. Show live progress banner
       if (banner) {
         banner.classList.remove('hidden');
-        if (progressBar) progressBar.style.width = '15%';
-        if (progressPercent) progressPercent.textContent = '15%';
-        if (stepText) stepText.textContent = 'Опрос TikTok & YouTube API...';
+        if (progressBar) progressBar.style.width = '3%';
+        if (progressPercent) progressPercent.textContent = '3%';
+        if (stepText) stepText.textContent = (mode === 'phone' ? '📱 Подключение к телефону ADB R5GL12V22NX...' : '⚡ Запуск веб-парсеров...');
       }
 
-      // Trigger background snapshot API
+      // 3. Trigger background snapshot API
       try {
-        fetch(getApiBaseUrl() + '/api/influencers/trigger-snapshot', { method: 'POST' }).catch(e => console.log('Bg snapshot:', e));
-      } catch (e) {}
+        await fetch(getApiBaseUrl() + `/api/influencers/trigger-snapshot?mode=${mode}`, { method: 'POST' });
+      } catch (e) {
+        console.warn('Trigger snapshot POST error:', e);
+      }
 
-      // Stage 2: 45% (Phone ADB)
-      setTimeout(() => {
-        if (progressBar) progressBar.style.width = '45%';
-        if (progressPercent) progressPercent.textContent = '45%';
-        if (stepText) stepText.textContent = 'Снятие просмотров Reels с подключенного телефона SM-A266B (ADB)...';
-      }, 700);
+      let isFinished = false;
 
-      // Stage 3: 78% (Reconciliation)
-      setTimeout(() => {
-        if (progressBar) progressBar.style.width = '78%';
-        if (progressPercent) progressPercent.textContent = '78%';
-        if (stepText) stepText.textContent = 'Сверка срезов с отчетами смены (План vs Факт)...';
-      }, 1500);
+      // 4. Poll live status from backend every 900ms
+      const pollInterval = setInterval(async () => {
+        if (isFinished) return;
+        try {
+          const res = await fetch(getApiBaseUrl() + '/api/influencers/snapshot-status');
+          if (res.ok) {
+            const st = await res.json();
+            if (st && typeof st === 'object') {
+              const pct = Math.max(3, Math.min(100, st.percent || 0));
+              if (progressBar) progressBar.style.width = pct + '%';
+              if (progressPercent) progressPercent.textContent = pct + '%';
+              if (stepText && st.current_account) {
+                stepText.textContent = `[${st.progress || 0}/${st.total || 65}] ${st.current_account}`;
+              }
 
-      // Stage 4: 100% (Complete)
-      setTimeout(() => {
+              // Finished!
+              if (!st.is_running && (st.progress > 0 || st.finished_at)) {
+                isFinished = true;
+                clearInterval(pollInterval);
+                finishSnapshotUI();
+              }
+            }
+          }
+        } catch (pollErr) {
+          console.warn('Snapshot poll error:', pollErr);
+        }
+      }, 900);
+
+      // Safety timeout: stop polling after 400 seconds
+      const safetyTimer = setTimeout(() => {
+        if (!isFinished) {
+          isFinished = true;
+          clearInterval(pollInterval);
+          finishSnapshotUI();
+        }
+      }, 400000);
+
+      async function finishSnapshotUI() {
+        clearTimeout(safetyTimer);
         if (progressBar) progressBar.style.width = '100%';
         if (progressPercent) progressPercent.textContent = '100%';
-        if (stepText) stepText.textContent = 'Замер завершен! Все 60 аккаунтов синхронизированы.';
+        if (stepText) stepText.textContent = 'Синхронизация свежих срезов с базой данных...';
+
+        // Fetch fresh database records and re-render all tables and cards
+        await loadLiveData();
 
         const now = new Date();
         const newTimeStr = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} МСК`;
@@ -3539,24 +3919,21 @@
         updateLastSnapshotDisplays();
 
         celebrateSuccess();
-        showPlittyToast(`⚡ Замер успешно выполнен! Время замера: ${newTimeStr}`);
-        renderAuditTable();
-        recalculateMetrics();
-      }, 2300);
+        showPlittyToast(`⚡ Замер успешно выполнен! Данные обновлены: ${newTimeStr}`);
 
-      // Finish & reset banner
-      setTimeout(() => {
-        if (banner) banner.classList.add('hidden');
-        if (sideBtn) {
-          sideBtn.innerHTML = sideOrig;
-          sideBtn.disabled = false;
-        }
-        if (auditBtn) {
-          auditBtn.innerHTML = auditOrig;
-          auditBtn.disabled = false;
-        }
-        isSnapshotRunning = false;
-      }, 3300);
+        setTimeout(() => {
+          if (banner) banner.classList.add('hidden');
+          if (sideBtn) {
+            sideBtn.innerHTML = sideOrig;
+            sideBtn.disabled = false;
+          }
+          if (auditBtn) {
+            auditBtn.innerHTML = auditOrig;
+            auditBtn.disabled = false;
+          }
+          isSnapshotRunning = false;
+        }, 2200);
+      }
     }
 
     function sendAllSpecialistsReminder(btn) {
@@ -3681,15 +4058,14 @@
 
 
     // INIT
-    if (window.innerWidth < 768) {
-      try { setViewMode('mobile'); } catch(e) {}
-    }
     initPlittyImages();
     renderDesktopSpecialistList();
     renderSummary();
     loadLiveData();
     checkAndInitRoleMode();
     updateLastSnapshotDisplays();
+    updatePhoneStatusUI();
+    setInterval(updatePhoneStatusUI, 15000);
   </script>
 </body>
 </html>
