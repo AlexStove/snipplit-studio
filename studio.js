@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. API Base URL resolution (smart fallback for GitHub Pages, Cloudflare Tunnel, and Localhost)
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('trycloudflare.com'))
         ? ''
-        : 'https://phys-affect-concentration-instrumentation.trycloudflare.com';
+        : 'https://tower-terminology-shapes-among.trycloudflare.com';
 
     // 1. Initialize Telegram WebApp
     const tg = window.Telegram?.WebApp;

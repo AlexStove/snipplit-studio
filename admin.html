@@ -2133,7 +2133,8 @@
       let totalPlan = 0;
       let totalViews = 0;
       SPECIALISTS.forEach(s => {
-        totalPosts += (s.posts || 0);
+        const curShift = (s.shiftPosts !== undefined && s.shiftPosts !== null) ? s.shiftPosts : (s.reported !== undefined ? s.reported : 0);
+        totalPosts += curShift;
         totalPlan += (s.plan || 0);
         totalViews += (s.views || 0);
       });
@@ -2225,9 +2226,10 @@
       `;
 
       SPECIALISTS.forEach(s => {
-        const pct = s.plan > 0 ? Math.min(Math.round((s.posts / s.plan) * 100), 100) : 100;
-        const isOver = s.posts >= s.plan;
-        const colorClass = s.name === 'Саша' ? 'bg-rose-500' : 'bg-[#E588A6]';
+        const curShift = (s.shiftPosts !== undefined && s.shiftPosts !== null) ? s.shiftPosts : (s.reported !== undefined ? s.reported : 0);
+        const pct = s.plan > 0 ? Math.min(Math.round((curShift / s.plan) * 100), 100) : (curShift > 0 ? 100 : 0);
+        const isOver = curShift >= s.plan;
+        const colorClass = isOver ? 'bg-emerald-500' : (curShift > 0 ? 'bg-[#E588A6]' : 'bg-slate-700');
         html += `
           <div class="space-y-1.5 p-2 rounded-xl hover:bg-white/5 transition-colors">
             <div class="flex items-center justify-between text-xs">
@@ -2237,7 +2239,7 @@
                 <span class="text-[10px] text-slate-400">(${s.geo})</span>
               </div>
               <div class="flex items-center gap-2.5">
-                <span class="font-semibold ${isOver ? 'text-emerald-400' : 'text-rose-400'}">${s.posts} / ${s.plan} постов</span>
+                <span class="font-semibold ${isOver ? 'text-emerald-400' : (curShift > 0 ? 'text-[#F3A6BF]' : 'text-slate-400')}">${curShift} / ${s.plan} постов</span>
                 <button onclick="switchTab('specs'); navToSpecialistCabinet('${s.name}');" class="text-[10px] font-bold text-[#E588A6] hover:underline">
                   Кабинет &rarr;
                 </button>
@@ -3347,7 +3349,7 @@
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return '';
       }
-      return 'https://phys-affect-concentration-instrumentation.trycloudflare.com';
+      return 'https://tower-terminology-shapes-among.trycloudflare.com';
     }
 
     async function sendExcelToTelegramChat() {
@@ -3425,32 +3427,32 @@
         return;
       }
 
+      const exportUrl = getApiBaseUrl() + '/api/influencers/export-excel';
+
       // 1. Fetch genuine binary XLSX generated from backend
       try {
-        const res = await fetch(getApiBaseUrl() + '/api/influencers/export-excel');
+        const res = await fetch(exportUrl);
         if (res.ok) {
           const blob = await res.blob();
-          const blobUrl = window.URL.createObjectURL(blob);
+          const excelBlob = new Blob([blob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          const blobUrl = window.URL.createObjectURL(excelBlob);
           const a = document.createElement('a');
           a.href = blobUrl;
           a.download = 'Отчет_Инфлюенсеры_База.xlsx';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+          setTimeout(() => window.URL.revokeObjectURL(blobUrl), 3000);
+          return;
+        } else {
+          window.location.href = exportUrl;
           return;
         }
       } catch (e) {
-        console.warn("[Plitty Export] Fetch API fallback:", e);
+        console.warn("[Plitty Export] Direct window download fallback:", e);
+        window.open(exportUrl, '_blank');
+        return;
       }
-
-      // 2. Fallback direct download
-      const a = document.createElement('a');
-      a.href = 'plitty_influencers_report.xlsx';
-      a.download = 'Отчет_Инфлюенсеры_База.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
     }
 
     function downloadCSVDirect() {
@@ -3795,12 +3797,13 @@
               sumData.by_specialist.forEach(bs => {
                 const sObj = SPECIALISTS.find(s => s.name === bs.specialist || (bs.specialist && bs.specialist.includes(s.name)));
                 if (sObj) {
-                  sObj.shiftPosts = bs.shift_posts;
+                  sObj.shiftPosts = (bs.shift_posts !== undefined && bs.shift_posts !== null) ? bs.shift_posts : (bs.reported || 0);
                   if (bs.views) sObj.views = bs.views;
                 }
               });
             }
 
+            renderSummary();
             renderAllInfluencersSummaryTable(sumData);
           }
         }
@@ -4295,11 +4298,12 @@
       try {
         // Direct 1-click download without popup!
         await downloadExcelFileDirect('xlsx');
-        showPlittyToast('📊 Отчет по 60 аккаунтам успешно скачан!');
+        showPlittyToast('📊 Отчет по 60 аккаунтам успешно скачан в Excel (.xlsx)!');
       } catch (err) {
         console.error('Error downloading Excel:', err);
-        downloadCSVDirect();
-        showPlittyToast('📊 Отчет скачан в формате CSV!');
+        const exportUrl = getApiBaseUrl() + '/api/influencers/export-excel';
+        window.open(exportUrl, '_blank');
+        showPlittyToast('📊 Открываю прямую загрузку Excel (.xlsx)!');
       } finally {
         setTimeout(() => {
           if (targetBtn) {
