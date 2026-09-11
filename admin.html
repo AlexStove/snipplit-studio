@@ -3421,13 +3421,9 @@
       if (window.Telegram && window.Telegram.WebApp) {
         try { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e) {}
       }
-
-      if (format === 'csv') {
-        downloadCSVDirect();
-        return;
-      }
-
-      const exportUrl = getApiBaseUrl() + '/api/influencers/export-excel';
+      showPlittyToast('ℹ️ Экспорт отчета отключен. Модуль метрик будет переписан с нуля.');
+      return;
+      const exportUrl = '';
 
       // 1. Fetch genuine binary XLSX generated from backend
       try {
@@ -3763,12 +3759,10 @@
     }
 
     async function loadLiveData() {
+      // Сбор метрик отключен по запросу пользователя. Модуль будет переписан с нуля.
+      return;
       try {
-        const [accRes, recRes, sumRes] = await Promise.allSettled([
-          fetch(getApiBaseUrl() + '/api/influencers/accounts'),
-          fetch(getApiBaseUrl() + '/api/influencers/reconciliation'),
-          fetch(getApiBaseUrl() + '/api/influencers/summary')
-        ]);
+        const [accRes, recRes, sumRes] = await Promise.allSettled([]);
 
         if (sumRes.status === 'fulfilled' && sumRes.value.ok) {
           const sumData = await sumRes.value.json();
@@ -4123,8 +4117,9 @@
     }
 
     async function updatePhoneStatusUI() {
+      return;
       try {
-        const res = await fetch(getApiBaseUrl() + '/api/influencers/phone-status');
+        const res = await fetch('');
         if (res.ok) {
           const data = await res.json();
           const devName = document.getElementById('phone-device-name');
@@ -4161,6 +4156,8 @@
     let isSnapshotRunning = false;
 
     async function triggerSnapshot(mode = 'phone') {
+      showPlittyToast('ℹ️ Сбор метрик отключен. Модуль будет переписан с нуля.');
+      return;
       if (isSnapshotRunning) return;
       isSnapshotRunning = true;
 
