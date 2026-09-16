@@ -878,31 +878,51 @@
   <!-- ================================================================= -->
   <main id="view-higgsfield" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
     
-    <!-- Top Control Bar with Glass effect -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-5 rounded-3xl border border-white/10 shadow-2xl">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-pink-400 font-mono">HIGGSFIELD GENJUTSU ENGINE</span>
-          <span class="text-slate-500">&bull;</span>
-          <span class="text-xs text-slate-300 font-mono">12 Инфлюенсеров • 100% Face-Lock • Qwen 2K & Wan 2.1</span>
+    <!-- Top Control Bar with Glass effect & Sub-Navigation -->
+    <div class="glass p-5 rounded-3xl border border-white/10 shadow-2xl space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-pink-400 font-mono">HIGGSFIELD &bull; ВИДЕОСАЙТ ЯДРО</span>
+            <span class="text-slate-500">&bull;</span>
+            <span class="text-xs text-slate-300 font-mono">12 Персонажей • Qwen 2K • Wan 2.6 • Kling 2.6</span>
+          </div>
+          <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight">
+            🎨 Студия генерации и пайплайн
+          </h1>
         </div>
-        <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight">
-          🎨 Студия генерации (Higgsfield)
-        </h1>
+
+        <div class="flex items-center gap-2.5">
+          <div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
+            Активный персонаж: <span id="hf-top-active-name" class="font-bold text-pink-400">#0 Plitty Cyber</span>
+          </div>
+          <a href="http://localhost:8501" target="_blank" class="glass-btn px-4 py-2 rounded-2xl text-xs font-bold text-emerald-400 hover:border-emerald-400 shadow-md flex items-center gap-1.5">
+            <span>🚀 Streamlit Hub (8501)</span>
+          </a>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
-          Активный персонаж: <span id="hf-top-active-name" class="font-bold text-pink-400">#0 Plitty Cyber</span>
-        </div>
-        <button onclick="triggerHfTestAnimation()" class="glass-btn px-4 py-2 rounded-2xl text-xs font-bold text-amber-300 hover:border-amber-400 shadow-md">
-          <span>▶️ Тест анимации</span>
+      <!-- Sub-Tabs: Студия 3 сектора, Очередь рендеринга, Модерация 2K -->
+      <div class="flex items-center gap-2 pt-2 border-t border-white/10 overflow-x-auto">
+        <button id="subtab-btn-studio" onclick="switchStudioSubTab('studio')" class="glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-2">
+          <span>🎨 Студия (3 Сектора)</span>
+        </button>
+        <button id="subtab-btn-queue" onclick="switchStudioSubTab('queue')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2">
+          <span>🔄 Очередь рендеринга</span>
+          <span id="badge-queue-count" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono font-bold text-pink-300">38</span>
+        </button>
+        <button id="subtab-btn-mod" onclick="switchStudioSubTab('mod')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2">
+          <span>⚖️ Модерация 2K</span>
+          <span id="badge-mod-count" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono font-bold text-amber-300">2</span>
+        </button>
+        <button id="subtab-btn-streamlit" onclick="switchStudioSubTab('streamlit')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2">
+          <span>🖥️ Встроенный Streamlit</span>
         </button>
       </div>
     </div>
 
-    <!-- 3 SECTORS GRID (Side-by-side on wide screens) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- ==================== SUBTAB 1: 3 SECTORS STUDIO ==================== -->
+    <div id="subtab-view-studio" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
       <!-- ============================================================= -->
       <!-- СЕКТОР 1: ВЫБОР ИНФЛЮЕНСЕРА (4 cols)                          -->
@@ -970,14 +990,21 @@
           </div>
         </div>
 
-        <!-- Angle quick tabs for active model (скр 3) -->
+        <!-- Section 1 Photos: Master Angles vs Generated Gallery -->
         <div class="space-y-3 pt-3 border-t border-white/10">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span>📸 РАКУРСЫ МАСТЕР-КАДРОВ МОДЕЛИ</span>
-            </span>
-            <span class="text-[9px] font-mono text-pink-400 font-bold">5 РАКУРСОВ</span>
+          <!-- Toggle between Master Angles and Generated Gallery -->
+          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-black/40 border border-white/10 text-xs font-bold">
+            <button id="s1-tab-master" onclick="switchS1PhotoView('master')" class="glass-btn-accent py-1.5 rounded-lg text-white">
+              📸 Мастер-кадры (5)
+            </button>
+            <button id="s1-tab-gallery" onclick="switchS1PhotoView('gallery')" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white flex items-center justify-center gap-1">
+              <span>🖼️ Генерации</span>
+              <span id="s1-gen-count" class="px-1.5 py-0.2 rounded-full bg-pink-500/20 text-[9px] text-pink-300 font-mono font-bold">3</span>
+            </button>
           </div>
+
+          <!-- Subview A: 5 Master Angles -->
+          <div id="s1-view-master" class="space-y-3">
 
           <!-- 5 Clean Buttons Grid (3 + 2 layout matching скр 3) -->
           <div class="grid grid-cols-3 gap-2 text-xs">
@@ -1022,6 +1049,14 @@
                   <span>🔍 2K Просмотр</span>
                 </button>
               </div>
+            </div>
+          </div>
+          </div>
+
+          <!-- Subview B: Generated Photos Gallery for Active Influencer -->
+          <div id="s1-view-gallery" class="space-y-2 hidden">
+            <div id="s1-gallery-grid" class="grid grid-cols-3 gap-2 max-h-[380px] overflow-y-auto p-1">
+              <!-- Dynamically populated influencer gallery -->
             </div>
           </div>
         </div>
@@ -1099,9 +1134,28 @@
 
           <!-- ==================== VIDEO CONTROLS ==================== -->
           <div id="hf-video-controls" class="space-y-4 hidden">
+            <!-- 0. Neural Network Selector (Kling vs Wan) -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">1. Нейросеть для танца:</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <button onclick="selectHfMotionModel(this, 'wan26')" class="hf-mmodel-btn glass-btn-accent py-2 px-2 rounded-xl flex items-center justify-center gap-1 font-bold border-pink-400 text-white shadow-md">
+                  <span>🎬</span> <span>Wan 2.6</span>
+                </button>
+                <button onclick="selectHfMotionModel(this, 'kling26')" class="hf-mmodel-btn glass-btn py-2 px-2 rounded-xl flex items-center justify-center gap-1 text-slate-300 hover:text-white">
+                  <span>⚡</span> <span>Kling 2.6</span>
+                </button>
+                <button onclick="selectHfMotionModel(this, 'kling_omni')" class="hf-mmodel-btn glass-btn py-2 px-2 rounded-xl flex items-center justify-center gap-1 text-slate-300 hover:text-white">
+                  <span>✨</span> <span>Kling Omni</span>
+                </button>
+              </div>
+              <div id="hf-model-desc-box" class="p-2.5 rounded-xl bg-pink-500/10 border border-pink-500/30 text-[10px] text-pink-200">
+                🔒 <b>Wan 2.6 Lock:</b> локация и фон зафиксированы на комнату модели, образ подвязан на полный рост в комнате.
+              </div>
+            </div>
+
             <!-- Dance Motion Preset Pills -->
             <div class="space-y-2">
-              <label class="text-[11px] font-bold text-white block">1. Стиль и движения танца (Wan 2.1 Motion):</label>
+              <label class="text-[11px] font-bold text-white block">2. Стиль и движения танца:</label>
               <div class="grid grid-cols-2 gap-2 text-xs">
                 <button onclick="selectHfVideoMotion(this, 'energetic_tiktok')" class="hf-vmotion-btn glass-btn-accent py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 font-bold border-pink-400 text-white shadow-md">
                   <span>🔥</span> <span>Энергичный TikTok</span>
@@ -1126,7 +1180,7 @@
 
             <!-- Audio / Sound Sync -->
             <div class="space-y-2">
-              <label class="text-[11px] font-bold text-white block">2. Звуковая дорожка (Beat-Sync):</label>
+              <label class="text-[11px] font-bold text-white block">3. Звуковая дорожка (Beat-Sync):</label>
               <div class="flex flex-wrap gap-1.5 text-[11px]">
                 <button onclick="selectHfAudio(this, 'audio_pop_1')" class="hf-audio-btn glass-btn-accent px-3 py-1.5 rounded-xl font-bold border-pink-400 text-white shadow-md">🎵 Pop Trend #1</button>
                 <button onclick="selectHfAudio(this, 'audio_phonk_2')" class="hf-audio-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">⚡ Cyber Phonk #2</button>
@@ -1137,26 +1191,22 @@
 
             <!-- Duration Selection -->
             <div class="space-y-2">
-              <label class="text-[11px] font-bold text-white block">3. Длительность клипа:</label>
+              <label class="text-[11px] font-bold text-white block">4. Длительность клипа:</label>
               <div class="grid grid-cols-3 gap-2 text-xs">
-                <button onclick="selectHfDuration(this, 5)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">5 сек ($0.08)</button>
-                <button onclick="selectHfDuration(this, 10)" class="hf-dur-btn glass-btn-accent py-2 rounded-xl text-white font-black border-pink-400 shadow-md">10 сек ($0.15)</button>
-                <button onclick="selectHfDuration(this, 15)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">15 сек ($0.22)</button>
+                <button onclick="selectHfDuration(this, 5)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">5 сек</button>
+                <button onclick="selectHfDuration(this, 10)" class="hf-dur-btn glass-btn-accent py-2 rounded-xl text-white font-black border-pink-400 shadow-md">10 сек</button>
+                <button onclick="selectHfDuration(this, 15)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">15 сек</button>
               </div>
             </div>
 
-            <!-- Wan 2.1 Motion Lock Checkbox & Pricing -->
+            <!-- Motion Pricing -->
             <div class="p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2">
-              <label class="flex items-center gap-3 cursor-pointer select-none">
-                <input type="checkbox" id="hf-motionlock-toggle" checked class="w-4 h-4 rounded text-pink-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 border-white/20">
-                <div class="flex-1">
-                  <span class="text-xs font-bold text-white block">WAN 2.1 MOTION-LOCK (100% Стабильность)</span>
-                  <span class="text-[10px] text-slate-400">Сохранение лица и анатомии персонажа в динамике танца</span>
-                </div>
-              </label>
-              <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-white/5">
-                <span class="text-slate-400">Стоимость видео:</span>
-                <span id="hf-video-price-label" class="font-bold text-emerald-400">$0.1500 (Wan 2.1 10s)</span>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-300 font-bold">Движок: <span id="hf-active-engine-label" class="text-pink-400">Wan 2.6 (Кинематограф)</span></span>
+                <span id="hf-video-price-label" class="font-mono font-bold text-emerald-400">$0.1250 (10 сек)</span>
+              </div>
+              <div class="text-[10px] text-slate-400">
+                Anti-MD5 уникализация: ВКЛЮЧЕНА • 720p 30fps
               </div>
             </div>
           </div>
@@ -1283,6 +1333,74 @@
 
       </div>
 
+    </div>
+
+    <!-- ==================== SUBTAB 2: RENDER QUEUE VIEW ==================== -->
+    <div id="subtab-view-queue" class="hidden glass rounded-3xl p-6 space-y-5 border border-white/10 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <span>🔄 Очередь рендеринга</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 font-mono" id="queue-live-count">38 задач</span>
+          </h2>
+          <p class="text-xs text-slate-400">Все задачи рендеринга на GPU-кластере Kie.ai / Fal.ai с таймингами, стоимостью и статусами.</p>
+        </div>
+        <button onclick="loadRenderQueue()" class="glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5">
+          <span>🔄 Обновить очередь</span>
+        </button>
+      </div>
+
+      <!-- Queue Table -->
+      <div class="overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/60">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-white/10 text-[10px] font-mono text-slate-400 uppercase bg-black/40">
+              <th class="py-3 px-4">ID задачи</th>
+              <th class="py-3 px-4">Модель</th>
+              <th class="py-3 px-4">Тип</th>
+              <th class="py-3 px-4">Промпт</th>
+              <th class="py-3 px-4">Статус</th>
+              <th class="py-3 px-4">Время</th>
+              <th class="py-3 px-4">Стоимость</th>
+              <th class="py-3 px-4 text-right">Результат</th>
+            </tr>
+          </thead>
+          <tbody id="queue-table-body" class="divide-y divide-white/5 font-medium">
+            <!-- Dynamically loaded queue rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== SUBTAB 3: MODERATION 2K VIEW ==================== -->
+    <div id="subtab-view-mod" class="hidden glass rounded-3xl p-6 space-y-5 border border-white/10 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <span>⚖️ Буфер модерации 2K</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono" id="mod-live-count">2 кадра</span>
+          </h2>
+          <p class="text-xs text-slate-400">Сгенерированные кадры, ожидающие утверждения перед доставкой на смартфоны фермы.</p>
+        </div>
+        <button onclick="loadModerationPending()" class="glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5">
+          <span>🔄 Обновить буфер</span>
+        </button>
+      </div>
+
+      <div id="mod-items-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <!-- Dynamically loaded moderation cards -->
+      </div>
+    </div>
+
+    <!-- ==================== SUBTAB 4: STREAMLIT EMBED VIEW ==================== -->
+    <div id="subtab-view-streamlit" class="hidden glass rounded-3xl p-4 space-y-3 border border-white/10 shadow-2xl">
+      <div class="flex items-center justify-between px-2">
+        <span class="text-xs font-bold text-slate-300">🖥️ Полный Python Streamlit дэшборд (порт 8501)</span>
+        <a href="http://localhost:8501" target="_blank" class="text-xs text-pink-400 hover:underline font-bold">Открыть в отдельной вкладке &nearr;</a>
+      </div>
+      <div class="w-full h-[82vh] rounded-2xl overflow-hidden border border-white/10 bg-slate-950">
+        <iframe src="http://localhost:8501" class="w-full h-full border-0"></iframe>
+      </div>
     </div>
   </main>
 
@@ -3072,6 +3190,241 @@
         }
       }
     });
+  
+    // --- PIPELINE EXPANDED FEATURES (Subtabs, Queue, Moderation, Gallery, Kling/Wan) ---
+    let currentStudioSubTab = 'studio';
+    let currentHfMotionModel = 'wan26';
+
+    function switchStudioSubTab(tab) {
+      currentStudioSubTab = tab;
+      ['studio', 'queue', 'mod', 'streamlit'].forEach(t => {
+        const btn = document.getElementById('subtab-btn-' + t);
+        const view = document.getElementById('subtab-view-' + t);
+        if (btn) {
+          if (t === tab) {
+            btn.className = 'glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-2';
+          } else {
+            btn.className = 'glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2';
+          }
+        }
+        if (view) {
+          if (t === tab) view.classList.remove('hidden');
+          else view.classList.add('hidden');
+        }
+      });
+
+      if (tab === 'queue') loadRenderQueue();
+      if (tab === 'mod') loadModerationPending();
+    }
+
+    function selectHfMotionModel(btn, modelKey) {
+      currentHfMotionModel = modelKey;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-mmodel-btn').forEach(b => {
+        b.className = 'hf-mmodel-btn glass-btn py-2 px-2 rounded-xl flex items-center justify-center gap-1 text-slate-300 hover:text-white text-xs';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-mmodel-btn glass-btn-accent py-2 px-2 rounded-xl flex items-center justify-center gap-1 font-bold text-white shadow-md text-xs';
+      btn.style.borderColor = m.color;
+
+      const descBox = document.getElementById('hf-model-desc-box');
+      const label = document.getElementById('hf-active-engine-label');
+      const priceLabel = document.getElementById('hf-video-price-label');
+
+      if (modelKey === 'wan26') {
+        if (descBox) descBox.innerHTML = '🔒 <b>Wan 2.6 Lock:</b> локация и фон зафиксированы на комнату модели, образ подвязан на полный рост в комнате.';
+        if (label) label.textContent = 'Wan 2.6 (Кинематограф)';
+        if (priceLabel) priceLabel.textContent = `$${(currentHfDuration * 0.0125).toFixed(4)} (${currentHfDuration} сек)`;
+      } else if (modelKey === 'kling26') {
+        if (descBox) descBox.innerHTML = '⚡ <b>Kling 2.6 Dynamic:</b> динамичный перенос хореографии и акробатических связок.';
+        if (label) label.textContent = 'Kling 2.6 (Динамика)';
+        if (priceLabel) priceLabel.textContent = `$${(currentHfDuration * 0.0110).toFixed(4)} (${currentHfDuration} сек)`;
+      } else {
+        if (descBox) descBox.innerHTML = '✨ <b>Kling Omni:</b> максимальная точность ткани, волос и физики одежды.';
+        if (label) label.textContent = 'Kling Omni-Dance';
+        if (priceLabel) priceLabel.textContent = `$${(currentHfDuration * 0.0200).toFixed(4)} (${currentHfDuration} сек)`;
+      }
+      showToast(`🎬 Движок танца: ${modelKey}`);
+    }
+
+    function switchS1PhotoView(view) {
+      const btnM = document.getElementById('s1-tab-master');
+      const btnG = document.getElementById('s1-tab-gallery');
+      const viewM = document.getElementById('s1-view-master');
+      const viewG = document.getElementById('s1-view-gallery');
+
+      if (view === 'master') {
+        if (btnM) btnM.className = 'glass-btn-accent py-1.5 rounded-lg text-white';
+        if (btnG) btnG.className = 'glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white flex items-center justify-center gap-1';
+        if (viewM) viewM.classList.remove('hidden');
+        if (viewG) viewG.classList.add('hidden');
+      } else {
+        if (btnG) btnG.className = 'glass-btn-accent py-1.5 rounded-lg text-white flex items-center justify-center gap-1';
+        if (btnM) btnM.className = 'glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white';
+        if (viewM) viewM.classList.add('hidden');
+        if (viewG) viewG.classList.remove('hidden');
+        loadInfluencerGallery(currentHfModelId);
+      }
+    }
+
+    async function loadInfluencerGallery(infId) {
+      const grid = document.getElementById('s1-gallery-grid');
+      const countBadge = document.getElementById('s1-gen-count');
+      if (!grid) return;
+
+      grid.innerHTML = '<div class="col-span-3 text-center py-4 text-slate-400 text-xs">Загрузка фото...</div>';
+
+      try {
+        const r = await fetch(`http://localhost:8000/api/influencer/${infId}/photos`);
+        if (r.ok) {
+          const photos = await r.json();
+          if (countBadge) countBadge.textContent = photos.length;
+          if (photos.length === 0) {
+            grid.innerHTML = '<div class="col-span-3 text-center py-6 text-slate-500 text-xs">Нет сгенерированных фото.<br>Нажмите «Сгенерировать фото» в Секторе 2!</div>';
+            return;
+          }
+          grid.innerHTML = photos.map(p => `
+            <div class="relative group aspect-square rounded-xl overflow-hidden border border-white/15 bg-slate-900 cursor-pointer hover:border-pink-400 transition-all" onclick="openModalWithSrc('${p.url}', '${p.prompt.substring(0, 50)}...')">
+              <img src="${p.url}" alt="Gen" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 flex flex-col justify-end text-[9px] text-white">
+                <span class="font-mono text-emerald-400">$${p.cost_usd}</span>
+                <span class="truncate text-slate-300">${p.prompt || '2K кадр'}</span>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          grid.innerHTML = '<div class="col-span-3 text-center py-4 text-slate-400 text-xs">Галерея пуста</div>';
+        }
+      } catch (e) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-4 text-slate-400 text-xs">Подключите локальный сервер (порт 8000)</div>';
+      }
+    }
+
+    async function loadRenderQueue() {
+      const tbody = document.getElementById('queue-table-body');
+      const countEl = document.getElementById('queue-live-count');
+      const badgeCount = document.getElementById('badge-queue-count');
+      if (!tbody) return;
+
+      tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-400">Загрузка очереди...</td></tr>';
+
+      try {
+        const r = await fetch('http://localhost:8000/api/render_queue');
+        if (r.ok) {
+          const tasks = await r.json();
+          if (countEl) countEl.textContent = `${tasks.length} задач`;
+          if (badgeCount) badgeCount.textContent = tasks.length;
+
+          if (tasks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-500">Очередь пуста</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = tasks.slice(0, 20).map(t => {
+            const isDone = t.status === 'completed';
+            const isFail = t.status === 'failed';
+            const statusBadge = isDone 
+              ? '<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">Готово ✅</span>'
+              : (isFail ? '<span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 font-mono text-[10px] font-bold">Ошибка ❌</span>' : '<span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold animate-pulse">Рендеринг ⏳</span>');
+            
+            const shortPrompt = (t.prompt || '').substring(0, 45) + '...';
+            const resPreview = t.result_path 
+              ? `<button onclick="openModalWithSrc('output/ready/${t.result_path.split('\').pop()}', '${t.influencer_id}')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold text-pink-300 hover:text-white">👁️ Просмотр</button>`
+              : '<span class="text-slate-500">—</span>';
+
+            return `
+              <tr class="hover:bg-white/5 transition-colors">
+                <td class="py-3 px-4 font-mono text-slate-300">${t.id.substring(0, 10)}</td>
+                <td class="py-3 px-4 font-bold text-white">${t.influencer_id}</td>
+                <td class="py-3 px-4 font-mono text-pink-300">${t.type} / ${t.provider || 'kie'}</td>
+                <td class="py-3 px-4 text-slate-300" title="${t.prompt}">${shortPrompt}</td>
+                <td class="py-3 px-4">${statusBadge}</td>
+                <td class="py-3 px-4 font-mono text-slate-400">${t.elapsed_sec ? t.elapsed_sec.toFixed(1) + 'с' : (t.created_at || '—')}</td>
+                <td class="py-3 px-4 font-mono text-emerald-400">$${t.cost_usd || 0.0}</td>
+                <td class="py-3 px-4 text-right">${resPreview}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-400">Сервер на порту 8000 не запущен</td></tr>';
+      }
+    }
+
+    async function loadModerationPending() {
+      const grid = document.getElementById('mod-items-grid');
+      const countEl = document.getElementById('mod-live-count');
+      const badgeCount = document.getElementById('badge-mod-count');
+      if (!grid) return;
+
+      grid.innerHTML = '<div class="col-span-3 text-center py-6 text-slate-400">Загрузка буфера модерации...</div>';
+
+      try {
+        const r = await fetch('http://localhost:8000/api/moderation/pending');
+        if (r.ok) {
+          const items = await r.json();
+          if (countEl) countEl.textContent = `${items.length} кадров`;
+          if (badgeCount) badgeCount.textContent = items.length;
+
+          if (items.length === 0) {
+            grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-500">Все кадры промодерированы! Нет ожидающих задач.</div>';
+            return;
+          }
+
+          grid.innerHTML = items.map(item => `
+            <div class="glass rounded-2xl p-4 space-y-3 border border-white/10 shadow-xl">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-white">${item.influencer_id}</span>
+                <span class="font-mono text-emerald-400">$${item.cost_usd || 0.032}</span>
+              </div>
+              <div class="relative aspect-[9/16] max-h-[280px] w-full mx-auto rounded-xl overflow-hidden bg-black border border-white/10 cursor-pointer" onclick="openModalWithSrc('${item.web_url}', '${item.influencer_id}')">
+                <img src="${item.web_url}" alt="Mod" class="w-full h-full object-contain">
+              </div>
+              <p class="text-[11px] text-slate-300 line-clamp-2" title="${item.prompt}">${item.prompt || 'Без описания'}</p>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="approveModItem('${item.id}', '${item.influencer_id}')" class="glass-btn-accent py-2 rounded-xl text-xs font-bold text-white shadow-md">
+                  ✅ Одобрить
+                </button>
+                <button onclick="rejectModItem('${item.id}', '${item.influencer_id}')" class="glass-btn py-2 rounded-xl text-xs font-bold text-red-400 hover:text-red-200">
+                  ❌ В брак
+                </button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-6 text-slate-400">Сервер на порту 8000 не запущен</div>';
+      }
+    }
+
+    async function approveModItem(itemId, infId) {
+      try {
+        await fetch('http://localhost:8000/api/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_id: itemId, influencer_id: infId })
+        });
+        showToast('✅ Кадр успешно одобрен!');
+        loadModerationPending();
+      } catch (e) {
+        showToast('Ошибка одобрения');
+      }
+    }
+
+    async function rejectModItem(itemId, infId) {
+      try {
+        await fetch('http://localhost:8000/api/reject', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_id: itemId, influencer_id: infId })
+        });
+        showToast('❌ Кадр отправлен в брак!');
+        loadModerationPending();
+      } catch (e) {
+        showToast('Ошибка отклонения');
+      }
+    }
+
   </script>
 </body>
 </html>
