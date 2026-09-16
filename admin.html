@@ -2790,6 +2790,8 @@
       return 'output/ready/inf_keira_dance_80a56c55_unique.mp4';
     }
 
+    let hfProgressInterval = null;
+
     async function triggerHfGeneration() {
       if (isHfRendering) return;
       isHfRendering = true;
@@ -2797,14 +2799,16 @@
       const isVideo = (currentHfMode === 'video');
       currentHfResultType = isVideo ? 'video' : 'photo';
 
-      // Switch to rendering scene
+      const userPrompt = document.getElementById('hf-prompt-input')?.value || '';
+
+      // 1. Switch UI to rendering scene with Chibi-Plitty drawing on tablet
       document.getElementById('hf-idle-card').classList.add('hidden');
       document.getElementById('hf-result-card').classList.add('hidden');
       const rScene = document.getElementById('hf-render-scene');
       rScene.classList.remove('hidden');
       
       const badge = document.getElementById('hf-status-badge');
-      badge.textContent = isVideo ? 'WAN 2.1 РЕНДЕР...' : 'QWEN 2K РЕНДЕР...';
+      badge.textContent = isVideo ? 'WAN 2.1 ГЕНЕРАЦИЯ...' : 'QWEN 2K ГЕНЕРАЦИЯ...';
       badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold animate-pulse';
 
       const subtitle = document.getElementById('hf-render-subtitle');
@@ -2817,114 +2821,133 @@
       const pBar = document.getElementById('hf-progress-bar');
       const stageText = document.getElementById('hf-stage-text');
 
-      // Stage 1
-      pBar.style.width = '25%';
+      let currentPct = 10;
+      pBar.style.width = currentPct + '%';
       stageText.textContent = isVideo 
         ? '🎬 [ 1/3 ] Загрузка Wan 2.1 и скелета движений...' 
-        : '✏️ [ 1/3 ] Инициализация Qwen 2K...';
+        : '✏️ [ 1/3 ] Загрузка Face-Lock эталона и инициализация Qwen 2K...';
 
-      // Try calling local API bridge in background
-      let apiResultPromise = null;
+      // 2. Smooth simulated progress while waiting for real GPU cluster
+      if (hfProgressInterval) clearInterval(hfProgressInterval);
+      let elapsedSeconds = 0;
+      hfProgressInterval = setInterval(() => {
+        elapsedSeconds += 1;
+        if (currentPct < 90) {
+          currentPct += (currentPct < 50 ? 3 : (currentPct < 75 ? 1.5 : 0.6));
+          if (currentPct > 90) currentPct = 90;
+          pBar.style.width = Math.floor(currentPct) + '%';
+        }
+
+        if (elapsedSeconds === 4) {
+          stageText.textContent = isVideo
+            ? '💃 [ 2/3 ] Рендеринг фаз танца и пластики движений...'
+            : '🎨 [ 2/3 ] Нейросеть прорисовывает черты лица, свет и окружение...';
+        } else if (elapsedSeconds === 18) {
+          stageText.textContent = isVideo
+            ? '⚡ [ 3/3 ] Синхронизация звуковой дорожки и Anti-MD5...'
+            : '✨ [ 3/3 ] 100% Face-Lock: фиксация взгляда и микроструктуры кожи...';
+        } else if (elapsedSeconds === 45) {
+          stageText.textContent = '⏳ Завершение 2K рендеринга и сохранение файла...';
+        }
+      }, 1000);
+
+      // 3. Send REAL API request to local api_bridge (port 8000)
+      const apiHost = window.location.origin.includes(':8000') ? '' : 'http://localhost:8000';
+      const endpoint = isVideo ? `${apiHost}/api/generate_video` : `${apiHost}/api/generate_photo`;
+      
+      const payload = isVideo ? {
+        influencer_id: m.id,
+        prompt: userPrompt,
+        motion_type: currentHfVideoMotion,
+        duration: currentHfDuration
+      } : {
+        influencer_id: m.id,
+        prompt: userPrompt,
+        angle: currentHfAngle,
+        style: currentHfStyle,
+        use_face_lock: true
+      };
+
+      let finalFileUrl = '';
+      let isRealGen = false;
+
       try {
-        const endpoint = isVideo ? 'http://localhost:8000/api/generate_video' : 'http://localhost:8000/api/generate_photo';
-        const payload = isVideo ? {
-          influencer_id: m.id,
-          prompt: document.getElementById('hf-prompt-input')?.value || '',
-          motion_type: currentHfVideoMotion,
-          duration: currentHfDuration
-        } : {
-          influencer_id: m.id,
-          prompt: document.getElementById('hf-prompt-input')?.value || '',
-          angle: currentHfAngle,
-          style: currentHfStyle,
-          use_face_lock: true
-        };
-        apiResultPromise = fetch(endpoint, {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
-        }).then(r => r.json()).catch(() => null);
-      } catch (e) {
-        apiResultPromise = Promise.resolve(null);
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status === 'success' && data.file_url) {
+            finalFileUrl = data.file_url;
+            isRealGen = true;
+          } else if (data.fallback_url) {
+            finalFileUrl = data.fallback_url;
+          }
+        } else {
+          console.warn('API returned non-200:', response.status);
+        }
+      } catch (err) {
+        console.warn('Fetch failed (backend offline or mixed content):', err);
       }
 
-      setTimeout(() => {
-        // Stage 2
-        pBar.style.width = '65%';
-        stageText.textContent = isVideo 
-          ? '💃 [ 2/3 ] Генерация фаз танца и пластики движений...' 
-          : '🎨 [ 2/3 ] Прорисовка текстур и освещения...';
-      }, 1100);
+      // Stop progress timer
+      clearInterval(hfProgressInterval);
+      pBar.style.width = '100%';
+      isHfRendering = false;
+      rScene.classList.add('hidden');
 
-      setTimeout(() => {
-        // Stage 3
-        pBar.style.width = '90%';
-        stageText.textContent = isVideo 
-          ? '⚡ [ 3/3 ] Anti-MD5 уникализация и синхронизация аудио...' 
-          : '✨ [ 3/3 ] Наложение 100% Face-Lock и постобработка...';
-      }, 2200);
+      if (!finalFileUrl) {
+        // Fallback to ready output if local backend was unreachable
+        finalFileUrl = isVideo ? getGeneratedVideoForModel(m) : getGeneratedPhotoForModel(m);
+        showToast('⚠️ Бэкенд на порту 8000 не ответил. Откройте http://localhost:8000/admin.html');
+      } else if (isRealGen) {
+        showToast(isVideo ? '🎉 Видео-танец успешно сгенерирован нейросетью!' : '🎉 2K кадр успешно сгенерирован нейросетью Qwen!');
+      }
 
-      setTimeout(async () => {
-        pBar.style.width = '100%';
-        isHfRendering = false;
-        rScene.classList.add('hidden');
-        
-        let fileUrl = '';
-        if (apiResultPromise) {
-          const apiRes = await apiResultPromise;
-          if (apiRes && apiRes.file_url) {
-            fileUrl = apiRes.file_url;
-          }
+      currentHfResultUrl = finalFileUrl;
+
+      // 4. Show Result in Sector 3
+      const resCard = document.getElementById('hf-result-card');
+      resCard.classList.remove('hidden');
+      
+      const resImg = document.getElementById('hf-result-img');
+      const resVid = document.getElementById('hf-result-video');
+
+      if (isVideo) {
+        if (resImg) resImg.classList.add('hidden');
+        if (resVid) {
+          resVid.classList.remove('hidden');
+          resVid.src = finalFileUrl;
+          resVid.load();
+          resVid.play().catch(() => {});
         }
-
-        if (!fileUrl) {
-          fileUrl = isVideo ? getGeneratedVideoForModel(m) : getGeneratedPhotoForModel(m);
+        badge.textContent = `ГОТОВО (WAN 2.1 ${currentHfDuration}s)`;
+      } else {
+        if (resVid) {
+          resVid.pause();
+          resVid.classList.add('hidden');
         }
-        currentHfResultUrl = fileUrl;
-
-        // Show result card
-        const resCard = document.getElementById('hf-result-card');
-        resCard.classList.remove('hidden');
-        
-        const resImg = document.getElementById('hf-result-img');
-        const resVid = document.getElementById('hf-result-video');
-
-        if (isVideo) {
-          if (resImg) resImg.classList.add('hidden');
-          if (resVid) {
-            resVid.classList.remove('hidden');
-            resVid.src = fileUrl;
-            resVid.load();
-            resVid.play().catch(() => {});
-          }
-          badge.textContent = `ГОТОВО (WAN 2.1 ${currentHfDuration}s)`;
-        } else {
-          if (resVid) {
-            resVid.pause();
-            resVid.classList.add('hidden');
-          }
-          if (resImg) {
-            resImg.classList.remove('hidden');
-            resImg.src = fileUrl;
-          }
-          badge.textContent = 'ГОТОВО (2K UHD)';
+        if (resImg) {
+          resImg.classList.remove('hidden');
+          resImg.src = finalFileUrl;
         }
+        badge.textContent = 'ГОТОВО (2K UHD)';
+      }
+      badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
 
-        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
-
-        // Add to recent tray
-        hfRecentGenerations.unshift({
-          id: Date.now().toString(),
-          model: m.name,
-          type: isVideo ? 'video' : 'photo',
-          url: fileUrl,
-          thumb: isVideo ? (m.avatar || fileUrl) : fileUrl,
-          time: 'Только что'
-        });
-        renderHfRecentTray();
-
-        showToast(isVideo ? `🎉 Видео-танец для ${m.name} готов к просмотру!` : `🎉 2K кадр для ${m.name} успешно сгенерирован!`);
-      }, 3300);
+      // 5. Add to Recent Tray
+      hfRecentGenerations.unshift({
+        id: Date.now().toString(),
+        model: m.name,
+        type: isVideo ? 'video' : 'photo',
+        url: finalFileUrl,
+        thumb: isVideo ? (m.avatar || finalFileUrl) : finalFileUrl,
+        time: 'Только что'
+      });
+      renderHfRecentTray();
     }
 
     function downloadHfResult() {
