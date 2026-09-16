@@ -26,10 +26,11 @@
 
   <style>
     :root {
-      --bg-dark: #050814;
+      --bg-dark: #04060f;
       --theme-color: #d946ef;
-      --theme-glow: rgba(217, 70, 239, 0.4);
+      --theme-glow: rgba(217, 70, 239, 0.5);
       --plitty-rose: #E588A6;
+      --dancer-color: #E0A96D;
     }
 
     body {
@@ -53,14 +54,64 @@
 
     /* High-End Glassmorphism Card */
     .glass {
-      background: rgba(10, 15, 28, 0.72);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10, 15, 28, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.25s ease;
     }
     .glass:hover {
-      border-color: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Premium Glass Buttons */
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      color: #E2E8F0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.13);
+      border-color: rgba(255, 255, 255, 0.32);
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 16px rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+    .glass-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.6);
+    }
+
+    .glass-btn-accent {
+      background: linear-gradient(135deg, rgba(229, 136, 166, 0.28) 0%, rgba(217, 70, 239, 0.22) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(229, 136, 166, 0.5);
+      box-shadow: 0 8px 24px -4px rgba(229, 136, 166, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      color: #FFFFFF;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-btn-accent:hover {
+      background: linear-gradient(135deg, rgba(229, 136, 166, 0.45) 0%, rgba(217, 70, 239, 0.38) 100%);
+      border-color: rgba(229, 136, 166, 0.85);
+      box-shadow: 0 12px 32px -4px rgba(229, 136, 166, 0.5), 0 0 22px rgba(229, 136, 166, 0.4);
+      transform: translateY(-1px);
     }
 
     /* Screen Views */
@@ -75,8 +126,8 @@
     /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.16); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.32); }
 
     .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
   </style>
@@ -84,67 +135,67 @@
 
 <body class="text-slate-100 antialiased relative pb-28">
 
-  <!-- FULLSCREEN AMBIENT COLOR BACKDROP -->
+  <!-- FULLSCREEN INTENSE AMBIENT COLOR BACKDROP -->
   <div id="ambient-backdrop" class="ambient-bg"></div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-500/90 text-white font-medium shadow-2xl backdrop-blur-md border border-emerald-400/40 text-xs">
+  <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-5 py-3 rounded-2xl bg-emerald-500/90 text-white font-semibold shadow-2xl backdrop-blur-xl border border-emerald-400/50 text-xs">
     <span id="toast-msg">Скопировано в буфер!</span>
   </div>
 
   <!-- FULLSCREEN IMAGE MODAL (ZOOM) -->
-  <div id="img-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
-    <div class="relative max-w-4xl max-h-[95vh] flex flex-col items-center" onclick="event.stopPropagation()">
-      <img id="modal-img" src="" class="max-h-[85vh] max-w-full rounded-2xl shadow-2xl object-contain border border-slate-700">
+  <div id="img-modal" class="fixed inset-0 z-50 hidden bg-black/92 backdrop-blur-xl flex items-center justify-center p-4" onclick="closeModal()">
+    <div class="relative max-w-5xl max-h-[96vh] flex flex-col items-center" onclick="event.stopPropagation()">
+      <img id="modal-img" src="" class="max-h-[86vh] max-w-full rounded-2xl shadow-2xl object-contain border border-slate-700">
       <div class="flex items-center justify-between w-full mt-3 px-2">
         <span id="modal-caption" class="text-xs text-slate-300 font-medium"></span>
-        <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white border border-slate-600 transition">Закрыть (Esc)</button>
+        <button onclick="closeModal()" class="glass-btn px-4 py-1.5 rounded-xl text-xs font-semibold text-white">Закрыть (Esc)</button>
       </div>
     </div>
   </div>
 
   <!-- TOP GLOBAL HEADER -->
-  <header id="main-header" class="sticky top-0 z-40 backdrop-blur-xl bg-[#050814]/85 border-b border-white/10 px-4 lg:px-8 py-3 transition-all">
-    <div class="max-w-[1900px] mx-auto flex items-center justify-between gap-4">
+  <header id="main-header" class="sticky top-0 z-40 backdrop-blur-2xl bg-[#04060f]/85 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-3 transition-all">
+    <div class="w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto flex items-center justify-between gap-4">
       
       <!-- Brand & Hub Return -->
       <div class="flex items-center gap-3.5">
         <button onclick="navToView('gateway')" class="flex items-center gap-3 group focus:outline-none" title="В главный портал">
-          <div class="relative w-10 h-10 rounded-2xl overflow-hidden border border-[var(--plitty-rose)]/40 group-hover:border-[var(--plitty-rose)] transition-colors shadow-sm shrink-0">
-            <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
+          <div class="relative w-11 h-11 rounded-2xl overflow-hidden border-2 border-[var(--plitty-rose)]/50 group-hover:border-[var(--plitty-rose)] transition-colors shadow-lg shrink-0">
+            <img src="plitty_avatar.jpg" onerror="this.src='catgirl_avatar.png'" alt="Plitty" class="w-full h-full object-cover">
           </div>
           <div class="text-left">
             <div class="flex items-center gap-2">
               <span class="text-base font-black tracking-tight text-white group-hover:text-[#F3A6BF] transition-colors">Plitty AI Studio</span>
-              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.18)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)]">v3.2 Ultra</span>
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.2)] text-[#F3A6BF] border border-[rgba(229,136,166,0.35)]">v3.3 Ultra</span>
             </div>
             <div class="text-[10px] text-slate-400 font-medium">Digital Talent & Farm Command Hub</div>
           </div>
         </button>
       </div>
 
-      <!-- Navigation Section Buttons -->
-      <nav class="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-white/5 border border-white/10">
-        <button id="nav-btn-gateway" onclick="navToView('gateway')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]">
+      <!-- Navigation Section Buttons with Glass effect -->
+      <nav class="hidden md:flex items-center gap-2 p-1 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+        <button id="nav-btn-gateway" onclick="navToView('gateway')" class="glass-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-white">
           🏠 Портал
         </button>
-        <button id="nav-btn-minifarm" onclick="navToView('minifarm')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-minifarm" onclick="navToView('minifarm')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           📱 Мини-ферма (20)
         </button>
-        <button id="nav-btn-stand" onclick="navToView('stand')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-stand" onclick="navToView('stand')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🏢 Стенд (50)
         </button>
-        <button id="nav-btn-pult" onclick="navToView('pult')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-pult" onclick="navToView('pult')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🎮 Пульт
         </button>
-        <button id="nav-btn-creativestudio" onclick="navToView('creativestudio')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-creativestudio" onclick="navToView('creativestudio')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🎬 Студия
         </button>
       </nav>
 
       <!-- Telemetry & Assistant Trigger -->
-      <div class="flex items-center gap-2.5">
-        <div class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-white/10 text-xs font-mono">
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full glass text-xs font-mono">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="text-slate-200 font-semibold">70/70</span>
@@ -154,7 +205,7 @@
           <div class="text-[11px] text-[#2DD4BF] font-medium">⚡ TCP:2222</div>
         </div>
 
-        <button onclick="togglePlittyAssistant()" class="px-3 py-1.5 rounded-full bg-[rgba(229,136,166,0.18)] hover:bg-[rgba(229,136,166,0.28)] border border-[rgba(229,136,166,0.4)] text-[#F8E7ED] hover:text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition">
+        <button onclick="togglePlittyAssistant()" class="glass-btn-accent px-4 py-1.5 rounded-full text-xs font-semibold shadow-lg">
           <span>🌸 Спросить Плитти</span>
         </button>
       </div>
@@ -165,42 +216,42 @@
   <!-- ================================================================= -->
   <!-- SCREEN 1: GATEWAY HUB (Главный портал)                            -->
   <!-- ================================================================= -->
-  <main id="view-gateway" class="screen-view active max-w-[1500px] mx-auto px-4 lg:px-8 pt-8 space-y-8 relative z-10">
+  <main id="view-gateway" class="screen-view active w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-7 relative z-10">
     
     <!-- Hero Box with Plitty -->
-    <div class="glass rounded-3xl p-6 lg:p-10 relative overflow-hidden border-[var(--plitty-rose)]/30">
+    <div class="glass rounded-3xl p-6 lg:p-10 relative overflow-hidden border-[var(--plitty-rose)]/40 shadow-[0_20px_60px_-15px_rgba(229,136,166,0.25)]">
       <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
         <div class="relative shrink-0">
-          <div class="w-28 h-28 lg:w-36 lg:h-36 rounded-3xl overflow-hidden border-2 border-[var(--plitty-rose)] shadow-[0_0_35px_rgba(229,136,166,0.4)] bg-slate-900">
-            <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
+          <div class="w-32 h-32 lg:w-40 lg:h-40 rounded-3xl overflow-hidden border-2 border-[var(--plitty-rose)] shadow-[0_0_40px_rgba(229,136,166,0.45)] bg-slate-900">
+            <img src="plitty_avatar.jpg" onerror="this.src='catgirl_avatar.png'" alt="Plitty" class="w-full h-full object-cover">
           </div>
-          <div class="absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1">
+          <div class="absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1.5 border border-emerald-300">
             <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> ONLINE
           </div>
         </div>
 
-        <div class="flex-1 text-center md:text-left space-y-3">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(229,136,166,0.12)] border border-[rgba(229,136,166,0.25)] text-xs text-[#F3A6BF] font-medium">
+        <div class="flex-1 text-center md:text-left space-y-3.5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(229,136,166,0.14)] border border-[rgba(229,136,166,0.35)] text-xs text-[#F3A6BF] font-medium backdrop-blur-md">
             <span>✨ Главный ИИ-Ассистент студии готов к работе</span>
           </div>
           <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tight">
             Привет! Я <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F3A6BF] via-[#E588A6] to-[#C95F81]">Плитти</span>.
           </h1>
-          <p class="text-sm lg:text-base text-slate-300 max-w-2xl leading-relaxed">
+          <p class="text-sm lg:text-base text-slate-300 max-w-3xl leading-relaxed">
             Вся инфраструктура фермы объединена: <b>Мини-ферма на 20 телефонов</b> (10 танцевальных моделей + 10 служебных функций), аппаратный <b>Стенд на 50 телефонов</b> и единый <b>Мастер-Пульт</b>. Выбери модуль:
           </p>
           
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <button onclick="navToView('minifarm', 'all')" class="px-4 py-2 rounded-full font-bold bg-[#E588A6] text-slate-950 text-xs shadow-lg hover:brightness-110 transition flex items-center gap-1.5">
+            <button onclick="navToView('minifarm', 'all')" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs">
               <span>📱 Мини-ферма (20)</span>
             </button>
-            <button onclick="navToView('stand')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF] text-xs transition flex items-center gap-1.5">
+            <button onclick="navToView('stand')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-[#2DD4BF]/60 text-[#2DD4BF]">
               <span>🏢 Стенд (50)</span>
             </button>
-            <button onclick="navToView('pult')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-amber-500/40 text-amber-300 hover:border-amber-400 text-xs transition flex items-center gap-1.5">
+            <button onclick="navToView('pult')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-amber-500/60 text-amber-300">
               <span>🎮 Мастер-Пульт</span>
             </button>
-            <button onclick="navToView('creativestudio')" class="px-4 py-2 rounded-full font-semibold bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs transition flex items-center gap-1.5">
+            <button onclick="navToView('creativestudio')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-purple-400/60 text-purple-300">
               <span>🎬 Студия</span>
             </button>
           </div>
@@ -209,84 +260,84 @@
     </div>
 
     <!-- 4 Main Route Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-      <!-- Card 1: Minifarm (20 phones: 10 Dancers + 10 Service) -->
-      <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="w-12 h-12 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card 1: Minifarm (20 phones) -->
+      <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(229,136,166,0.3)]">
+        <div class="space-y-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.18)] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
             📱
           </div>
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">СЛОТЫ 1–20 • 20 ТЕЛЕФОНОВ</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
+            <h2 class="text-xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
             10 персональных слотов танцовщиц (ДНК, 5 ракурсов фото, промпты) + 10 служебных сервисов фермы (прогрев, сторис, сидер VCF).
           </p>
         </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
-          <span>Открыть Мини-ферму</span>
-          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
+          <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Мини-ферму</span>
+          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 2: Stand (50 phones: Slots 51-100) -->
-      <div onclick="navToView('stand')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="w-12 h-12 rounded-2xl bg-[rgba(45,212,191,0.15)] border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <!-- Card 2: Stand (50 phones) -->
+      <div onclick="navToView('stand')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(45,212,191,0.3)]">
+        <div class="space-y-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-[rgba(45,212,191,0.18)] border border-[#2DD4BF]/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
             🏢
           </div>
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF]">3 ПОЛКИ • СЛОТЫ 51–100</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#2DD4BF] transition-colors">Стенд (50)</h2>
+            <h2 class="text-xl font-black text-white mt-1 group-hover:text-[#2DD4BF] transition-colors">Стенд (50)</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
             Аппаратная стойка Samsung Galaxy A26 на порту TCP 2222. Мониторинг батарей, температур, живые экраны Scrcpy.
           </p>
         </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
-          <span>Открыть Стенд</span>
-          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+          <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Стенд</span>
+          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 3: Pult (Master ADB Control for 70 Devices) -->
-      <div onclick="navToView('pult')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <!-- Card 3: Pult -->
+      <div onclick="navToView('pult')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(245,158,11,0.3)]">
+        <div class="space-y-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-amber-500/18 border border-amber-500/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
             🎮
           </div>
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">МУЛЬТИ-ТАРГЕТ КОМАНДЫ</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-amber-300 transition-colors">Мастер-Пульт</h2>
+            <h2 class="text-xl font-black text-white mt-1 group-hover:text-amber-300 transition-colors">Мастер-Пульт</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
             Выбор цели (Все 70 / Мини-ферма 20 / Стенд 50), массовые триггеры ADB, сценарии прогрева и консоль команд.
           </p>
         </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
-          <span>Запустить Пульт</span>
-          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
+          <span class="glass-btn px-3 py-1.5 rounded-xl">Запустить Пульт</span>
+          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 4: Creative Studio (Higgsfield & RTX 4060) -->
-      <div onclick="navToView('creativestudio')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <!-- Card 4: Creative Studio -->
+      <div onclick="navToView('creativestudio')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(168,85,247,0.3)]">
+        <div class="space-y-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-purple-500/18 border border-purple-500/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
             🎬
           </div>
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300">HIGGSFIELD & GPU</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-purple-300 transition-colors">Студия</h2>
+            <h2 class="text-xl font-black text-white mt-1 group-hover:text-purple-300 transition-colors">Студия</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
             Генерация 8K фотосетов (Flux / Qwen) и видео-танцев (Wan 2.1 / Kling / Omni) с ускорением на RTX 4060 GPU.
           </p>
         </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-purple-300">
-          <span>Открыть Студию</span>
-          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-purple-300">
+          <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Студию</span>
+          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
         </div>
       </div>
     </div>
@@ -295,10 +346,10 @@
   <!-- ================================================================= -->
   <!-- SCREEN 2: MINIFARM VIEW (Слоты 1–20 & Танцульки)                   -->
   <!-- ================================================================= -->
-  <main id="view-minifarm" class="screen-view max-w-[1900px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
+  <main id="view-minifarm" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
     
-    <!-- Minifarm Top Control Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-2xl">
+    <!-- Minifarm Top Control Bar with Glass effect -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-3xl">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-[#E588A6]">МИНИ-ФЕРМА: СЛОТЫ 1–20</span>
@@ -309,22 +360,22 @@
       </div>
 
       <!-- Scope Switcher Pills -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <div class="inline-flex p-1 rounded-xl bg-slate-900/90 border border-white/10 text-xs font-bold">
-          <button id="minifarm-scope-all" onclick="setMinifarmScope('all')" class="px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="inline-flex p-1.5 rounded-2xl bg-slate-900/90 border border-white/10 text-xs font-bold gap-1.5">
+          <button id="minifarm-scope-all" onclick="setMinifarmScope('all')" class="glass-btn px-4 py-2 rounded-xl transition-all">
             🔘 Все (20)
           </button>
-          <button id="minifarm-scope-dancers" onclick="setMinifarmScope('dancers')" class="px-3.5 py-1.5 rounded-lg transition-all bg-[#d946ef] text-white shadow-md">
+          <button id="minifarm-scope-dancers" onclick="setMinifarmScope('dancers')" class="glass-btn-accent px-4 py-2 rounded-xl transition-all">
             💃 ТАНЦУЛЬКИ (10)
           </button>
-          <button id="minifarm-scope-service" onclick="setMinifarmScope('service')" class="px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">
+          <button id="minifarm-scope-service" onclick="setMinifarmScope('service')" class="glass-btn px-4 py-2 rounded-xl transition-all">
             ⚙️ Служебные (10)
           </button>
         </div>
 
-        <input type="text" id="minifarm-search" oninput="handleMinifarmSearch()" placeholder="Поиск по имени, слоту, городу..." class="bg-slate-900/80 border border-white/10 rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-56">
+        <input type="text" id="minifarm-search" oninput="handleMinifarmSearch()" placeholder="Поиск по имени, слоту, городу..." class="bg-slate-900/80 border border-white/15 rounded-2xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-64 shadow-inner">
         
-        <button onclick="navToView('pult', 'minifarm')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition flex items-center gap-1.5">
+        <button onclick="navToView('pult', 'minifarm')" class="glass-btn px-4 py-2 rounded-2xl text-amber-300 text-xs font-bold hover:border-amber-400/60">
           <span>🎮 Пульт Мини-фермы</span>
         </button>
       </div>
@@ -335,37 +386,37 @@
     <!-- =============================================================== -->
     <div id="minifarm-view-all" class="space-y-6 hidden">
       <!-- Section A: 10 Dancers Overview Grid -->
-      <div class="space-y-3">
+      <div class="space-y-3.5">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#E588A6] animate-pulse"></span>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-[#E588A6] animate-pulse"></span>
             <h3 class="text-base font-bold text-white tracking-tight">Персональные слоты танцовщиц (Слоты 1–10)</h3>
-            <span class="text-xs text-slate-400 font-mono">1 слот = 1 инфлюенсер-танцовщица</span>
+            <span class="text-xs text-slate-400 font-mono">1 слот = 1 танцовщица</span>
           </div>
-          <button onclick="setMinifarmScope('dancers')" class="text-xs font-bold text-[#F3A6BF] hover:underline flex items-center gap-1">
+          <button onclick="setMinifarmScope('dancers')" class="glass-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#F3A6BF]">
             <span>Открыть Студию «Танцульки»</span>
             <span>&rarr;</span>
           </button>
         </div>
-        <div id="all-dancers-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div id="all-dancers-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           <!-- Rendered via JS -->
         </div>
       </div>
 
       <!-- Section B: 10 Service Phones Grid -->
-      <div class="space-y-3 pt-4 border-t border-white/10">
+      <div class="space-y-3.5 pt-5 border-t border-white/10">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#2DD4BF]"></span>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-[#2DD4BF]"></span>
             <h3 class="text-base font-bold text-white tracking-tight">Служебные функции фермы (Слоты 11–20)</h3>
             <span class="text-xs text-slate-400 font-mono">Прогрев, Сторис, Сидер контактов, Прокси</span>
           </div>
-          <button onclick="setMinifarmScope('service')" class="text-xs font-bold text-teal-300 hover:underline flex items-center gap-1">
+          <button onclick="setMinifarmScope('service')" class="glass-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-teal-300">
             <span>Только служебные аппараты</span>
             <span>&rarr;</span>
           </button>
         </div>
-        <div id="all-service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div id="all-service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           <!-- Rendered via JS -->
         </div>
       </div>
@@ -374,14 +425,14 @@
     <!-- =============================================================== -->
     <!-- SCOPE 2: 'DANCERS' FULL 3-COLUMN STUDIO (from dashboard.html)    -->
     <!-- =============================================================== -->
-    <div id="minifarm-view-dancers" class="glass rounded-3xl p-4 lg:p-6 shadow-2xl relative overflow-hidden theme-transition">
+    <div id="minifarm-view-dancers" class="glass rounded-3xl p-4 lg:p-7 shadow-2xl relative overflow-hidden theme-transition border">
       
       <!-- Top Subheader -->
       <div class="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-white/10 gap-3">
         <div class="flex items-center gap-3">
           <span class="text-2xl animate-bounce">✨</span>
           <div>
-            <h2 id="dancers-brand-title" class="text-base font-black tracking-wide uppercase theme-transition text-white">
+            <h2 id="dancers-brand-title" class="text-lg font-black tracking-wide uppercase theme-transition text-white">
               AI DANCE STUDIO — 10 ТАНЦОВЩИЦ
             </h2>
             <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Интерактивный центр управления ДНК, фотосессиями и промптами</p>
@@ -389,34 +440,34 @@
         </div>
 
         <div class="flex items-center gap-2 text-xs">
-          <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-semibold">
+          <span class="px-3 py-1 rounded-full glass text-slate-300 font-semibold">
             50 Мастер-Ассетов ✅
           </span>
-          <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold">
-            10/10 Привязаны к слотам 1–10
+          <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-semibold">
+            10/10 Слоты 1–10
           </span>
-          <button onclick="openModalCurrent()" class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition">
+          <button onclick="openModalCurrent()" class="glass-btn px-3 py-1 rounded-xl text-xs font-semibold text-white">
             🔍 Зум фото
           </button>
         </div>
       </div>
 
       <!-- 3-COLUMNS WORKSPACE -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[640px]">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         <!-- COL 1: ROSTER LIST (LEFT, 3 cols) -->
-        <div class="lg:col-span-3 flex flex-col space-y-3 border-r border-white/5 pr-4">
-          <!-- Filter Pills -->
-          <div class="flex gap-1 overflow-x-auto pb-1 text-[10px]">
-            <button onclick="setNicheFilter('all')" class="niche-btn px-2 py-1 rounded-lg font-bold bg-[#d946ef] text-white whitespace-nowrap" data-filter="all">Все (10)</button>
-            <button onclick="setNicheFilter('asia')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="asia">K-Pop (3)</button>
-            <button onclick="setNicheFilter('anime')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="anime">Аниме (2)</button>
-            <button onclick="setNicheFilter('alt')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="alt">Готика (2)</button>
-            <button onclick="setNicheFilter('lifestyle')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="lifestyle">Лайф (3)</button>
+        <div class="lg:col-span-3 flex flex-col space-y-3.5 border-r border-white/10 pr-4">
+          <!-- Filter Pills with Glass style -->
+          <div class="flex gap-1.5 overflow-x-auto pb-1 text-[10px]">
+            <button onclick="setNicheFilter('all')" class="niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-bold whitespace-nowrap" data-filter="all">Все (10)</button>
+            <button onclick="setNicheFilter('asia')" class="niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-semibold text-slate-400 whitespace-nowrap" data-filter="asia">K-Pop (3)</button>
+            <button onclick="setNicheFilter('anime')" class="niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-semibold text-slate-400 whitespace-nowrap" data-filter="anime">Аниме (2)</button>
+            <button onclick="setNicheFilter('alt')" class="niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-semibold text-slate-400 whitespace-nowrap" data-filter="alt">Готика (2)</button>
+            <button onclick="setNicheFilter('lifestyle')" class="niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-semibold text-slate-400 whitespace-nowrap" data-filter="lifestyle">Лайф (3)</button>
           </div>
 
           <!-- Dancers Scrollable Cards List -->
-          <div id="dancers-roster-list" class="space-y-2 overflow-y-auto max-h-[600px] pr-1">
+          <div id="dancers-roster-list" class="space-y-2.5 overflow-y-auto max-h-[760px] 2xl:max-h-[840px] pr-1.5">
             <!-- Injected via JS -->
           </div>
         </div>
@@ -424,102 +475,102 @@
         <!-- COL 2: MAIN ASSET INSPECTOR (CENTER, 5 cols) -->
         <div class="lg:col-span-5 flex flex-col space-y-4">
           <!-- Selected Model Hero Banner -->
-          <div id="dancer-hero-card" class="glass rounded-2xl p-4 relative overflow-hidden border border-white/10 theme-transition">
-            <div id="dancer-hero-accent-glow" class="absolute -right-16 -top-16 w-60 h-60 rounded-full blur-3xl opacity-30 pointer-events-none ambient-bg"></div>
+          <div id="dancer-hero-card" class="glass rounded-3xl p-5 relative overflow-hidden theme-transition border">
+            <div id="dancer-hero-accent-glow" class="absolute -right-16 -top-16 w-80 h-80 rounded-full blur-3xl opacity-40 pointer-events-none ambient-bg"></div>
 
-            <div class="flex items-start justify-between gap-3 relative z-10">
-              <div class="flex items-center gap-3">
+            <div class="flex items-start justify-between gap-4 relative z-10">
+              <div class="flex items-center gap-4">
                 <div class="relative shrink-0">
-                  <img id="dancer-avatar" src="" class="w-14 h-14 rounded-2xl object-cover border-2 shadow-xl theme-transition">
-                  <span id="dancer-flag" class="absolute -bottom-1 -right-1 text-sm bg-slate-900 rounded-full px-1 border border-slate-700"></span>
+                  <img id="dancer-avatar" src="" class="w-16 h-16 rounded-2xl object-cover border-2 shadow-xl theme-transition">
+                  <span id="dancer-flag" class="absolute -bottom-1 -right-1 text-base bg-slate-900 rounded-full px-1 border border-slate-700"></span>
                 </div>
                 <div>
-                  <div class="flex items-center gap-2">
-                    <h3 id="dancer-name-ru" class="text-lg font-black text-white"></h3>
-                    <span id="dancer-badge-niche" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider theme-transition"></span>
+                  <div class="flex items-center gap-2.5">
+                    <h3 id="dancer-name-ru" class="text-xl font-black text-white"></h3>
+                    <span id="dancer-badge-niche" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider theme-transition"></span>
                   </div>
-                  <div id="dancer-meta" class="text-xs text-slate-400 mt-0.5 font-medium"></div>
+                  <div id="dancer-meta" class="text-xs text-slate-300 mt-1 font-medium"></div>
                 </div>
               </div>
 
               <!-- Slot & Phone Badge -->
-              <div class="text-right font-mono">
-                <span id="dancer-slot-badge" class="px-2.5 py-1 rounded-xl bg-[#d946ef]/20 border border-[#d946ef]/40 text-[#f3a6bf] text-xs font-bold block">
+              <div class="text-right font-mono shrink-0">
+                <span id="dancer-slot-badge" class="px-3 py-1 rounded-xl text-xs font-black block shadow-md">
                   СЛОТ #1
                 </span>
                 <span id="dancer-battery-badge" class="text-[10px] text-emerald-400 font-bold block mt-1">98% 🔋</span>
               </div>
             </div>
 
-            <p id="dancer-bio" class="text-xs text-slate-300 mt-3 leading-relaxed bg-slate-950/60 p-2.5 rounded-xl border border-white/5"></p>
+            <p id="dancer-bio" class="text-xs text-slate-200 mt-3.5 leading-relaxed bg-slate-950/70 p-3 rounded-2xl border border-white/10"></p>
           </div>
 
-          <!-- 5 Photo Tabs -->
-          <div class="glass rounded-2xl p-4 flex flex-col flex-1 border border-white/10 theme-transition">
-            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-2">
-              <div class="flex flex-wrap gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800" id="photo-tabs-bar">
-                <button onclick="switchPhotoTab('dance')" id="ptab-dance" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 bg-[#d946ef] text-white">
+          <!-- 5 Photo Tabs & Preview Viewer -->
+          <div class="glass rounded-3xl p-5 flex flex-col flex-1 border border-white/10 theme-transition shadow-xl">
+            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-2.5">
+              <div class="flex flex-wrap gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800" id="photo-tabs-bar">
+                <button onclick="switchPhotoTab('dance')" id="ptab-dance" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
                   <span>💃 В комнате (9:16)</span>
                 </button>
-                <button onclick="switchPhotoTab('studio')" id="ptab-studio" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="switchPhotoTab('studio')" id="ptab-studio" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
                   <span>🧍 Студия (9:16)</span>
                 </button>
-                <button onclick="switchPhotoTab('room')" id="ptab-room" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="switchPhotoTab('room')" id="ptab-room" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
                   <span>🏠 Зал (9:16)</span>
                 </button>
-                <button onclick="switchPhotoTab('face')" id="ptab-face" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="switchPhotoTab('face')" id="ptab-face" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
                   <span>👩 Лицо (1:1)</span>
                 </button>
-                <button onclick="switchPhotoTab('avatar')" id="ptab-avatar" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="switchPhotoTab('avatar')" id="ptab-avatar" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
                   <span>🖼️ Аватар</span>
                 </button>
               </div>
 
               <div class="flex items-center gap-2">
-                <button onclick="openModalCurrent()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
+                <button onclick="openModalCurrent()" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold">
                   🔍 Увеличить
                 </button>
-                <button onclick="copyCurrentImagePath()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
+                <button onclick="copyCurrentImagePath()" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold">
                   📋 Путь
                 </button>
               </div>
             </div>
 
-            <!-- Preview Image Frame -->
-            <div id="image-stage" class="flex-1 min-h-[420px] flex items-center justify-center p-3 bg-slate-950/70 rounded-xl mt-3 relative overflow-hidden border border-white/5 theme-transition">
-              <img id="dancer-main-preview-img" src="" alt="Preview" class="max-h-[460px] max-w-full rounded-xl shadow-2xl object-contain cursor-pointer transition-all hover:scale-[1.01]" onclick="openModalCurrent()">
-              <div id="photo-tag-pill" class="absolute bottom-4 left-4 px-3 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-white border border-white/15 shadow-lg"></div>
+            <!-- Preview Image Frame (Expanded Height) -->
+            <div id="image-stage" class="flex-1 min-h-[620px] xl:min-h-[700px] 2xl:min-h-[760px] flex items-center justify-center p-4 rounded-2xl mt-4 relative overflow-hidden border theme-transition">
+              <img id="dancer-main-preview-img" src="" alt="Preview" class="max-h-[600px] xl:max-h-[680px] 2xl:max-h-[740px] max-w-full rounded-2xl shadow-2xl object-contain cursor-pointer transition-all hover:scale-[1.01]" onclick="openModalCurrent()">
+              <div id="photo-tag-pill" class="absolute bottom-5 left-5 px-4 py-1.5 rounded-xl bg-black/85 backdrop-blur-xl text-xs font-bold text-white border shadow-xl"></div>
             </div>
           </div>
 
         </div>
 
         <!-- COL 3: PROMPTS & OPS ACTION HUB (RIGHT, 4 cols) -->
-        <div class="lg:col-span-4 flex flex-col space-y-4 border-l border-white/5 pl-4 overflow-y-auto max-h-[720px]">
+        <div class="lg:col-span-4 flex flex-col space-y-4 border-l border-white/10 pl-5 overflow-y-auto max-h-[760px] 2xl:max-h-[840px]">
           
           <!-- 1. Credentials Box -->
-          <div class="bg-slate-900/85 rounded-2xl p-4 border border-white/5 shadow-sm space-y-2.5">
+          <div id="dancer-credentials-box" class="glass rounded-3xl p-5 border shadow-lg space-y-3 theme-transition">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-300">🔐 Учетные данные TikTok</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Активен ✅</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-200">🔐 Учетные данные TikTok</span>
+              <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Активен ✅</span>
             </div>
 
-            <div class="space-y-2 text-xs">
+            <div class="space-y-2.5 text-xs">
               <div>
-                <span class="text-[10px] text-slate-500 block uppercase font-medium">Email / Логин</span>
-                <div class="flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 mt-0.5">
-                  <span id="cred-email" class="font-mono text-slate-200 truncate"></span>
-                  <button onclick="copyText('cred-email')" class="text-slate-400 hover:text-white p-1">📋</button>
+                <span class="text-[10px] text-slate-400 block uppercase font-medium">Email / Логин</span>
+                <div class="flex items-center justify-between bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800 mt-1">
+                  <span id="cred-email" class="font-mono text-slate-100 truncate"></span>
+                  <button onclick="copyText('cred-email')" class="glass-btn px-2 py-1 rounded-lg text-xs">📋</button>
                 </div>
               </div>
 
               <div>
-                <span class="text-[10px] text-slate-500 block uppercase font-medium">Пароль</span>
-                <div class="flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 mt-0.5">
-                  <span id="cred-pass" class="font-mono text-slate-200">•••••••••••</span>
-                  <div class="flex items-center gap-1">
-                    <button onclick="togglePassword()" id="btn-toggle-pass" class="text-slate-400 hover:text-white p-1 text-xs">👁️</button>
-                    <button onclick="copyPassword()" class="text-slate-400 hover:text-white p-1">📋</button>
+                <span class="text-[10px] text-slate-400 block uppercase font-medium">Пароль</span>
+                <div class="flex items-center justify-between bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800 mt-1">
+                  <span id="cred-pass" class="font-mono text-slate-100">•••••••••••</span>
+                  <div class="flex items-center gap-1.5">
+                    <button onclick="togglePassword()" id="btn-toggle-pass" class="glass-btn px-2 py-1 rounded-lg text-xs">👁️</button>
+                    <button onclick="copyPassword()" class="glass-btn px-2 py-1 rounded-lg text-xs">📋</button>
                   </div>
                 </div>
               </div>
@@ -527,55 +578,55 @@
           </div>
 
           <!-- 2. Master Prompts Vault -->
-          <div class="space-y-2.5">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">🎨 Мастер-Промпты (Без Стоп-Слов)</span>
+          <div id="dancer-prompts-box" class="glass rounded-3xl p-5 border shadow-lg space-y-3 theme-transition">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-200 block">🎨 Мастер-Промпты (Без Стоп-Слов)</span>
 
             <!-- Prompt 1: Video Motion -->
-            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+            <div class="bg-slate-950/70 rounded-2xl p-3.5 border border-white/5 space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-pink-400">🎬 Motion Prompt (Kling / Wan 2.1)</span>
-                <button onclick="copyPrompt('video')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+                <button onclick="copyPrompt('video')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold">Копировать</button>
               </div>
-              <p id="prompt-video" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+              <p id="prompt-video" class="text-[10px] text-slate-300 font-mono bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 line-clamp-3 hover:line-clamp-none transition-all leading-relaxed"></p>
             </div>
 
             <!-- Prompt 2: Face DNA -->
-            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+            <div class="bg-slate-950/70 rounded-2xl p-3.5 border border-white/5 space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-sky-400">👩 Face DNA Lock Prompt</span>
-                <button onclick="copyPrompt('face')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+                <button onclick="copyPrompt('face')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold">Копировать</button>
               </div>
-              <p id="prompt-face" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+              <p id="prompt-face" class="text-[10px] text-slate-300 font-mono bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 line-clamp-3 hover:line-clamp-none transition-all leading-relaxed"></p>
             </div>
 
             <!-- Prompt 3: Body & Outfit -->
-            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+            <div class="bg-slate-950/70 rounded-2xl p-3.5 border border-white/5 space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-purple-400">🧍 Body & Outfit Prompt</span>
-                <button onclick="copyPrompt('body')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+                <button onclick="copyPrompt('body')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold">Копировать</button>
               </div>
-              <p id="prompt-body" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+              <p id="prompt-body" class="text-[10px] text-slate-300 font-mono bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 line-clamp-3 hover:line-clamp-none transition-all leading-relaxed"></p>
             </div>
 
             <!-- Prompt 4: Room -->
-            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+            <div class="bg-slate-950/70 rounded-2xl p-3.5 border border-white/5 space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-amber-400">🏠 Dance Room Interior</span>
-                <button onclick="copyPrompt('room')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+                <button onclick="copyPrompt('room')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold">Копировать</button>
               </div>
-              <p id="prompt-room" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+              <p id="prompt-room" class="text-[10px] text-slate-300 font-mono bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 line-clamp-3 hover:line-clamp-none transition-all leading-relaxed"></p>
             </div>
           </div>
 
-          <!-- 3. Direct Farm Actions -->
-          <div class="pt-2 border-t border-white/5 space-y-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">⚡ Операции со Смартфоном Фермы</span>
+          <!-- 3. Direct Farm Actions with Glass buttons -->
+          <div class="pt-2 space-y-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-200 block">⚡ Операции со Смартфоном Фермы</span>
             
-            <button onclick="openCurrentDancerScrcpy()" class="w-full py-2.5 px-3 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-xs font-bold text-teal-300 flex items-center justify-center gap-2 transition">
+            <button id="btn-action-scrcpy" onclick="openCurrentDancerScrcpy()" class="glass-btn w-full py-3 px-4 rounded-2xl text-xs font-bold">
               <span>👁️ Открыть экран Scrcpy (Слот <span id="btn-scrcpy-slot-num">#1</span>)</span>
             </button>
 
-            <button onclick="triggerDancerRender()" class="w-full py-2.5 px-3 rounded-xl bg-[#d946ef]/20 hover:bg-[#d946ef]/30 border border-[#d946ef]/40 text-xs font-bold text-[#f3a6bf] flex items-center justify-center gap-2 transition">
+            <button id="btn-action-render" onclick="triggerDancerRender()" class="glass-btn-accent w-full py-3 px-4 rounded-2xl text-xs font-extrabold">
               <span>🎬 Запустить генерацию танца на RTX 4060</span>
             </button>
           </div>
@@ -595,7 +646,7 @@
           <h2 class="text-lg font-bold text-white tracking-tight">Служебные функции & Автоматизация (Слоты 11–20)</h2>
         </div>
       </div>
-      <div id="service-only-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div id="service-only-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         <!-- Rendered via JS -->
       </div>
     </div>
@@ -605,9 +656,9 @@
   <!-- ================================================================= -->
   <!-- SCREEN 3: STAND VIEW (50 телефонов / Полки 1, 2, 3)                -->
   <!-- ================================================================= -->
-  <main id="view-stand" class="screen-view max-w-[1900px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
+  <main id="view-stand" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
     <!-- Stand Header & Shelf Filter -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass p-4 rounded-2xl">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass p-4 rounded-3xl">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">АППАРАТНАЯ СТОЙКА</span>
@@ -618,16 +669,16 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <button id="btn-shelf-all" onclick="filterShelf('all')" class="px-3 py-1.5 rounded-xl font-bold bg-[#2DD4BF]/20 border border-[#2DD4BF]/50 text-white text-xs">
+        <button id="btn-shelf-all" onclick="filterShelf('all')" class="glass-btn px-4 py-2 rounded-xl font-bold text-[#2DD4BF] text-xs">
           Вся стойка (50)
         </button>
-        <button id="btn-shelf-1" onclick="filterShelf(1)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
+        <button id="btn-shelf-1" onclick="filterShelf(1)" class="glass-btn px-4 py-2 rounded-xl text-slate-400 text-xs">
           Полка 1 (Тел 51–60)
         </button>
-        <button id="btn-shelf-2" onclick="filterShelf(2)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
+        <button id="btn-shelf-2" onclick="filterShelf(2)" class="glass-btn px-4 py-2 rounded-xl text-slate-400 text-xs">
           Полка 2 (Тел 61–80)
         </button>
-        <button id="btn-shelf-3" onclick="filterShelf(3)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
+        <button id="btn-shelf-3" onclick="filterShelf(3)" class="glass-btn px-4 py-2 rounded-xl text-slate-400 text-xs">
           Полка 3 (Тел 81–100)
         </button>
       </div>
@@ -640,8 +691,8 @@
   <!-- ================================================================= -->
   <!-- SCREEN 4: MASTER PULT VIEW                                        -->
   <!-- ================================================================= -->
-  <main id="view-pult" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-2xl">
+  <main id="view-pult" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-3xl">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-amber-400">КОМАНДНЫЙ ЦЕНТР</span>
@@ -653,7 +704,7 @@
 
       <div class="flex items-center gap-2">
         <span class="text-xs font-mono text-slate-400">Активная цель:</span>
-        <span id="target-summary-badge" class="px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold font-mono">
+        <span id="target-summary-badge" class="px-4 py-1.5 rounded-xl glass border-amber-400/50 text-amber-300 text-xs font-bold font-mono shadow-md">
           Вся ферма: 70 телефонов
         </span>
       </div>
@@ -663,26 +714,26 @@
     <div class="glass rounded-3xl p-6 space-y-4 border-amber-500/30">
       <div class="text-xs font-bold uppercase tracking-wider text-slate-300">1. Выберите целевую группу (Target Scope):</div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <button id="target-btn-all" onclick="setPultTarget('all')" class="p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all">
+        <button id="target-btn-all" onclick="setPultTarget('all')" class="glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all">
           <div class="text-lg font-black text-white flex items-center justify-between">
             <span>🔘 ВСЕ ТЕЛЕФОНЫ</span>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">70 шт</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">70 шт</span>
           </div>
           <div class="text-xs text-slate-300 mt-1">Мини-ферма (20) + Стенд (50). Массовые команды.</div>
         </button>
 
-        <button id="target-btn-minifarm" onclick="setPultTarget('minifarm')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
+        <button id="target-btn-minifarm" onclick="setPultTarget('minifarm')" class="glass p-5 rounded-2xl text-left transition-all">
           <div class="text-lg font-black text-white flex items-center justify-between">
             <span>📱 ТОЛЬКО МИНИ-ФЕРМА</span>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-rose-400 text-slate-950 font-mono font-black">20 шт</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-rose-400 text-slate-950 font-mono font-black">20 шт</span>
           </div>
           <div class="text-xs text-slate-300 mt-1">Слоты 1–20 (10 танцовщиц + 10 служебных).</div>
         </button>
 
-        <button id="target-btn-stand" onclick="setPultTarget('stand')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
+        <button id="target-btn-stand" onclick="setPultTarget('stand')" class="glass p-5 rounded-2xl text-left transition-all">
           <div class="text-lg font-black text-white flex items-center justify-between">
             <span>🏢 ТОЛЬКО СТЕНД</span>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-teal-400 text-slate-950 font-mono font-black">50 шт</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-teal-400 text-slate-950 font-mono font-black">50 шт</span>
           </div>
           <div class="text-xs text-slate-300 mt-1">Слоты 51–100 (Samsung Galaxy A26, порт 2222).</div>
         </button>
@@ -690,7 +741,7 @@
     </div>
 
     <!-- COMMAND SECTIONS -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Box 1: Hardware ADB Actions -->
       <div class="glass rounded-3xl p-6 space-y-4">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
@@ -698,22 +749,22 @@
           <span class="text-[10px] text-slate-400 font-mono">(Параллельно)</span>
         </h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-          <button onclick="sendPultCommand('wake')" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('wake')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             ☀️ Разбудить экраны
           </button>
-          <button onclick="sendPultCommand('sleep')" class="p-3 rounded-xl bg-white/5 hover:bg-slate-500/20 border border-white/10 hover:border-slate-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('sleep')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             🌙 Погасить экраны
           </button>
-          <button onclick="sendPultCommand('home')" class="p-3 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('home')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             🏠 Выйти на Главный
           </button>
-          <button onclick="sendPultCommand('clear_apps')" class="p-3 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('clear_apps')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             🧹 Сбросить приложения
           </button>
-          <button onclick="sendPultCommand('reboot_adb')" class="p-3 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('reboot_adb')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             🔄 Мягкий рестарт ADB
           </button>
-          <button onclick="sendPultCommand('check_proxy')" class="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="sendPultCommand('check_proxy')" class="glass-btn p-3.5 rounded-xl font-semibold text-left">
             🌐 Проверить DNS/Сеть
           </button>
         </div>
@@ -725,22 +776,22 @@
           <span>🚀 Сценарии автоматизации</span>
           <span class="text-[10px] text-slate-400 font-mono">(TikTok / Охваты)</span>
         </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <button onclick="runScenario('tt_warmup')" class="p-3.5 rounded-xl bg-white/5 hover:bg-[#E588A6]/20 border border-white/10 hover:border-[#E588A6]/40 text-slate-200 font-semibold text-left transition">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+          <button onclick="runScenario('tt_warmup')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-[#E588A6]/60">
             <div class="font-bold text-[#F3A6BF]">🔥 TikTok: Прогрев новичка</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">18 мин органического скролла</div>
+            <div class="text-[10px] text-slate-400">18 мин органического скролла</div>
           </button>
-          <button onclick="runScenario('tt_scroll')" class="p-3.5 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="runScenario('tt_scroll')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-teal-400/60">
             <div class="font-bold text-teal-300">📱 TikTok: Скроллинг ленты</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">Серфинг FYP с паузами 5–35 сек</div>
+            <div class="text-[10px] text-slate-400">Серфинг FYP с паузами 5–35 сек</div>
           </button>
-          <button onclick="runScenario('ai_comments')" class="p-3.5 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="runScenario('ai_comments')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-purple-400/60">
             <div class="font-bold text-purple-300">💬 Авто-ответы AI</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">Ответы в стиле персонажей</div>
+            <div class="text-[10px] text-slate-400">Ответы в стиле персонажей</div>
           </button>
-          <button onclick="runScenario('push_videos')" class="p-3.5 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 font-semibold text-left transition">
+          <button onclick="runScenario('push_videos')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-amber-400/60">
             <div class="font-bold text-amber-300">🚀 Пуш готовых видео</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">Рассылка сниппетов с RTX 4060</div>
+            <div class="text-[10px] text-slate-400">Рассылка сниппетов с RTX 4060</div>
           </button>
         </div>
       </div>
@@ -756,8 +807,8 @@
         <button onclick="clearConsoleLog()" class="text-[10px] font-mono text-slate-400 hover:text-white underline">Очистить</button>
       </div>
 
-      <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-40 overflow-y-auto space-y-1">
-        <div class="text-slate-500">[System] Plitty Master Pult v3.2 инициализирован. Все 70 устройств на связи.</div>
+      <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-44 overflow-y-auto space-y-1">
+        <div class="text-slate-500">[System] Plitty Master Pult v3.3 инициализирован. Все 70 устройств на связи.</div>
         <div class="text-teal-400">[Stand] 50 телефонов Samsung Galaxy A26 подключены на порту TCP 2222.</div>
         <div class="text-pink-400">[Minifarm] 10 танцовщиц (Слоты 1–10) + 10 служебных сервисов (Слоты 11–20) готовы к работе.</div>
       </div>
@@ -767,7 +818,7 @@
   <!-- ================================================================= -->
   <!-- SCREEN 5: CREATIVE STUDIO (Сниппеты & Генератор)                  -->
   <!-- ================================================================= -->
-  <main id="view-creativestudio" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
+  <main id="view-creativestudio" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
     <div class="text-center space-y-2 mb-6">
       <h1 class="text-3xl font-black text-white">Творческая Студия SnipPlit</h1>
       <p class="text-xs text-slate-400">Генерация картинок 8K, видео-сниппетов и танцевальных моделей</p>
@@ -775,34 +826,34 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Card 1: Image Gen -->
-      <div class="glass rounded-3xl p-6 space-y-4 hover:border-pink-500/50 transition">
-        <div class="w-12 h-12 rounded-2xl bg-pink-500/20 text-2xl flex items-center justify-center">🎨</div>
+      <div class="glass rounded-3xl p-7 space-y-4 hover:border-pink-500/50 transition">
+        <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-3xl flex items-center justify-center">🎨</div>
         <h3 class="text-xl font-bold text-white">Генератор картинок 8K</h3>
         <p class="text-xs text-slate-400 leading-relaxed">Рендер фотосетов на локальной RTX 4060 GPU и Flux Ultra.</p>
-        <button onclick="showToast('Запуск генератора картинок...')" class="w-full py-2 rounded-xl bg-pink-500/20 border border-pink-500/40 text-xs font-bold text-pink-300 hover:bg-pink-500/30 transition">
+        <button onclick="showToast('Запуск генератора картинок...')" class="glass-btn w-full py-2.5 rounded-xl text-xs font-bold text-pink-300 hover:border-pink-400/60">
           Открыть Генератор
         </button>
       </div>
 
       <!-- Card 2: Video Snippets -->
-      <div class="glass rounded-3xl p-6 space-y-4 hover:border-purple-500/50 transition">
-        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-2xl flex items-center justify-center">🎬</div>
+      <div class="glass rounded-3xl p-7 space-y-4 hover:border-purple-500/50 transition">
+        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 text-3xl flex items-center justify-center">🎬</div>
         <h3 class="text-xl font-bold text-white">Видео Сниппеты</h3>
         <p class="text-xs text-slate-400 leading-relaxed">Монтаж хуков, нарезка аудио, динамические субтитры для TikTok.</p>
-        <button onclick="showToast('Запуск видеомонтажа...')" class="w-full py-2 rounded-xl bg-purple-500/20 border border-purple-500/40 text-xs font-bold text-purple-300 hover:bg-purple-500/30 transition">
+        <button onclick="showToast('Запуск видеомонтажа...')" class="glass-btn w-full py-2.5 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400/60">
           Открыть Сниппеты
         </button>
       </div>
 
       <!-- Card 3: Dance Models -->
-      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-6 space-y-4 hover:border-[#d946ef] transition cursor-pointer border-[#d946ef]/40">
-        <div class="w-12 h-12 rounded-2xl bg-fuchsia-500/20 text-2xl flex items-center justify-center">💃</div>
+      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-7 space-y-4 hover:border-[#d946ef] transition cursor-pointer border-[#d946ef]/40">
+        <div class="w-14 h-14 rounded-2xl bg-fuchsia-500/20 text-3xl flex items-center justify-center">💃</div>
         <div class="flex items-center justify-between">
           <h3 class="text-xl font-bold text-white">Dance AI Influencers</h3>
-          <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#d946ef] text-white">10 МОДЕЛЕЙ</span>
+          <span class="text-[9px] font-bold px-2.5 py-0.5 rounded-full bg-[#d946ef] text-white">10 МОДЕЛЕЙ</span>
         </div>
         <p class="text-xs text-slate-400 leading-relaxed">Центр управления 10 танцовщицами: Face-Lock, паспорта, комнаты, фотосеты и промпты.</p>
-        <button class="w-full py-2 rounded-xl bg-[#d946ef] text-xs font-bold text-white hover:brightness-110 transition">
+        <button class="glass-btn-accent w-full py-2.5 rounded-xl text-xs font-bold text-white">
           Открыть Танцульки &rarr;
         </button>
       </div>
@@ -812,11 +863,11 @@
   <!-- ================================================================= -->
   <!-- FLOATING PLITTY ASSISTANT WIDGET                                  -->
   <!-- ================================================================= -->
-  <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] glass rounded-3xl p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)]/50 hidden">
+  <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] glass rounded-3xl p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)]/60 hidden backdrop-blur-2xl">
     <div class="flex items-center justify-between border-b border-white/10 pb-3">
       <div class="flex items-center gap-3">
-        <div class="relative w-9 h-9 rounded-xl overflow-hidden border border-[var(--plitty-rose)] shrink-0">
-          <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
+        <div class="relative w-10 h-10 rounded-2xl overflow-hidden border-2 border-[var(--plitty-rose)] shrink-0 shadow-md">
+          <img src="plitty_avatar.jpg" onerror="this.src='catgirl_avatar.png'" alt="Plitty" class="w-full h-full object-cover">
         </div>
         <div>
           <h4 class="text-sm font-extrabold text-white">Плитти AI</h4>
@@ -825,50 +876,50 @@
       </div>
 
       <div class="flex items-center gap-1.5">
-        <div class="p-0.5 rounded-xl bg-white/5 border border-white/10 text-[9px]">
-          <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900 transition-all">ИИ</button>
-          <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white transition-all">IDE Мост</button>
+        <div class="p-1 rounded-2xl bg-white/5 border border-white/10 text-[9px] flex gap-1">
+          <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="glass-btn px-2.5 py-1 rounded-lg font-bold text-slate-900 bg-[#E588A6]">ИИ</button>
+          <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="glass-btn px-2.5 py-1 rounded-lg font-semibold text-slate-400 hover:text-white">IDE Мост</button>
         </div>
-        <button onclick="togglePlittyAssistant()" class="p-1 text-slate-400 hover:text-white">✕</button>
+        <button onclick="togglePlittyAssistant()" class="glass-btn p-1.5 rounded-xl text-slate-400 hover:text-white">✕</button>
       </div>
     </div>
 
-    <div id="plitty-messages" class="h-60 overflow-y-auto space-y-3 p-2 text-xs">
+    <div id="plitty-messages" class="h-64 overflow-y-auto space-y-3 p-2 text-xs">
       <div class="flex gap-2.5">
-        <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
-          <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
+        <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/60">
+          <img src="plitty_avatar.jpg" onerror="this.src='catgirl_avatar.png'" class="w-full h-full object-cover">
         </div>
         <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
           <div class="text-[9px] font-bold text-[#F3A6BF]">Плитти</div>
-          <p>Привет! Чем помочь? Могу подсказать статус фермы, прогнать хореографию в Студии или отправить команду в Пульт.</p>
+          <p>Привет! Чем помочь? Могу подсказать статус фермы, запустить генерацию танца на RTX 4060 или отправить команду в Пульт.</p>
         </div>
       </div>
     </div>
 
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
-      <button onclick="sendQuickPrompt('Статус фермы')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 whitespace-nowrap">📊 Статус фермы</button>
-      <button onclick="sendQuickPrompt('Идея танца для Айми')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[#F3A6BF] whitespace-nowrap">💡 Танец Айми</button>
-      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-teal-300 whitespace-nowrap">🔥 Прогрев полки</button>
+      <button onclick="sendQuickPrompt('Статус фермы')" class="glass-btn px-3 py-1 rounded-full whitespace-nowrap">📊 Статус фермы</button>
+      <button onclick="sendQuickPrompt('Идея танца для Айми')" class="glass-btn px-3 py-1 rounded-full text-[#F3A6BF] whitespace-nowrap">💡 Танец Айми</button>
+      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="glass-btn px-3 py-1 rounded-full text-teal-300 whitespace-nowrap">🔥 Прогрев полки</button>
     </div>
 
     <div class="flex items-center gap-2 pt-1 border-t border-white/10">
-      <input type="text" id="plitty-input" onkeydown="handleChatKeyDown(event)" placeholder="Напишите Плитти вопрос или команду..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6]">
-      <button onclick="sendChatMessage()" class="px-3 py-2 rounded-xl bg-[#E588A6] text-slate-950 font-bold text-xs hover:brightness-110 transition">➤</button>
+      <input type="text" id="plitty-input" onkeydown="handleChatKeyDown(event)" placeholder="Напишите Плитти вопрос или команду..." class="flex-1 bg-white/5 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6]">
+      <button onclick="sendChatMessage()" class="glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold">➤</button>
     </div>
   </div>
 
   <!-- SCRCPY MODAL -->
-  <div id="modal-scrcpy" class="fixed inset-0 z-50 backdrop-blur-md bg-black/80 flex items-center justify-center p-4 hidden">
-    <div class="glass max-w-lg w-full p-6 space-y-4 rounded-3xl border-[#2DD4BF]/50">
+  <div id="modal-scrcpy" class="fixed inset-0 z-50 backdrop-blur-xl bg-black/85 flex items-center justify-center p-4 hidden">
+    <div class="glass max-w-lg w-full p-6 space-y-4 rounded-3xl border-[#2DD4BF]/50 shadow-2xl">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-3">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
           <h3 id="scrcpy-title" class="text-base font-bold text-white font-mono">📱 Экран устройства</h3>
         </div>
-        <button onclick="closeScrcpyModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+        <button onclick="closeScrcpyModal()" class="glass-btn p-1.5 rounded-xl text-slate-400 hover:text-white">✕</button>
       </div>
 
-      <div class="relative w-full aspect-[9/16] max-h-[440px] mx-auto bg-slate-950 rounded-3xl border-4 border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
+      <div class="relative w-full aspect-[9/16] max-h-[460px] mx-auto bg-slate-950 rounded-3xl border-4 border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
         <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
           <span>13:37</span>
           <span id="scrcpy-battery">98% 🔋</span>
@@ -889,8 +940,8 @@
       </div>
 
       <div class="flex items-center justify-between text-xs pt-2">
-        <button onclick="showToast('📸 Скриншот сохранен')" class="px-3 py-1.5 rounded-xl bg-white/10 text-white font-semibold">📸 Скриншот</button>
-        <button onclick="closeScrcpyModal()" class="px-4 py-1.5 rounded-xl bg-[#E588A6] text-slate-950 font-bold">Закрыть</button>
+        <button onclick="showToast('📸 Скриншот сохранен')" class="glass-btn px-4 py-2 rounded-xl text-white font-semibold">📸 Скриншот</button>
+        <button onclick="closeScrcpyModal()" class="glass-btn-accent px-5 py-2 rounded-xl">Закрыть</button>
       </div>
     </div>
   </div>
@@ -921,9 +972,9 @@
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]';
+            b.className = 'glass-btn-accent px-4 py-2 rounded-xl text-xs font-bold transition-all text-white shadow-lg';
           } else {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all';
+            b.className = 'glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all';
           }
         }
       });
@@ -951,9 +1002,15 @@
       const viewDancers = document.getElementById('minifarm-view-dancers');
       const viewService = document.getElementById('minifarm-view-service');
 
-      // Reset buttons
+      // Reset buttons to default glass style
       [btnAll, btnDancers, btnService].forEach(b => {
-        if (b) b.className = 'px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white';
+        if (b) {
+          b.className = 'glass-btn px-4 py-2 rounded-xl transition-all text-slate-400 hover:text-white';
+          b.style.background = '';
+          b.style.borderColor = '';
+          b.style.boxShadow = '';
+          b.style.color = '';
+        }
       });
 
       viewAll.classList.add('hidden');
@@ -961,17 +1018,24 @@
       viewService.classList.add('hidden');
 
       if (scope === 'all') {
-        btnAll.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-emerald-500 text-slate-950 font-bold shadow-md';
+        btnAll.className = 'glass-btn px-4 py-2 rounded-xl transition-all font-black text-slate-950';
+        btnAll.style.background = '#10B981';
+        btnAll.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
         viewAll.classList.remove('hidden');
         renderAllGrids();
         resetAmbientBackdrop();
       } else if (scope === 'dancers') {
-        btnDancers.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-[#d946ef] text-white font-bold shadow-md';
+        const m = DANCERS_DATA[currentModelIndex] || DANCERS_DATA[0];
+        btnDancers.className = 'glass-btn px-4 py-2 rounded-xl transition-all font-black text-slate-950';
+        btnDancers.style.background = m.color;
+        btnDancers.style.boxShadow = `0 0 22px ${m.color}88`;
         viewDancers.classList.remove('hidden');
         renderDancersRoster();
         selectDancer(currentModelIndex);
       } else if (scope === 'service') {
-        btnService.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-teal-400 text-slate-950 font-bold shadow-md';
+        btnService.className = 'glass-btn px-4 py-2 rounded-xl transition-all font-black text-slate-950';
+        btnService.style.background = '#2DD4BF';
+        btnService.style.boxShadow = '0 0 20px rgba(45, 212, 191, 0.6)';
         viewService.classList.remove('hidden');
         renderServiceOnlyGrid();
         resetAmbientBackdrop();
@@ -1003,33 +1067,33 @@
 
       if (dGrid) {
         dGrid.innerHTML = filteredDancers.map(d => `
-          <div class="glass rounded-2xl p-6 space-y-4 hover:border-[#E588A6] transition-all flex flex-col justify-between border" style="border-color: ${d.color}40; box-shadow: 0 12px 32px -10px rgba(0,0,0,0.7);">
+          <div class="glass rounded-3xl p-6 space-y-4 hover:border-[#E588A6] transition-all flex flex-col justify-between border" style="border-color: ${d.color}50; box-shadow: 0 16px 40px -12px rgba(0,0,0,0.7), 0 0 20px ${d.color}20;">
             <div class="space-y-3.5">
               <!-- Header with Avatar & Slot Badge -->
               <div class="flex items-center gap-3.5">
-                <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 shadow-md shrink-0 bg-slate-900" style="border-color: ${d.color};">
+                <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 shadow-lg shrink-0 bg-slate-900" style="border-color: ${d.color}; box-shadow: 0 0 16px ${d.color}60;">
                   <img src="dance_models/${d.id}/photos/master/avatar.jpg" alt="${d.name_ru}" class="w-full h-full object-cover">
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-wider truncate" style="color: ${d.color};">${d.neon_text} ${d.country_flag}</span>
-                    <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full text-slate-950" style="background: ${d.color};">
+                    <span class="text-[10px] font-black uppercase tracking-wider truncate" style="color: ${d.color};">${d.neon_text} ${d.country_flag}</span>
+                    <span class="text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full text-slate-950" style="background: ${d.color}; box-shadow: 0 0 12px ${d.color}60;">
                       СЛОТ #${d.slot}
                     </span>
                   </div>
                   <h3 class="text-base font-extrabold text-white truncate mt-0.5">${d.name_ru} (${d.name_en})</h3>
-                  <div class="text-[11px] text-slate-400 truncate">${d.city} • ${d.age}</div>
+                  <div class="text-[11px] text-slate-300 truncate">${d.city} • ${d.age}</div>
                 </div>
               </div>
 
               <!-- Archetype & Room -->
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
+              <div class="p-3.5 rounded-2xl bg-white/5 border border-white/5 text-[11px] space-y-1 backdrop-blur-md">
                 <div><b class="text-slate-300">Архетип:</b> <span class="text-slate-400">${d.archetype}</span></div>
                 <div><b class="text-slate-300">Dance Room:</b> <span class="text-slate-400">${d.room_desc}</span></div>
               </div>
 
               <!-- Single Dedicated Phone Box -->
-              <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-2 font-mono">
+              <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2 font-mono shadow-inner">
                 <div class="flex items-center justify-between text-xs">
                   <div class="flex items-center gap-1.5 font-bold text-teal-300">
                     <span>📱 Телефон танцовщицы</span>
@@ -1047,18 +1111,17 @@
 
               <!-- Networks / Badges -->
               <div class="flex flex-wrap gap-1.5 text-[10px]">
-                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300 font-mono">TT: ${d.email}</span>
-                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300 font-mono">Pass: •••••••••</span>
-                <span class="px-2 py-0.5 rounded-md border text-slate-300 font-bold" style="border-color: ${d.color}50; color: ${d.color};">Неон: ${d.neon_text}</span>
+                <span class="px-2.5 py-0.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono">TT: ${d.email}</span>
+                <span class="px-2.5 py-0.5 rounded-lg border font-bold" style="border-color: ${d.color}60; color: ${d.color};">Неон: ${d.neon_text}</span>
               </div>
             </div>
 
-            <!-- Bottom Actions -->
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-              <button onclick="openScrcpyModal(${d.slot}, '${d.name_ru}', '${d.status}', ${d.battery})" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-semibold transition">
+            <!-- Bottom Actions with Glass Buttons -->
+            <div class="pt-3.5 border-t border-white/10 flex items-center justify-between gap-2.5">
+              <button onclick="openScrcpyModal(${d.slot}, '${d.name_ru}', '${d.status}', ${d.battery})" class="glass-btn flex-1 py-2 rounded-xl text-xs font-semibold">
                 👁️ Экран #${d.slot}
               </button>
-              <button onclick="jumpToDancer(${d.origIdx})" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition flex items-center gap-1.5" style="background: ${d.color};">
+              <button onclick="jumpToDancer(${d.origIdx})" class="glass-btn px-4 py-2 rounded-xl text-xs font-black shadow-lg text-slate-950" style="background: ${d.color}; border-color: ${d.color};">
                 <span>💃 В Студию</span>
                 <span>&rarr;</span>
               </button>
@@ -1069,17 +1132,17 @@
 
       if (sGrid) {
         sGrid.innerHTML = filteredService.map(s => `
-          <div class="glass rounded-2xl p-6 space-y-4 hover:border-[#2DD4BF] transition-all flex flex-col justify-between border border-white/10" style="box-shadow: 0 12px 32px -10px rgba(0,0,0,0.7);">
+          <div class="glass rounded-3xl p-6 space-y-4 hover:border-[#2DD4BF] transition-all flex flex-col justify-between border border-white/10 shadow-lg">
             <div class="space-y-3.5">
               <!-- Header with Icon & Slot Badge -->
               <div class="flex items-center gap-3.5">
-                <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0">
+                <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0 shadow-md">
                   ${s.icon}
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">${s.category_title}</span>
-                    <span class="text-[10px] font-mono font-black text-slate-950 bg-teal-400 px-2 py-0.5 rounded-full">
+                    <span class="text-[10px] font-mono font-black text-slate-950 bg-teal-400 px-2.5 py-0.5 rounded-full shadow-sm">
                       СЛОТ #${s.slot}
                     </span>
                   </div>
@@ -1089,12 +1152,12 @@
               </div>
 
               <!-- Description & Algorithm -->
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
+              <div class="p-3.5 rounded-2xl bg-white/5 border border-white/5 text-[11px] space-y-1 backdrop-blur-md">
                 <div class="text-slate-300 leading-relaxed">${s.description}</div>
               </div>
 
               <!-- Current Task Status Box -->
-              <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono">
+              <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono shadow-inner">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-400 text-[10px]">Текущая задача:</span>
                   <span class="text-emerald-400 font-bold">${s.battery}% 🔋</span>
@@ -1104,15 +1167,15 @@
               </div>
             </div>
 
-            <!-- Bottom Actions -->
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-              <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-semibold transition">
+            <!-- Bottom Actions with Glass Buttons -->
+            <div class="pt-3.5 border-t border-white/10 flex items-center justify-between gap-2.5">
+              <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="glass-btn flex-1 py-2 rounded-xl text-xs font-semibold">
                 👁️ Экран #${s.slot}
               </button>
-              <button onclick="runScenario('${s.script_id}')" class="px-3.5 py-1.5 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 hover:text-white text-xs font-bold transition">
+              <button onclick="runScenario('${s.script_id}')" class="glass-btn px-4 py-2 rounded-xl text-teal-300 text-xs font-bold hover:border-teal-400/60">
                 ▶️ Запустить
               </button>
-              <button onclick="sendPultCommand('reboot_adb')" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-300 text-xs transition" title="Рестарт ADB">
+              <button onclick="sendPultCommand('reboot_adb')" class="glass-btn py-2 px-3 rounded-xl text-slate-400 hover:text-rose-300 text-xs" title="Рестарт ADB">
                 🔄
               </button>
             </div>
@@ -1150,16 +1213,16 @@
 
         const isSelected = idx === currentModelIndex;
         const card = document.createElement('div');
-        card.className = `p-2.5 rounded-xl cursor-pointer transition-all duration-300 border flex items-center gap-2.5 relative overflow-hidden ${
+        card.className = `p-3 rounded-2xl cursor-pointer transition-all duration-300 border flex items-center gap-3 relative overflow-hidden ${
           isSelected 
-            ? 'shadow-xl transform scale-[1.02]' 
-            : 'bg-slate-900/60 border-white/5 hover:bg-slate-800/50 hover:border-white/10'
+            ? 'shadow-2xl transform scale-[1.02]' 
+            : 'glass hover:border-white/20'
         }`;
 
         if (isSelected) {
-          card.style.background = `linear-gradient(135deg, ${m.color}25 0%, rgba(15, 23, 42, 0.9) 100%)`;
+          card.style.background = `linear-gradient(135deg, ${m.color}35 0%, rgba(15, 23, 42, 0.95) 100%)`;
           card.style.borderColor = m.color;
-          card.style.boxShadow = `0 0 18px -3px ${m.color}44`;
+          card.style.boxShadow = `0 0 25px -2px ${m.color}66, inset 0 1px 0 rgba(255,255,255,0.25)`;
         }
 
         card.onclick = () => selectDancer(idx);
@@ -1168,20 +1231,20 @@
 
         card.innerHTML = `
           <div class="relative flex-shrink-0">
-            <img src="${avatarPath}" class="w-10 h-10 rounded-xl object-cover border" style="border-color: ${isSelected ? m.color : 'rgba(255,255,255,0.1)'}">
-            <span class="absolute -bottom-1 -right-1 text-[10px]">${m.country_flag}</span>
+            <img src="${avatarPath}" class="w-12 h-12 rounded-xl object-cover border-2" style="border-color: ${isSelected ? m.color : 'rgba(255,255,255,0.15)'}; box-shadow: ${isSelected ? '0 0 15px ' + m.color + '88' : 'none'};">
+            <span class="absolute -bottom-1 -right-1 text-xs">${m.country_flag}</span>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <h4 class="text-xs font-bold ${isSelected ? 'text-white font-black' : 'text-slate-200'} truncate">${m.name_ru}</h4>
-              <span class="text-[9px] font-mono font-bold text-slate-400">СЛОТ #${m.slot}</span>
+              <span class="text-[9px] font-mono font-bold text-slate-400">#${m.slot}</span>
             </div>
             <p class="text-[10px] text-slate-400 truncate mt-0.5">${m.niche}</p>
             <div class="flex items-center gap-1.5 mt-1">
-              <span class="text-[8px] font-bold px-1.5 py-0.2 rounded" style="background: ${m.color}22; color: ${m.color}; border: 1px solid ${m.color}44;">
+              <span class="text-[9px] font-black px-2 py-0.5 rounded-full" style="background: ${m.color}28; color: ${m.color}; border: 1px solid ${m.color}60;">
                 ${m.neon_text}
               </span>
-              <span class="text-[9px] text-slate-500 font-mono">${m.height}</span>
+              <span class="text-[9px] text-slate-400 font-mono">${m.height}</span>
             </div>
           </div>
         `;
@@ -1202,9 +1265,6 @@
       document.getElementById('dancer-flag').textContent = m.country_flag;
       document.getElementById('dancer-name-ru').textContent = m.name_ru;
       document.getElementById('dancer-badge-niche').textContent = m.niche;
-      document.getElementById('dancer-badge-niche').style.background = m.color + '25';
-      document.getElementById('dancer-badge-niche').style.color = m.color;
-      document.getElementById('dancer-badge-niche').style.border = '1px solid ' + m.color + '50';
       document.getElementById('dancer-meta').textContent = `${m.city} • ${m.age} • ${m.height} • ${m.weight}`;
       document.getElementById('dancer-slot-badge').textContent = `СЛОТ #${m.slot}`;
       document.getElementById('dancer-battery-badge').textContent = `${m.battery}% 🔋 (${m.status})`;
@@ -1242,11 +1302,17 @@
         const btn = document.getElementById('ptab-' + k);
         if (btn) {
           if (k === tabKey) {
-            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 text-white';
-            btn.style.background = m.color;
+            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 text-white shadow-lg';
+            btn.style.background = `linear-gradient(135deg, ${m.color} 0%, ${m.color}cc 100%)`;
+            btn.style.borderColor = m.color;
+            btn.style.boxShadow = `0 0 20px ${m.color}88`;
+            btn.style.color = '#050814';
           } else {
-            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
-            btn.style.background = 'transparent';
+            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.boxShadow = '';
+            btn.style.color = '';
           }
         }
       });
@@ -1265,13 +1331,22 @@
       const backdrop = document.getElementById('ambient-backdrop');
       if (backdrop) {
         backdrop.style.background = `
-          radial-gradient(ellipse 90% 60% at 50% -10%, ${color}35 0%, transparent 70%),
-          radial-gradient(ellipse 70% 50% at 85% 35%, ${color}25 0%, transparent 65%),
-          radial-gradient(ellipse 65% 55% at 15% 80%, ${color}22 0%, transparent 60%),
-          #050814
+          radial-gradient(ellipse 110% 75% at 50% -10%, ${color}66 0%, transparent 65%),
+          radial-gradient(ellipse 90% 70% at 95% 30%, ${color}45 0%, transparent 60%),
+          radial-gradient(ellipse 85% 75% at 5% 70%, ${color}40 0%, transparent 60%),
+          radial-gradient(ellipse 90% 60% at 50% 105%, ${color}30 0%, transparent 65%),
+          #04060f
         `;
       }
 
+      // Main Outer Studio View Container
+      const studioView = document.getElementById('minifarm-view-dancers');
+      if (studioView) {
+        studioView.style.borderColor = color + '60';
+        studioView.style.boxShadow = `0 25px 70px -15px ${color}40, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 35px -5px ${color}30`;
+      }
+
+      // Brand Title Gradient
       const brandTitle = document.getElementById('dancers-brand-title');
       if (brandTitle) {
         brandTitle.style.background = `linear-gradient(135deg, #ffffff 0%, ${color} 100%)`;
@@ -1279,10 +1354,88 @@
         brandTitle.style.webkitTextFillColor = 'transparent';
       }
 
+      // Hero Card with intense glow and gradient
+      const heroCard = document.getElementById('dancer-hero-card');
+      if (heroCard) {
+        heroCard.style.borderColor = color + '75';
+        heroCard.style.boxShadow = `0 14px 40px -10px ${color}45, inset 0 1px 0 rgba(255, 255, 255, 0.25)`;
+        heroCard.style.background = `linear-gradient(135deg, ${color}22 0%, rgba(10, 15, 28, 0.85) 100%)`;
+      }
+      const heroGlow = document.getElementById('dancer-hero-accent-glow');
+      if (heroGlow) {
+        heroGlow.style.background = color;
+        heroGlow.style.opacity = '0.6';
+      }
+
+      // Hero Avatar
+      const heroAvatar = document.getElementById('dancer-avatar');
+      if (heroAvatar) {
+        heroAvatar.style.borderColor = color;
+        heroAvatar.style.boxShadow = `0 0 20px ${color}88`;
+      }
+
+      // Niche and Slot Badges
+      const nicheBadge = document.getElementById('dancer-badge-niche');
+      if (nicheBadge) {
+        nicheBadge.style.background = color + '30';
+        nicheBadge.style.color = color;
+        nicheBadge.style.borderColor = color + '70';
+        nicheBadge.style.boxShadow = `0 0 12px ${color}40`;
+      }
+      const slotBadge = document.getElementById('dancer-slot-badge');
+      if (slotBadge) {
+        slotBadge.style.background = color;
+        slotBadge.style.color = '#050814';
+        slotBadge.style.boxShadow = `0 0 16px ${color}88`;
+      }
+
+      // Image Stage with high glow
       const imgStage = document.getElementById('image-stage');
       if (imgStage) {
-        imgStage.style.boxShadow = `inset 0 0 35px -10px ${color}35, 0 0 20px -8px ${color}30`;
-        imgStage.style.borderColor = color + '40';
+        imgStage.style.boxShadow = `0 0 50px -5px ${color}50, inset 0 0 40px -10px ${color}40`;
+        imgStage.style.borderColor = color + '88';
+        imgStage.style.background = `radial-gradient(circle at center, ${color}15 0%, rgba(5, 8, 20, 0.9) 80%)`;
+      }
+
+      const photoTagPill = document.getElementById('photo-tag-pill');
+      if (photoTagPill) {
+        photoTagPill.style.borderColor = color + '70';
+        photoTagPill.style.boxShadow = `0 0 18px ${color}55`;
+      }
+
+      // Right Column Credentials & Prompts
+      const credBox = document.getElementById('dancer-credentials-box');
+      if (credBox) {
+        credBox.style.borderColor = color + '55';
+        credBox.style.boxShadow = `0 10px 30px -10px ${color}35, inset 0 1px 0 rgba(255, 255, 255, 0.15)`;
+        credBox.style.background = `linear-gradient(180deg, ${color}15 0%, rgba(10, 15, 28, 0.9) 100%)`;
+      }
+      const promptsBox = document.getElementById('dancer-prompts-box');
+      if (promptsBox) {
+        promptsBox.style.borderColor = color + '55';
+        promptsBox.style.boxShadow = `0 10px 30px -10px ${color}35`;
+      }
+
+      // Action Buttons
+      const btnScrcpy = document.getElementById('btn-action-scrcpy');
+      if (btnScrcpy) {
+        btnScrcpy.style.borderColor = color + '80';
+        btnScrcpy.style.color = color;
+        btnScrcpy.style.boxShadow = `0 0 20px ${color}35`;
+      }
+      const btnRender = document.getElementById('btn-action-render');
+      if (btnRender) {
+        btnRender.style.background = `linear-gradient(135deg, ${color} 0%, ${color}cc 100%)`;
+        btnRender.style.boxShadow = `0 0 25px ${color}80`;
+        btnRender.style.color = '#050814';
+      }
+
+      // Scope button for dancers
+      const btnDancers = document.getElementById('minifarm-scope-dancers');
+      if (btnDancers && currentMinifarmScope === 'dancers') {
+        btnDancers.style.background = color;
+        btnDancers.style.color = '#050814';
+        btnDancers.style.boxShadow = `0 0 22px ${color}88`;
       }
     }
 
@@ -1290,8 +1443,10 @@
       const backdrop = document.getElementById('ambient-backdrop');
       if (backdrop) {
         backdrop.style.background = `
-          radial-gradient(circle at 50% -100px, rgba(229,136,166,0.12) 0%, rgba(45,212,191,0.05) 50%, transparent 75%),
-          #050814
+          radial-gradient(ellipse 110% 75% at 50% -10%, rgba(229, 136, 166, 0.45) 0%, transparent 65%),
+          radial-gradient(ellipse 90% 70% at 90% 25%, rgba(45, 212, 191, 0.25) 0%, transparent 60%),
+          radial-gradient(ellipse 85% 75% at 10% 70%, rgba(217, 70, 239, 0.25) 0%, transparent 60%),
+          #04060f
         `;
       }
     }
@@ -1300,9 +1455,9 @@
       currentNicheFilter = filter;
       document.querySelectorAll('.niche-btn').forEach(btn => {
         if (btn.dataset.filter === filter) {
-          btn.className = 'niche-btn px-2 py-1 rounded-lg font-bold bg-[#d946ef] text-white whitespace-nowrap';
+          btn.className = 'niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-bold bg-[#d946ef] text-white whitespace-nowrap shadow-md';
         } else {
-          btn.className = 'niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap';
+          btn.className = 'niche-btn glass-btn px-2.5 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white whitespace-nowrap';
         }
       });
       renderDancersRoster();
@@ -1334,27 +1489,27 @@
       );
 
       grid.innerHTML = filtered.map(s => `
-        <div class="glass rounded-2xl p-6 space-y-4 border border-white/10 hover:border-teal-400/50 transition flex flex-col justify-between">
-          <div class="space-y-3">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shrink-0">
+        <div class="glass rounded-3xl p-6 space-y-4 border border-white/10 hover:border-teal-400/50 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-3.5">
+            <div class="flex items-center gap-3.5">
+              <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0 shadow-md">
                 ${s.icon}
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider">${s.category_title}</span>
-                  <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-teal-400 text-slate-950">
+                  <span class="text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full bg-teal-400 text-slate-950 shadow-sm">
                     СЛОТ #${s.slot}
                   </span>
                 </div>
-                <h3 class="text-sm font-bold text-white truncate mt-0.5">${s.name}</h3>
-                <div class="text-[10px] text-slate-400 truncate">IP: ${s.ip}</div>
+                <h3 class="text-base font-bold text-white truncate mt-0.5">${s.name}</h3>
+                <div class="text-[11px] text-slate-400 truncate">IP: ${s.ip}</div>
               </div>
             </div>
 
-            <p class="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-white/5">${s.description}</p>
+            <p class="text-xs text-slate-300 leading-relaxed bg-slate-950/70 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">${s.description}</p>
 
-            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1 font-mono text-xs">
+            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono text-xs shadow-inner">
               <div class="flex justify-between text-slate-400 text-[10px]">
                 <span>Задача:</span>
                 <span class="text-emerald-400 font-bold">${s.battery}% 🔋</span>
@@ -1364,11 +1519,11 @@
             </div>
           </div>
 
-          <div class="pt-3 border-t border-white/10 flex items-center gap-2 text-xs">
-            <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-center transition">
+          <div class="pt-3.5 border-t border-white/10 flex items-center gap-2.5 text-xs">
+            <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="glass-btn flex-1 py-2 rounded-xl font-semibold">
               👁️ Экран #${s.slot}
             </button>
-            <button onclick="runScenario('${s.script_id}')" class="py-2 px-3 rounded-xl bg-teal-500/20 border border-teal-500/40 text-teal-300 font-bold transition">
+            <button onclick="runScenario('${s.script_id}')" class="glass-btn px-4 py-2 rounded-xl text-teal-300 font-bold hover:border-teal-400/60">
               ▶️ Запустить
             </button>
           </div>
@@ -1386,16 +1541,16 @@
       const filtered = filter === 'all' ? STAND_DATA : STAND_DATA.filter(p => p.shelf === filter);
 
       grid.innerHTML = filtered.map(p => `
-        <div class="glass rounded-xl p-2.5 space-y-1.5 border border-white/5 hover:border-[#2DD4BF] transition text-left text-xs">
+        <div class="glass rounded-2xl p-3 space-y-2 border border-white/5 hover:border-[#2DD4BF] transition text-left text-xs shadow-md">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-black text-white font-mono">#${p.slot}</span>
-            <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-500/20">
+            <span class="text-base font-black text-white font-mono">#${p.slot}</span>
+            <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
               ${p.battery}%
             </span>
           </div>
           <div class="text-[9px] text-teal-300 font-mono truncate">${p.ip}</div>
           <div class="text-[9px] text-slate-300 truncate pt-1 border-t border-white/5">● ${p.task}</div>
-          <button onclick="openScrcpyModal(${p.slot}, 'Телефон #${p.slot}', '${p.task}', ${p.battery})" class="w-full py-1 rounded bg-white/5 hover:bg-white/10 text-[9px] font-bold text-slate-300 text-center transition">
+          <button onclick="openScrcpyModal(${p.slot}, 'Телефон #${p.slot}', '${p.task}', ${p.battery})" class="glass-btn w-full py-1.5 rounded-xl text-[9px] font-bold text-slate-300 text-center">
             👁️ Экран
           </button>
         </div>
@@ -1406,9 +1561,11 @@
       ['all', 1, 2, 3].forEach(s => {
         const b = document.getElementById('btn-shelf-' + s);
         if (b) {
-          b.className = s === shelf 
-            ? 'px-3 py-1.5 rounded-xl font-bold bg-[#2DD4BF]/20 border border-[#2DD4BF]/50 text-white text-xs'
-            : 'px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs';
+          if (s === shelf) {
+            b.className = 'glass-btn-accent px-4 py-2 rounded-xl font-bold text-white text-xs shadow-md';
+          } else {
+            b.className = 'glass-btn px-4 py-2 rounded-xl text-slate-400 text-xs';
+          }
         }
       });
       renderStandGrid(shelf);
@@ -1421,9 +1578,11 @@
       ['all', 'minifarm', 'stand'].forEach(t => {
         const b = document.getElementById('target-btn-' + t);
         if (b) {
-          b.className = t === target
-            ? 'p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all'
-            : 'p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all';
+          if (t === target) {
+            b.className = 'glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all shadow-lg';
+          } else {
+            b.className = 'glass p-5 rounded-2xl text-left transition-all hover:border-white/20';
+          }
         }
       });
 
@@ -1531,7 +1690,7 @@
 
     function triggerDancerRender() {
       const m = DANCERS_DATA[currentModelIndex];
-      showToast(`🎬 Запущен рендер сниппета для ${m.name_ru} на RTX 4060!`);
+      showToast(`🎬 Запущен рендер танца для ${m.name_ru} на RTX 4060!`);
       appendConsoleLog(`[Render Engine] Старт Wan 2.1 видеогенерации для ${m.id} (${m.name_ru}) под бит ${m.neon_text}`);
     }
 
@@ -1561,12 +1720,12 @@
       const label = document.getElementById('plitty-mode-label');
 
       if (mode === 'ai') {
-        btnAi.className = 'px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900';
-        btnIde.className = 'px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
+        btnAi.className = 'glass-btn px-2.5 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900';
+        btnIde.className = 'glass-btn px-2.5 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
         label.textContent = 'Режим: Gemini 3.6 Brain (ИИ-Ассистент)';
       } else {
-        btnIde.className = 'px-2 py-1 rounded-lg font-bold bg-purple-500 text-white';
-        btnAi.className = 'px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
+        btnIde.className = 'glass-btn px-2.5 py-1 rounded-lg font-bold bg-purple-500 text-white';
+        btnAi.className = 'glass-btn px-2.5 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
         label.textContent = 'Режим: IDE Dev Bridge (Связь с Разработчиком)';
       }
     }
@@ -1604,12 +1763,12 @@
       const div = document.createElement('div');
       div.className = isUser ? 'flex justify-end' : 'flex gap-2.5';
       div.innerHTML = isUser ? `
-        <div class="p-2.5 rounded-2xl bg-[#E588A6]/20 border border-[#E588A6]/40 text-slate-100 max-w-[85%]">${text}</div>
+        <div class="p-3 rounded-2xl bg-[#E588A6]/25 border border-[#E588A6]/50 text-slate-100 max-w-[85%] shadow-md">${text}</div>
       ` : `
-        <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
-          <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
+        <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/60">
+          <img src="plitty_avatar.jpg" onerror="this.src='catgirl_avatar.png'" class="w-full h-full object-cover">
         </div>
-        <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%] shadow-sm">
           <div class="text-[9px] font-bold text-[#F3A6BF]">${sender}</div>
           <p>${text}</p>
         </div>
@@ -1660,7 +1819,7 @@
         setMinifarmScope('dancers');
       } else if (tabParam === 'minifarm') {
         navToView('minifarm');
-        if (scopeParam) setMinifarmScope(scopeParam);
+        setMinifarmScope(scopeParam || 'all');
       } else if (tabParam === 'stand') {
         navToView('stand');
       } else if (tabParam === 'pult') {
@@ -1668,7 +1827,12 @@
       } else if (tabParam === 'creativestudio') {
         navToView('creativestudio');
       } else {
-        navToView('gateway');
+        if (window.location.pathname.endsWith('studio.html')) {
+          navToView('minifarm');
+          setMinifarmScope('dancers');
+        } else {
+          navToView('gateway');
+        }
       }
     });
   </script>
