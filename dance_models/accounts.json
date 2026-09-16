@@ -1,0 +1,82 @@
+[
+  {
+    "id": "01_Aimi_Sato",
+    "name_ru": "Айми Сато",
+    "name_en": "Aimi Sato",
+    "email": "satoaimi319@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "02_Kiko_Ito",
+    "name_ru": "Кико Ито",
+    "name_en": "Kiko Ito",
+    "email": "itokiko505@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "03_Rin_Murakami",
+    "name_ru": "Рин Мураками",
+    "name_en": "Rin Murakami",
+    "email": "rinmurakami56@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "04_Mira_Lanskaya",
+    "name_ru": "Мира Ланская",
+    "name_en": "Mira Lanskaya",
+    "email": "lanskayamira7@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "05_Rada_Zarechnaya",
+    "name_ru": "Рада Заречная",
+    "name_en": "Rada Zarechnaya",
+    "email": "zarechnayarada@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "06_Hailey_Miller",
+    "name_ru": "Хейли Миллер",
+    "name_en": "Hailey Miller",
+    "email": "heileymiller3213@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "07_Alexa_King",
+    "name_ru": "Алекса Кинг",
+    "name_en": "Alexa King",
+    "email": "kingalexa413@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "08_Amelie_Dubois",
+    "name_ru": "Амели Дюбуа",
+    "name_en": "Amélie Dubois",
+    "email": "ameliedubois2005@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "09_Marta_Bergman",
+    "name_ru": "Марта Бергман",
+    "name_en": "Marta Bergman",
+    "email": "bergmanmarta02@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  },
+  {
+    "id": "10_Mia_Vega",
+    "name_ru": "Миа Вега",
+    "name_en": "Mia Vega",
+    "email": "miavegamia2005@gmail.com",
+    "password": "123Alex123!",
+    "status": "Активен / Привязан ✅"
+  }
+]

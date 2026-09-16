@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ AI STUDIO — Центр Управления 10 Инфлюенсерами</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fdf4ff',
+              500: '#d946ef',
+              600: '#c026d3',
+              900: '#701a75'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --theme-color: #d946ef;
+      --theme-glow: rgba(217, 70, 239, 0.4);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .glass {
+      background: rgba(10, 15, 28, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.5s ease, box-shadow 0.6s ease;
+    }
+    
+    .ambient-bg {
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-transition {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="text-slate-100 font-sans antialiased h-screen flex flex-col overflow-hidden relative bg-slate-950">
+
+  <!-- FULLSCREEN AMBIENT COLOR BACKDROP -->
+  <div id="ambient-backdrop" class="ambient-bg fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-500/90 text-white font-medium shadow-2xl backdrop-blur-md border border-emerald-400/40">
+    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toast-msg">Скопировано в буфер!</span>
+  </div>
+
+  <!-- FULLSCREEN IMAGE MODAL -->
+  <div id="img-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
+    <div class="relative max-w-4xl max-h-[95vh] flex flex-col items-center" onclick="event.stopPropagation()">
+      <img id="modal-img" src="" class="max-h-[85vh] max-w-full rounded-xl shadow-2xl object-contain border border-slate-700">
+      <div class="flex items-center justify-between w-full mt-3 px-2">
+        <span id="modal-caption" class="text-sm text-slate-300 font-medium"></span>
+        <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white border border-slate-600 transition">Закрыть (Esc)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BATCH EXPORT MODAL -->
+  <div id="export-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onclick="closeExportModal()">
+    <div class="glass max-w-3xl w-full rounded-2xl p-6 border border-slate-700 shadow-2xl flex flex-col max-h-[85vh]" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">📦 Экспорт данных всех 10 моделей</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Готовые учетные данные и мастер-промпты для автоматизаторов (Playwright / ADB / Плитти)</p>
+        </div>
+        <button onclick="closeExportModal()" class="text-slate-400 hover:text-white p-1">✕</button>
+      </div>
+      <div class="flex gap-2 my-4">
+        <button onclick="showExportTab('json')" id="tab-btn-json" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white">JSON (Полный)</button>
+        <button onclick="showExportTab('csv')" id="tab-btn-csv" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white">CSV (Аккаунты)</button>
+        <button onclick="copyExportData()" class="ml-auto px-4 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+          Скопировать всё
+        </button>
+      </div>
+      <textarea id="export-content" readonly class="w-full flex-1 bg-slate-900/90 text-slate-300 font-mono text-xs p-4 rounded-xl border border-slate-800 resize-none focus:outline-none focus:border-brand-500"></textarea>
+    </div>
+  </div>
+
+  <!-- TOP HEADER & KPIS -->
+  <header id="main-header" class="h-16 border-b glass px-6 flex items-center justify-between flex-shrink-0 z-20 theme-transition">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
+        <span class="text-2xl animate-bounce">✨</span>
+        <div>
+          <h1 id="brand-title" class="text-base font-black tracking-wide uppercase theme-transition">AI STUDIO</h1>
+          <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Digital Talent Command Center</p>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-2 ml-4 pl-4 border-l border-slate-800 text-xs">
+        <span id="kpi-models" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold theme-transition">
+          <span class="w-1.5 h-1.5 rounded-full animate-pulse" id="kpi-dot"></span>
+          10/10 Моделей Готовы
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10 font-semibold">
+          50 Мастер-Ассетов ✅
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10 font-semibold">
+          ADB Multi-Ready ⚡
+        </span>
+      </div>
+    </div>
+
+    <!-- Quick Search & Actions -->
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <input type="text" id="search-input" oninput="filterModels()" placeholder="Поиск по имени, стилю или городу..." class="w-56 lg:w-72 bg-slate-900/80 text-xs rounded-xl pl-9 pr-3 py-2 border border-slate-700/80 focus:outline-none focus:ring-1 transition text-slate-200 placeholder-slate-500">
+        <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+
+      <button onclick="openExportModal()" class="px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition flex items-center gap-2 shadow-sm">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <span>Экспорт</span>
+      </button>
+
+      <button onclick="openProjectFolder()" id="btn-project-folder" class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition flex items-center gap-2 theme-transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+        <span>Папка проекта</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT (3 COLUMNS) -->
+  <div class="flex-1 flex overflow-hidden relative z-10">
+
+    <!-- COL 1: ROSTER LIST (LEFT) -->
+    <aside class="w-80 lg:w-96 border-r glass flex flex-col flex-shrink-0 theme-transition" id="sidebar-roster">
+      <!-- Filter Pills -->
+      <div class="p-3 border-b border-white/5 flex gap-1.5 overflow-x-auto text-[11px]">
+        <button onclick="setNicheFilter('all')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold transition whitespace-nowrap" data-filter="all">Все (10)</button>
+        <button onclick="setNicheFilter('asia')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition whitespace-nowrap" data-filter="asia">K-Pop & Азия (3)</button>
+        <button onclick="setNicheFilter('anime')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition whitespace-nowrap" data-filter="anime">Аниме & Барби (2)</button>
+        <button onclick="setNicheFilter('alt')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition whitespace-nowrap" data-filter="alt">Готика & Альт (2)</button>
+        <button onclick="setNicheFilter('hiphop')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition whitespace-nowrap" data-filter="hiphop">Хип-Хоп (1)</button>
+        <button onclick="setNicheFilter('lifestyle')" class="niche-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition whitespace-nowrap" data-filter="lifestyle">Лайфстайл (2)</button>
+      </div>
+
+      <!-- Models List -->
+      <div id="models-list" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+
+      <!-- Footer Info -->
+      <div class="p-3 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between">
+        <span>10 моделей синхронизированы</span>
+        <span id="footer-status-tag" class="font-semibold theme-transition">100% Locked</span>
+      </div>
+    </aside>
+
+    <!-- COL 2: MAIN ASSET INSPECTOR (CENTER) -->
+    <main class="flex-1 flex flex-col overflow-y-auto p-6 space-y-6">
+
+      <!-- Model Top Profile Hero -->
+      <div id="hero-card" class="glass rounded-2xl p-5 shadow-2xl theme-transition relative overflow-hidden">
+        <div id="hero-accent-glow" class="absolute -right-16 -top-16 w-80 h-80 rounded-full blur-3xl opacity-30 pointer-events-none ambient-bg"></div>
+
+        <div class="flex flex-wrap items-start justify-between gap-4 relative z-10">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img id="hero-avatar" src="" class="w-16 h-16 rounded-2xl object-cover border-2 shadow-xl theme-transition">
+              <span id="hero-flag" class="absolute -bottom-1 -right-1 text-base bg-slate-900 rounded-full px-1 border border-slate-700"></span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h2 id="hero-name-ru" class="text-2xl font-black text-white tracking-tight"></h2>
+                <span id="hero-name-en" class="text-sm text-slate-400 font-medium"></span>
+                <span id="hero-badge-niche" class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider theme-transition"></span>
+              </div>
+              <p id="hero-meta" class="text-xs text-slate-400 mt-1 flex items-center gap-3 font-medium"></p>
+            </div>
+          </div>
+
+          <!-- Quick Stats Badges -->
+          <div class="flex items-center gap-2">
+            <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 uppercase font-medium">Рост</span>
+              <span id="stat-height" class="text-sm font-bold text-slate-200"></span>
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 uppercase font-medium">Вес</span>
+              <span id="stat-weight" class="text-sm font-bold text-slate-200"></span>
+            </div>
+            <div class="px-3.5 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 uppercase font-medium">Фирменный Неон</span>
+              <span id="stat-neon" class="text-xs font-black tracking-wider uppercase theme-transition"></span>
+            </div>
+          </div>
+        </div>
+
+        <p id="hero-bio" class="text-xs text-slate-300 mt-3.5 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-white/5"></p>
+      </div>
+
+      <!-- Asset Tabs & Main Viewer -->
+      <div id="viewer-card" class="glass rounded-2xl p-5 shadow-2xl flex flex-col flex-1 theme-transition">
+        <div class="flex flex-wrap items-center justify-between pb-4 border-b border-white/5 gap-3">
+          <div class="flex gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800" id="tabs-container">
+            <button onclick="switchPhotoTab('dance')" id="ptab-dance" class="ptab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+              <span>💃 В комнате (9:16)</span>
+              <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300">Start</span>
+            </button>
+            <button onclick="switchPhotoTab('studio')" id="ptab-studio" class="ptab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+              <span>🧍 Студия (9:16)</span>
+            </button>
+            <button onclick="switchPhotoTab('room')" id="ptab-room" class="ptab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+              <span>🏠 Зал (9:16)</span>
+            </button>
+            <button onclick="switchPhotoTab('face')" id="ptab-face" class="ptab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+              <span>👩 Лицо (1:1)</span>
+            </button>
+            <button onclick="switchPhotoTab('avatar')" id="ptab-avatar" class="ptab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+              <span>🖼️ Аватар</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="openModalCurrent()" class="px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+              <span>Увеличить</span>
+            </button>
+            <button onclick="copyCurrentImagePath()" class="px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+              <span>Путь к файлу</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Image Stage with Dynamic Glow -->
+        <div id="image-stage" class="flex-1 min-h-[440px] flex items-center justify-center p-4 bg-slate-950/70 rounded-xl mt-4 relative overflow-hidden border border-white/5 theme-transition">
+          <img id="main-preview-img" src="" alt="Preview" class="max-h-[520px] max-w-full rounded-xl shadow-2xl object-contain cursor-pointer transition-all duration-300 hover:scale-[1.01]" onclick="openModalCurrent()">
+          <div id="photo-tag-pill" class="absolute bottom-6 left-6 px-3.5 py-1.5 rounded-lg bg-black/80 backdrop-blur-md text-[11px] font-bold text-white border border-white/15 shadow-lg"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- COL 3: PROMPTS & OPS ACTION HUB (RIGHT) -->
+    <aside id="sidebar-actions" class="w-96 lg:w-[420px] border-l glass flex flex-col flex-shrink-0 overflow-y-auto p-5 space-y-5 theme-transition">
+
+      <!-- 1. Credentials Box -->
+      <div class="bg-slate-900/85 rounded-xl p-4 border border-white/5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            Учетные Данные
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Активен ✅</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-medium">Google / TikTok Email</span>
+            <div class="flex items-center justify-between bg-slate-950 px-3 py-2 rounded-lg border border-slate-800 mt-1">
+              <span id="cred-email" class="font-mono text-slate-200 truncate"></span>
+              <button onclick="copyText('cred-email')" class="text-slate-400 hover:text-white p-1 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-medium">Пароль</span>
+            <div class="flex items-center justify-between bg-slate-950 px-3 py-2 rounded-lg border border-slate-800 mt-1">
+              <span id="cred-pass" class="font-mono text-slate-200">•••••••••••</span>
+              <div class="flex items-center gap-1">
+                <button onclick="togglePassword()" id="btn-toggle-pass" class="text-slate-400 hover:text-white p-1 transition text-[11px]">👁️</button>
+                <button onclick="copyPassword()" class="text-slate-400 hover:text-white p-1 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Master Prompts Vault -->
+      <div class="space-y-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">🎨 Мастер-Промпты (No Stop-Words)</span>
+
+        <!-- Prompt Card: Image-to-Video -->
+        <div id="card-prompt-video" class="bg-slate-900/85 rounded-xl p-3.5 border shadow-sm relative group theme-transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span id="title-prompt-video" class="text-[11px] font-bold flex items-center gap-1.5 theme-transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Image-to-Video Motion (Kling / Wan 2.1)
+            </span>
+            <button onclick="copyPrompt('video')" id="btn-copy-video" class="px-2.5 py-1 rounded text-[10px] font-bold transition theme-transition">Копировать</button>
+          </div>
+          <p id="prompt-video" class="text-[11px] text-slate-300 font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+        </div>
+
+        <!-- Prompt Card: Face DNA -->
+        <div class="bg-slate-900/85 rounded-xl p-3.5 border border-white/5 shadow-sm relative group">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-sky-400 flex items-center gap-1.5">
+              👩 Face DNA Lock Prompt
+            </span>
+            <button onclick="copyPrompt('face')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-300 transition">Копировать</button>
+          </div>
+          <p id="prompt-face" class="text-[11px] text-slate-300 font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+        </div>
+
+        <!-- Prompt Card: Body & Outfit -->
+        <div class="bg-slate-900/85 rounded-xl p-3.5 border border-white/5 shadow-sm relative group">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-purple-400 flex items-center gap-1.5">
+              🧍 Body & Outfit Prompt
+            </span>
+            <button onclick="copyPrompt('body')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-300 transition">Копировать</button>
+          </div>
+          <p id="prompt-body" class="text-[11px] text-slate-300 font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+        </div>
+
+        <!-- Prompt Card: Room Interior -->
+        <div class="bg-slate-900/85 rounded-xl p-3.5 border border-white/5 shadow-sm relative group">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-amber-400 flex items-center gap-1.5">
+              🏠 Dance Room Interior Prompt
+            </span>
+            <button onclick="copyPrompt('room')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-300 transition">Копировать</button>
+          </div>
+          <p id="prompt-room" class="text-[11px] text-slate-300 font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+        </div>
+      </div>
+
+      <!-- 3. Operations & Quick Links -->
+      <div class="pt-2 border-t border-white/5 space-y-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">⚡ Операционные Действия</span>
+        <button onclick="openFolderInExplorer()" class="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-semibold text-slate-200 flex items-center justify-center gap-2 transition">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+          <span>Скопировать путь к папке модели</span>
+        </button>
+
+        <button onclick="copyAdbCommand()" id="btn-adb-ops" class="w-full py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition theme-transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          <span>Команда запуска ADB-прогрева</span>
+        </button>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <script>
+    const modelsData = [{"id": "01_Aimi_Sato", "code": "inf_01_aimi", "name_ru": "Айми Сато", "name_en": "Aimi Sato", "city": "Токио, Япония", "country_flag": "🇯🇵", "age": "20 лет (14 мая 2006, Телец ♉)", "height": "178 см", "weight": "50 кг", "niche": "Streetwear Dance & Fitness Aesthetic", "archetype": "Евразийская уличная танцовщица", "color": "#E0A96D", "accent_glow": "rgba(224, 169, 109, 0.4)", "neon_text": "SHIBUYA FLOW", "email": "satoaimi319@gmail.com", "password": "123Alex123!", "bio": "Очаровательная евразийская танцовщица и фитнес-блогер из Токио. Снимает трендовые вирусные танцы и пластичные связки в оверсайз джоггерах и кроп-топах. Спокойный магнетический взгляд со стрелками, идеальная фигура и чистая уличная эстетика.", "outfit": "Бежевый нюдовый кроп-топ на тонких бретелях, черные оверсайз джоггеры, белые ретро-сникеры", "room_desc": "Лофт в стиле Сибуя: светлый дубовый паркет, темно-серый акцентный ковер, синее хаори на стене, монстера в кашпо", "face_prompt": "20-year-old attractive Eurasian girl, delicate porcelain pale milky skin, captivating hazel-brown almond eyes with signature sharp black winged cat-eye eyeliner, softly arched dark brown natural eyebrows, slender straight nose, unsmiling mauve-pink lips, long silky straight dark chocolate brown hair with middle parting", "body_prompt": "breathtaking athletic hourglass physique, very large natural rounded perky bust size 5, ultra-narrow tiny snatched wasp waist, flat smooth toned stomach with distinct vertical abdominal definition, delicate silver navel piercing barbell, shapely curvy wide hips, smooth toned legs", "room_prompt": "cozy compact modern apartment dance studio room, centered one-point perspective, textured dark charcoal grey accent rug in center on light oak wood floor, dark grey bean bag in left niche, dark blue Japanese haori robe hanging on center back wall, lush green monstera on right, warm pastel cream walls, soft natural daylight", "video_prompt": "Full length vertical 9:16 shot of Eurasian dancer Aimi Sato executing a smooth fluid hip-hop body roll and isolation choreography in her Tokyo loft. Beige tube crop top, black baggy sweatpants, natural hair movement, calm confident eye contact with the camera.", "category": "asia"}, {"id": "02_Kiko_Ito", "code": "inf_02_kiko", "name_ru": "Кико Ито", "name_en": "Kiko Ito", "city": "Сеул / Токио", "country_flag": "🇰🇷", "age": "21 год (30 марта 2005, Овен ♈)", "height": "180 см", "weight": "45 кг", "niche": "K-Pop Visual Idol & Sharp Choreography", "archetype": "Высокая вижуал-айдол", "color": "#B388FF", "accent_glow": "rgba(179, 136, 255, 0.4)", "neon_text": "K-POP REVOLUTION", "email": "itokiko505@gmail.com", "password": "123Alex123!", "bio": "Высокая и невероятно грациозная вижуал-айдол с бесконечными ногами и кукольным лицом. Зажигает TikTok синхронными четкими движениями под треки NewJeans, LE SSERAFIM и IVE в плиссированных юбках и кроп-топах.", "outfit": "Черный минималистичный кроп-топ, плиссированная белая мини-юбка с высокой посадкой, белые носки, черно-белые ретро-сникеры", "room_desc": "Зеркальный K-pop зал для тренировок: светлый ламинат, лавандовая неоновая подсветка, зеркальная стена во весь рост", "face_prompt": "21-year-old tall Korean-Japanese visual idol dancer, porcelain skin, large expressive dark brown almond eyes with subtle aegyo-sal and neat winged eyeliner, straight slender nose, naturally pink glossy gradient lips, sleek straight jet-black hair with airy curtain bangs", "body_prompt": "tall slender idol dancer physique, height 180 cm, weight 45 kg, extremely long legs, tiny waist, flat stomach, graceful upright posture", "room_prompt": "minimalist K-pop dance rehearsal studio, full-length mirror wall, light ash wood dance floor, soft ambient lilac and cool white overhead neon lighting, clean spacious interior ready for dance rehearsal", "video_prompt": "Full length vertical 9:16 video of K-pop idol Kiko Ito performing a razor-sharp synchronized chorus dance routine. Black crop top, white pleated tennis mini skirt, long hair swaying gracefully with dynamic pirouettes and point choreography.", "category": "asia"}, {"id": "03_Rin_Murakami", "code": "inf_03_rin", "name_ru": "Рин Мураками", "name_en": "Rin Murakami", "city": "Осака, Япония", "country_flag": "🇯🇵", "age": "22 года (19 января 2004, Козерог ♑)", "height": "163 см", "weight": "43 кг", "niche": "Kawaii Masked Dancer & J-Pop Bounces", "archetype": "Милая танцовщица в маске", "color": "#2DD4BF", "accent_glow": "rgba(45, 212, 191, 0.4)", "neon_text": "KAWAII FLOW", "email": "rinmurakami56@gmail.com", "password": "123Alex123!", "bio": "Таинственная звезда TikTok в фирменной черной тканевой маске и с милыми двойными пучками. Огромные сияющие аниме-глаза с эгьё-саль, миниатюрная фигурка и сверхпопулярные вирусные каваи-танцы.", "outfit": "Черная медицинская маска, черный укороченный лонгслив, мятно-пастельная плиссированная юбка, гетры, кроссовки", "room_desc": "Каваи-студия в пастельно-мятных тонах: березовый пол, сияющий мятный неон KAWAII FLOW, мягкие светлые стены", "face_prompt": "22-year-old Japanese kawaii dancer Rin Murakami, black pleated medical mask covering lower face and nose, large expressive hazel doe eyes with winged eyeliner, defined aegyo-sal, styled twin buns with loose strands, fair porcelain skin", "body_prompt": "petite slender dancer silhouette, height 163 cm, weight 43 kg, tiny waist, flat stomach, shapely legs in white leg warmers, cute upright posture", "room_prompt": "pastel mint dance rehearsal room, light birch wood floor, glowing pastel mint neon sign KAWAII FLOW on center wall, full-length mirror, soft ambient daylight", "video_prompt": "Full length vertical 9:16 clip of masked dancer Rin Murakami executing a viral cute kawaii bounce and heart-hand gestures. Twin buns bouncing, black fitted long sleeve, pleated skirt in motion, energetic cheerful tempo.", "category": "asia"}, {"id": "04_Mira_Lanskaya", "code": "inf_04_mira", "name_ru": "Мира Ланская", "name_en": "Mira Lanskaya", "city": "Санкт-Петербург, Россия", "country_flag": "🇷🇺", "age": "18 лет (7 июля 2008, Рак ♋)", "height": "168 см", "weight": "47 кг", "niche": "Slavic Anime Cosplay & J-Pop Trends", "archetype": "Живая аниме-тян с большими глазами", "color": "#38BDF8", "accent_glow": "rgba(56, 189, 248, 0.4)", "neon_text": "ANIME VIBES", "email": "lanskayamira7@gmail.com", "password": "123Alex123!", "bio": "Юная славянская косплеерша с огромными серо-голубыми аниме-глазами, золотисто-русыми волосами со шторкой и открытой улыбкой. Танцует вирусные аниме-опенинги и J-Pop тренды.", "outfit": "Кремовый кроп-топ, серо-голубая плиссированная мини-юбка, белые гольфы выше колена, белые сникеры", "room_desc": "Уютная светлая комната: канадский клен на полу, нежно-голубая акцентная стена с неоном ANIME VIBES, зеркало и окно в сад", "face_prompt": "18-year-old gorgeous Slavic anime girl Mira Lanskaya, large expressive anime-style grey-blue doe eyes with winged liner, small button nose, beaming natural smile showing teeth, honey-blonde hair with curtain bangs, fair smooth skin", "body_prompt": "slender toned petite dancer body, height 168 cm, weight 47 kg, tiny waist, flat stomach, smooth legs, cheerful youthful posture", "room_prompt": "bright anime aesthetic dance studio, powder blue feature wall with glowing cyan neon sign ANIME VIBES, light maple hardwood floor, full-length mirror, sunny afternoon daylight", "video_prompt": "Full length vertical 9:16 dance video of anime girl Mira Lanskaya dancing a high-energy J-pop choreography. Honey-blonde hair flowing, cream crop tee, pleated sky-blue skirt fluttering, warm bright smile to camera.", "category": "anime"}, {"id": "05_Rada_Zarechnaya", "code": "inf_05_rada", "name_ru": "Рада Заречная", "name_en": "Rada Zarechnaya", "city": "Сочи / Киев", "country_flag": "☀️", "age": "20 лет (24 июня 2006, Рак ♋)", "height": "168 см", "weight": "51 кг", "niche": "Cottagecore Bounce & Afrobeat Grooves", "archetype": "Солнечная славянка с веснушками", "color": "#F97316", "accent_glow": "rgba(249, 115, 22, 0.4)", "neon_text": "SUNSHINE FLOW", "email": "zarechnayarada@gmail.com", "password": "123Alex123!", "bio": "Поцелованная солнцем танцовщица с изумрудными глазами, россыпью золотистых веснушек и кудрявыми медовыми волосами. Танцует жизнерадостные Afrobeat, дэнсхолл и летние связки.", "outfit": "Кремовый кроп-топ, терракотовая плиссированная мини-юбка, белые носочки, светлые кроссовки", "room_desc": "Теплая терракотовая студия: золотистый дубовый пол, неон SUNSHINE FLOW, струящиеся лучи закатного солнца", "face_prompt": "20-year-old sun-kissed Slavic beauty Rada Zarechnaya, sparkling emerald-green eyes, natural golden freckles across nose and cheeks, radiant warm smile, voluminous honey-caramel curly hair framing face", "body_prompt": "toned feminine dancer silhouette, height 168 cm, weight 51 kg, hourglass waist, shapely hips, athletic legs, vibrant warm posture", "room_prompt": "warm terracotta dance studio, golden oak hardwood floor, glowing amber-orange neon sign SUNSHINE FLOW on warm plaster wall, large window with golden hour sunset light, tall arched mirror", "video_prompt": "Full length vertical 9:16 dance video of Rada Zarechnaya grooving to an upbeat Afrobeat track. Honey curls bouncing, terracotta skirt swishing, energetic hip movements, warm glowing smile, golden light.", "category": "lifestyle"}, {"id": "06_Hailey_Miller", "code": "inf_06_hailey", "name_ru": "Хейли Миллер", "name_en": "Hailey Miller", "city": "Берлин / Лондон", "country_flag": "🇬🇧", "age": "21 год (2 августа 2005, Лев ♌)", "height": "172 см", "weight": "49 кг", "niche": "Gothic Glam & Midnight Techno Choreography", "archetype": "Готическая глэм-танцовщица", "color": "#E11D48", "accent_glow": "rgba(225, 29, 72, 0.4)", "neon_text": "MIDNIGHT FLOW", "email": "heileymiller3213@gmail.com", "password": "123Alex123!", "bio": "Ослепительная королева полуночного техно и готик-глэма. Иссиня-черные волны, пронзительные лазурные глаза, бархатный чокер с луной, черный корсет на шнуровке и высокие армейские ботинки.", "outfit": "Черный корсет на шнуровке с жесткими косточками, плиссированная черная готическая мини-юбка, черные кожаные берцы", "room_desc": "Атмосферная графитовая студия: темный эбеновый пол, винный неон MIDNIGHT FLOW, драматичные контрастные споты", "face_prompt": "21-year-old gothic glam dancer Hailey Miller, piercing vivid azure-blue eyes with dramatic winged eyeliner, jet-black wavy hair, dazzling smile, velvet choker with silver crescent moon, fair skin", "body_prompt": "tall slender dancer physique, height 172 cm, weight 49 kg, tiny waist in structured corset, long toned legs, commanding upright dance posture", "room_prompt": "moody dark dance studio, dark charcoal concrete wall with crimson red neon sign MIDNIGHT FLOW, dark ebony hardwood floor, full-length mirror, dramatic spotlighting", "video_prompt": "Full length vertical 9:16 video of gothic dancer Hailey Miller dancing to dark melodic techno. Black lace-up corset, flowing black pleated skirt, combat boots, sharp voguing and dynamic hand movements.", "category": "alt"}, {"id": "07_Alexa_King", "code": "inf_07_alexa", "name_ru": "Алекса Кинг", "name_en": "Alexa King", "city": "Манчестер / Лондон", "country_flag": "🇬🇧", "age": "22 года (4 ноября 2004, Скорпион ♏)", "height": "176 см", "weight": "53 кг", "niche": "Alt Grunge Baddie & Hard Electro Dance", "archetype": "Бунтарка в цепях и рваном топе", "color": "#84CC16", "accent_glow": "rgba(132, 204, 22, 0.4)", "neon_text": "REBEL FLOW", "email": "kingalexa413@gmail.com", "password": "123Alex123!", "bio": "Дерзкая неформалка с текстурным вольф-катом и серебристыми прядями, янтарными кошачьими глазами, пирсингом носа и цепью с замком. Взрывает TikTok тяжелыми битами и резкой бэдди-хореографией.", "outfit": "Черный рваный кроп-топ, плиссированная гранж-юбка с цепями и люверсами, колготки в крупную сетку, армейские ботинки", "room_desc": "Индустриальный лофт: сырые бетонные стены, ядовито-лаймовый неон REBEL FLOW, металлическая вентиляция, зеркала", "face_prompt": "22-year-old alt grunge dancer Alexa King, edgy textured wolf-cut dark hair with silver streaks, feline amber-brown eyes, silver nostril hoop, chunky padlock chain, subtle smirk", "body_prompt": "tall athletic toned dancer frame, height 176 cm, weight 53 kg, flat stomach, long athletic legs in fishnets, bold grounded upright stance", "room_prompt": "raw industrial loft dance room, exposed concrete wall with glowing acid-lime neon sign REBEL FLOW, dark industrial wood floor, black metal pipes, full-length mirror", "video_prompt": "Full length vertical 9:16 clip of alt baddie Alexa King dancing an aggressive electro-shuffle routine. Distressed crop top, chains rattling with bass drops, combat boots tapping concrete floor, intense gaze.", "category": "alt"}, {"id": "08_Amelie_Dubois", "code": "inf_08_amelie", "name_ru": "Амели Дюбуа", "name_en": "Amélie Dubois", "city": "Париж, Франция", "country_flag": "🇫🇷", "age": "19 лет (12 октября 2006, Весы ♎)", "height": "167 см", "weight": "45 кг", "niche": "Hot Barbie Cosplayer & Pick-Me Aegyo Dances", "archetype": "Барби-косплеерша, пикми герл", "color": "#F472B6", "accent_glow": "rgba(244, 114, 182, 0.4)", "neon_text": "BARBIE DREAMS", "email": "ameliedubois2005@gmail.com", "password": "123Alex123!", "bio": "Кукольная парижанка в эстетике живой Барби. Платиновые волны с жемчужными бантиками, сияющие голубые глаза, пухлые губки бантиком и розовая мини-юбка с белыми чулками.", "outfit": "Пастельно-розовый топ с белым кружевом, розовая плиссированная мини-юбка, белые чулки выше колена, бело-розовые платформы", "room_desc": "Гламурная розовая спальня-студия: беленый дуб, розовая лепнина, неон BARBIE DREAMS, пушистый коврик и французский балкон", "face_prompt": "19-year-old gorgeous Barbie cosplayer Amélie Dubois, doll-like facial features, large sparkling blue doe eyes with aegyo-sal, small button nose, plump glossy pink lips, silky platinum hair with pearl bow clips", "body_prompt": "petite ultra-slender doll dancer body, height 167 cm, weight 45 kg, tiny snatched waist, shapely legs in white over-knee socks, graceful cute posture", "room_prompt": "glamorous Barbie bedroom studio, pastel bubblegum-pink feature wall with moulding, glowing magenta neon BARBIE DREAMS, bleached white hardwood floor, tall French window", "video_prompt": "Full length vertical 9:16 video of Barbie girl Amélie Dubois dancing a playful flirtatious aegyo dance. Pearl bows twinkling, pink pleated skirt swishing, delicate hand poses, dazzling sweet smile.", "category": "anime"}, {"id": "09_Marta_Bergman", "code": "inf_09_marta", "name_ru": "Марта Бергман", "name_en": "Marta Bergman", "city": "Стокгольм / Берлин", "country_flag": "🇩🇪", "age": "22 года (5 февраля 2004, Водолей ♒)", "height": "174 см", "weight": "52 кг", "niche": "Urban Hip-Hop Queen & Street Dance Baddie", "archetype": "Хип-хоперша в карго-штанах", "color": "#3B82F6", "accent_glow": "rgba(59, 130, 246, 0.4)", "neon_text": "STREET CIPHER", "email": "bergmanmarta02@gmail.com", "password": "123Alex123!", "bio": "Дерзкая королева уличных джемов и урбан-хип-хопа. Тугие платиново-пепельные брейды в высокий хвост, ледяные серо-голубые глаза, массивные золотые серьги и цепи, свободные темные карго-штаны и сникеры.", "outfit": "Черный спортивный кроп-топ, свободные темно-серые карго-штаны с карманами и ремешками, черно-белые баскетбольные сникеры", "room_desc": "Урбан-лофт студия: темный пепельный паркет, графитовый бетон, сияющий кобальтовый неон STREET CIPHER, зеркала и ночной мегаполис", "face_prompt": "22-year-old Scandinavian urban hip-hop dancer Marta Bergman, sharp athletic facial structure, icy-blue eyes with winged eyeliner, defined cheekbones, tight platinum-ash cornrow braids into high ponytail with baby hairs, gold hoops and chains", "body_prompt": "tall athletic dancer silhouette, height 174 cm, weight 52 kg, toned flat stomach, confident grounded upright hip-hop posture", "room_prompt": "urban loft dance rehearsal room, dark slate concrete wall with electric cobalt blue neon sign STREET CIPHER, matte dark ash wood floor, loft window with twilight skyline, mirror wall", "video_prompt": "Full length vertical 9:16 capture of Marta Bergman dropping a powerful hip-hop isolation and popping routine. Gold chains flashing under spotlights, loose cargo pants, heavy bass vibrations, sharp precise footwork.", "category": "hiphop"}, {"id": "10_Mia_Vega", "code": "inf_10_mia", "name_ru": "Миа Вега", "name_en": "Mia Vega", "city": "Париж / Барселона", "country_flag": "🇪🇺", "age": "19 лет (18 августа 2007, Лев ♌)", "height": "158 см", "weight": "40 кг", "niche": "Petite Aesthetic Dance & Sundress Trends", "archetype": "Худенькая блондинка с каре в мини-сарафане", "color": "#EAB308", "accent_glow": "rgba(234, 179, 8, 0.4)", "neon_text": "HONEY GLOW", "email": "miavegamia2005@gmail.com", "password": "123Alex123!", "bio": "Ультра-утонченная, худенькая блондинка со светлым каре до подбородка и воздушной челкой. Точеные скулы, взрослый элегантный вечерний макияж, пышный кружевной мини-сарафан цвета айвори и завораживающие плавные танцы.", "outfit": "Пышный кружевной мини-сарафан цвета айвори на тонких бретелях, белые носочки с рюшами, туфли Мэри Джейн на платформе", "room_desc": "Светлые парижские апартаменты: классические молдинги на кремовых стенах, теплый неон HONEY GLOW, арочный балкон, золотистый свет и дубовый паркет", "face_prompt": "19-year-old petite blonde dancer Mia Vega, slim sharply sculpted facial structure, high defined cheekbones, narrow tapered jawline, slender neck and clavicles, straight silky chin-length blonde bob with wispy bangs, hazel-green doe eyes with winged eyeliner, satin mauve-nude lipstick", "body_prompt": "petite slender delicate dancer silhouette, height 158 cm, weight 40 kg, very skinny frame, narrow waist, visible clavicles, slender legs, graceful upright posture", "room_prompt": "chic sunlit Parisian apartment dance studio, matte bleached blonde oak floor, warm vanilla cream wall with moulding, glowing amber-gold neon cursive sign HONEY GLOW, arched balcony window with golden sunlight, arched floor mirror", "video_prompt": "Full length vertical 9:16 shot of petite blonde Mia Vega performing a graceful slow-motion twirl. Voluminous puffy ivory lace sundress flaring out, blonde bob catching golden afternoon sunlight, poised elegant gaze.", "category": "lifestyle"}];
+
+    let currentModelIndex = 0;
+    let currentPhotoTab = 'dance';
+    let currentNicheFilter = 'all';
+    let isPasswordRevealed = false;
+
+    function init() {
+      renderRoster();
+      selectModel(0);
+      initKeyboardShortcuts();
+    }
+
+    function renderRoster() {
+      const container = document.getElementById('models-list');
+      container.innerHTML = '';
+
+      const query = (document.getElementById('search-input').value || '').toLowerCase();
+
+      modelsData.forEach((m, idx) => {
+        let matchNiche = true;
+        if (currentNicheFilter !== 'all') {
+          matchNiche = (m.category === currentNicheFilter);
+        }
+
+        const matchSearch = m.name_ru.toLowerCase().includes(query) ||
+                            m.name_en.toLowerCase().includes(query) ||
+                            m.city.toLowerCase().includes(query) ||
+                            m.archetype.toLowerCase().includes(query);
+
+        if (!matchNiche || !matchSearch) return;
+
+        const isSelected = idx === currentModelIndex;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl cursor-pointer transition-all duration-300 border flex items-center gap-3 relative overflow-hidden ${
+          isSelected 
+            ? 'shadow-xl transform scale-[1.02]' 
+            : 'bg-slate-900/60 border-white/5 hover:bg-slate-800/50 hover:border-white/10'
+        }`;
+        
+        if (isSelected) {
+          card.style.background = `linear-gradient(135deg, ${m.color}25 0%, rgba(15, 23, 42, 0.85) 100%)`;
+          card.style.borderColor = m.color;
+          card.style.boxShadow = `0 0 20px -3px ${m.color}44`;
+        }
+
+        card.onclick = () => selectModel(idx);
+
+        const avatarPath = `./${m.id}/photos/master/avatar.jpg`;
+
+        card.innerHTML = `
+          <div class="relative flex-shrink-0">
+            <img src="${avatarPath}" class="w-11 h-11 rounded-xl object-cover border" style="border-color: ${isSelected ? m.color : 'rgba(255,255,255,0.1)'}">
+            <span class="absolute -bottom-1 -right-1 text-xs">${m.country_flag}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold ${isSelected ? 'text-white font-black' : 'text-slate-200'} truncate">${m.name_ru}</h4>
+              <span class="text-[10px] text-slate-400 font-mono">#${m.id.substring(0, 2)}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-0.5">${m.archetype}</p>
+            <div class="flex items-center gap-2 mt-1.5">
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded" style="background: ${m.color}22; color: ${m.color}; border: 1px solid ${m.color}44;">
+                ${m.neon_text}
+              </span>
+              <span class="text-[10px] text-slate-500">${m.height}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function applyFullPageTheme(m) {
+      const color = m.color;
+
+      // 1. Dynamic Full-Screen Ambient Glow (radial gradient blend)
+      const backdrop = document.getElementById('ambient-backdrop');
+      backdrop.style.background = `
+        radial-gradient(ellipse 90% 60% at 50% -10%, ${color}35 0%, transparent 70%),
+        radial-gradient(ellipse 70% 50% at 85% 35%, ${color}25 0%, transparent 65%),
+        radial-gradient(ellipse 65% 55% at 15% 80%, ${color}22 0%, transparent 60%),
+        #050814
+      `;
+
+      // 2. Header and Branding Glow
+      const brandTitle = document.getElementById('brand-title');
+      brandTitle.style.background = `linear-gradient(135deg, #ffffff 0%, ${color} 100%)`;
+      brandTitle.style.webkitBackgroundClip = 'text';
+      brandTitle.style.webkitTextFillColor = 'transparent';
+
+      const mainHeader = document.getElementById('main-header');
+      mainHeader.style.borderColor = `${color}25`;
+
+      const kpiModels = document.getElementById('kpi-models');
+      kpiModels.style.background = `${color}18`;
+      kpiModels.style.color = color;
+      kpiModels.style.border = `1px solid ${color}40`;
+
+      const kpiDot = document.getElementById('kpi-dot');
+      kpiDot.style.background = color;
+
+      const btnProject = document.getElementById('btn-project-folder');
+      btnProject.style.background = `${color}15`;
+      btnProject.style.color = color;
+      btnProject.style.borderColor = `${color}40`;
+
+      // 3. Sidebars borders
+      document.getElementById('sidebar-roster').style.borderColor = `${color}20`;
+      document.getElementById('sidebar-actions').style.borderColor = `${color}20`;
+
+      // 4. Hero Card
+      const heroCard = document.getElementById('hero-card');
+      heroCard.style.borderColor = `${color}40`;
+      heroCard.style.boxShadow = `0 0 35px -10px ${color}35`;
+
+      const heroGlow = document.getElementById('hero-accent-glow');
+      heroGlow.style.background = color;
+
+      const heroAvatar = document.getElementById('hero-avatar');
+      heroAvatar.style.borderColor = color;
+      heroAvatar.style.boxShadow = `0 0 20px ${color}55`;
+
+      const statNeon = document.getElementById('stat-neon');
+      statNeon.style.color = color;
+
+      // 5. Image Stage Frame Glow
+      const imgStage = document.getElementById('image-stage');
+      imgStage.style.borderColor = `${color}35`;
+      imgStage.style.boxShadow = `0 0 45px -10px ${color}30`;
+
+      // 6. Action Hub Cards
+      const cardVideo = document.getElementById('card-prompt-video');
+      cardVideo.style.borderColor = `${color}40`;
+      cardVideo.style.boxShadow = `0 0 20px -5px ${color}25`;
+
+      const titleVideo = document.getElementById('title-prompt-video');
+      titleVideo.style.color = color;
+
+      const btnCopyVideo = document.getElementById('btn-copy-video');
+      btnCopyVideo.style.background = `${color}28`;
+      btnCopyVideo.style.color = '#ffffff';
+      btnCopyVideo.style.border = `1px solid ${color}60`;
+
+      const btnAdbOps = document.getElementById('btn-adb-ops');
+      btnAdbOps.style.background = `${color}15`;
+      btnAdbOps.style.color = color;
+      btnAdbOps.style.borderColor = `${color}35`;
+
+      const footerTag = document.getElementById('footer-status-tag');
+      footerTag.style.color = color;
+
+      // 7. Update Niche Filter Active Pill
+      updateNicheBtnStyle();
+
+      // 8. Update Active Photo Tab Styling
+      updatePhotoTabsStyle(color);
+    }
+
+    function updatePhotoTabsStyle(color) {
+      document.querySelectorAll('.ptab').forEach(b => {
+        b.style.background = 'transparent';
+        b.style.color = '#94a3b8';
+        b.style.boxShadow = 'none';
+        b.style.border = 'none';
+      });
+
+      const activeBtn = document.getElementById(`ptab-${currentPhotoTab}`);
+      if (activeBtn) {
+        activeBtn.style.background = color;
+        activeBtn.style.color = '#ffffff';
+        activeBtn.style.boxShadow = `0 0 15px ${color}66`;
+      }
+    }
+
+    function updateNicheBtnStyle() {
+      const m = modelsData[currentModelIndex];
+      const color = m ? m.color : '#d946ef';
+
+      document.querySelectorAll('.niche-btn').forEach(b => {
+        if (b.dataset.filter === currentNicheFilter) {
+          b.style.background = color;
+          b.style.color = '#ffffff';
+          b.style.boxShadow = `0 0 12px ${color}55`;
+        } else {
+          b.style.background = 'rgba(30, 41, 59, 0.8)';
+          b.style.color = '#94a3b8';
+          b.style.boxShadow = 'none';
+        }
+      });
+    }
+
+    function selectModel(index) {
+      currentModelIndex = index;
+      const m = modelsData[index];
+
+      // Full Page Theme Engine
+      applyFullPageTheme(m);
+
+      // Update Roster Highlight
+      renderRoster();
+
+      // Hero Elements
+      document.getElementById('hero-avatar').src = `./${m.id}/photos/master/avatar.jpg`;
+      document.getElementById('hero-flag').innerText = m.country_flag;
+      document.getElementById('hero-name-ru').innerText = m.name_ru;
+      document.getElementById('hero-name-en').innerText = m.name_en;
+      
+      const badge = document.getElementById('hero-badge-niche');
+      badge.innerText = m.archetype;
+      badge.style.background = `${m.color}25`;
+      badge.style.color = m.color;
+      badge.style.border = `1px solid ${m.color}55`;
+
+      document.getElementById('hero-meta').innerHTML = `
+        <span>📍 ${m.city}</span> • <span>🎂 ${m.age}</span> • <span>🎵 ${m.niche}</span>
+      `;
+      document.getElementById('hero-bio').innerText = m.bio;
+
+      document.getElementById('stat-height').innerText = m.height;
+      document.getElementById('stat-weight').innerText = m.weight;
+      document.getElementById('stat-neon').innerText = m.neon_text;
+
+      // Credentials
+      document.getElementById('cred-email').innerText = m.email;
+      isPasswordRevealed = false;
+      document.getElementById('cred-pass').innerText = '•••••••••••';
+      document.getElementById('btn-toggle-pass').innerText = '👁️';
+
+      // Prompts
+      document.getElementById('prompt-video').innerText = m.video_prompt;
+      document.getElementById('prompt-face').innerText = m.face_prompt;
+      document.getElementById('prompt-body').innerText = m.body_prompt;
+      document.getElementById('prompt-room').innerText = m.room_prompt;
+
+      updatePhotoStage();
+    }
+
+    function switchPhotoTab(tab) {
+      currentPhotoTab = tab;
+      const m = modelsData[currentModelIndex];
+      updatePhotoTabsStyle(m.color);
+      updatePhotoStage();
+    }
+
+    function getCurrentImagePath() {
+      const m = modelsData[currentModelIndex];
+      let filename = 'body_dance_room_full.jpg';
+      if (currentPhotoTab === 'studio') filename = 'body_frontal_full.jpg';
+      else if (currentPhotoTab === 'room') filename = 'room.jpg';
+      else if (currentPhotoTab === 'face') filename = 'official_face_lock.jpg';
+      else if (currentPhotoTab === 'avatar') filename = 'avatar.jpg';
+      return `./${m.id}/photos/master/${filename}`;
+    }
+
+    function updatePhotoStage() {
+      const m = modelsData[currentModelIndex];
+      const img = document.getElementById('main-preview-img');
+      const pill = document.getElementById('photo-tag-pill');
+      const path = getCurrentImagePath();
+
+      img.src = path;
+
+      const tabTitles = {
+        'dance': `💃 В Комнате (9:16) — ${m.neon_text}`,
+        'studio': `🧍 Студия Полный Рост (9:16)`,
+        'room': `🏠 Интерьер Зала (9:16) — Неон: ${m.neon_text}`,
+        'face': `👩 Face-Lock Эталон (1:1)`,
+        'avatar': `🖼️ Квадратный Аватар (1:1)`
+      };
+      pill.innerText = tabTitles[currentPhotoTab] || '';
+    }
+
+    function filterModels() {
+      renderRoster();
+    }
+
+    function setNicheFilter(filter) {
+      currentNicheFilter = filter;
+      updateNicheBtnStyle();
+      renderRoster();
+    }
+
+    function openModalCurrent() {
+      const modal = document.getElementById('img-modal');
+      const modalImg = document.getElementById('modal-img');
+      const modalCap = document.getElementById('modal-caption');
+      const m = modelsData[currentModelIndex];
+
+      modalImg.src = getCurrentImagePath();
+      modalCap.innerText = `${m.name_ru} (${m.name_en}) — ${document.getElementById('photo-tag-pill').innerText}`;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('img-modal').classList.add('hidden');
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = text;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+      }, 2500);
+    }
+
+    function copyText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text);
+      showToast('Почта скопирована!');
+    }
+
+    function togglePassword() {
+      const m = modelsData[currentModelIndex];
+      isPasswordRevealed = !isPasswordRevealed;
+      document.getElementById('cred-pass').innerText = isPasswordRevealed ? m.password : '•••••••••••';
+      document.getElementById('btn-toggle-pass').innerText = isPasswordRevealed ? '🙈' : '👁️';
+    }
+
+    function copyPassword() {
+      const m = modelsData[currentModelIndex];
+      navigator.clipboard.writeText(m.password);
+      showToast('Пароль скопирован!');
+    }
+
+    function copyPrompt(type) {
+      const m = modelsData[currentModelIndex];
+      let p = m.video_prompt;
+      if (type === 'face') p = m.face_prompt;
+      else if (type === 'body') p = m.body_prompt;
+      else if (type === 'room') p = m.room_prompt;
+      navigator.clipboard.writeText(p);
+      showToast('Промпт скопирован!');
+    }
+
+    function copyCurrentImagePath() {
+      const path = getCurrentImagePath();
+      navigator.clipboard.writeText(path);
+      showToast('Путь к файлу скопирован!');
+    }
+
+    function openFolderInExplorer() {
+      const m = modelsData[currentModelIndex];
+      const winPath = `C:\\Users\\a.feoktistov\\.gemini\\antigravity\\scratch\\танцульки\\${m.id}`;
+      navigator.clipboard.writeText(winPath);
+      showToast('Абсолютный путь к папке скопирован в буфер!');
+    }
+
+    function openProjectFolder() {
+      const winPath = `C:\\Users\\a.feoktistov\\.gemini\\antigravity\\scratch\\танцульки`;
+      navigator.clipboard.writeText(winPath);
+      showToast('Путь к корню проекта скопирован!');
+    }
+
+    function copyAdbCommand() {
+      const m = modelsData[currentModelIndex];
+      const cmd = `cd C:\\Users\\a.feoktistov\\.gemini\\antigravity\\scratch\\прогрев_аккаунтов; python main.py --account ${m.email}`;
+      navigator.clipboard.writeText(cmd);
+      showToast('Команда ADB скопирована в буфер!');
+    }
+
+    let currentExportTab = 'json';
+    function openExportModal() {
+      document.getElementById('export-modal').classList.remove('hidden');
+      showExportTab('json');
+    }
+
+    function closeExportModal() {
+      document.getElementById('export-modal').classList.add('hidden');
+    }
+
+    function showExportTab(tab) {
+      currentExportTab = tab;
+      const jsonBtn = document.getElementById('tab-btn-json');
+      const csvBtn = document.getElementById('tab-btn-csv');
+      const txt = document.getElementById('export-content');
+
+      if (tab === 'json') {
+        jsonBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white';
+        csvBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white';
+        txt.value = JSON.stringify(modelsData, null, 2);
+      } else {
+        csvBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white';
+        jsonBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white';
+        let csv = 'ID,Name_RU,Name_EN,Email,Password,Country,Niche,Height,Weight\n';
+        modelsData.forEach(m => {
+          csv += `"${m.id}","${m.name_ru}","${m.name_en}","${m.email}","${m.password}","${m.country_flag}","${m.niche}","${m.height}","${m.weight}"\n`;
+        });
+        txt.value = csv;
+      }
+    }
+
+    function copyExportData() {
+      const txt = document.getElementById('export-content').value;
+      navigator.clipboard.writeText(txt);
+      showToast('Данные экспорта скопированы!');
+    }
+
+    function initKeyboardShortcuts() {
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+          closeExportModal();
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          if (!document.getElementById('export-modal').classList.contains('hidden')) return;
+          const next = (currentModelIndex + 1) % modelsData.length;
+          selectModel(next);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          if (!document.getElementById('export-modal').classList.contains('hidden')) return;
+          const prev = (currentModelIndex - 1 + modelsData.length) % modelsData.length;
+          selectModel(prev);
+        }
+      });
+    }
+
+    window.onload = () => {
+      init();
+    };
+  </script>
+</body>
+</html>

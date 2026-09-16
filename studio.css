@@ -200,6 +200,11 @@ body {
     box-shadow: 0 12px 30px var(--purple-glow);
 }
 
+.card-dancers:hover {
+    border-color: rgba(0, 242, 254, 0.6);
+    box-shadow: 0 12px 30px rgba(0, 242, 254, 0.25);
+}
+
 .card-glow-bg {
     position: absolute;
     top: -50px;
@@ -214,6 +219,7 @@ body {
 
 .glow-pink { background: var(--pink-neon); }
 .glow-purple { background: var(--purple-neon); }
+.glow-cyan { background: var(--cyan-neon); }
 
 .card-content {
     position: relative;
@@ -241,6 +247,11 @@ body {
 .icon-purple {
     background: rgba(175, 82, 222, 0.15);
     border: 1px solid var(--border-accent-purple);
+}
+
+.icon-cyan {
+    background: rgba(0, 242, 254, 0.15);
+    border: 1px solid rgba(0, 242, 254, 0.4);
 }
 
 .card-title {
@@ -621,171 +632,66 @@ textarea:focus {
     to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Tracks Search & Selection */
-.tracks-dropdown-list {
-    margin-top: 8px;
-    max-height: 180px;
-    overflow-y: auto;
-    background: rgba(12, 12, 16, 0.95);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.track-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.03);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.track-item:hover, .track-item.selected {
-    background: rgba(175, 82, 222, 0.2);
-    border: 1px solid var(--purple-neon);
-}
-
-.track-item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    overflow: hidden;
-}
-
-.track-item-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-item-artist {
-    font-size: 11px;
-    color: var(--text-secondary);
-}
-
-.track-item-duration {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--cyan-neon);
-    font-weight: 700;
-}
-
-/* Selected Track Card */
-.selected-track-card {
-    margin-top: 10px;
-    padding: 12px;
-    background: rgba(175, 82, 222, 0.1);
-    border: 1px solid rgba(175, 82, 222, 0.35);
-    border-radius: var(--radius-md);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.selected-track-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.selected-track-name {
-    font-size: 13px;
-    font-weight: 800;
-    color: #fff;
-}
-
-.selected-track-range {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: #F3A6BF;
-    font-weight: 700;
-}
-
-.snippet-slider-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.snippet-slider {
-    flex: 1;
-    accent-color: var(--purple-neon);
-}
-
-/* Video Render Progress */
-.render-progress-card {
-    margin-top: 16px;
-    padding: 16px;
-    background: rgba(20, 16, 26, 0.9);
-    border: 1px solid var(--border-accent-purple);
-    border-radius: var(--radius-md);
-    text-align: center;
-}
-
-.render-progress-title {
-    font-size: 14px;
-    font-weight: 800;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.progress-track {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-pill);
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-
-.progress-bar-inner {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--purple-neon), var(--pink-neon));
-    border-radius: var(--radius-pill);
-    transition: width 0.3s ease;
-}
-
-.render-progress-status {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-}
-
-/* Video Result Card */
-.video-result-player-wrap {
-    width: 100%;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: #000;
-    border: 1px solid var(--border-subtle);
-    margin-bottom: 14px;
-    aspect-ratio: 9/16;
-    max-height: 480px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.video-result-player {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .hidden {
     display: none !important;
 }
+
+/* Dance AI Influencers Studio Screen */
+.badge-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background: rgba(0, 242, 254, 0.15);
+    color: var(--cyan-neon);
+    border: 1px solid rgba(0, 242, 254, 0.35);
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+.btn-fullscreen-out {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-fullscreen-out:hover {
+    background: rgba(0, 242, 254, 0.15);
+    border-color: rgba(0, 242, 254, 0.4);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.dancers-iframe-container {
+    flex: 1;
+    width: 100%;
+    min-height: calc(100vh - 120px);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: #050814;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.dancers-iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 120px);
+    border: none;
+    display: block;
+}
+
+.studio-app.fullwidth-mode {
+    max-width: 100% !important;
+    padding: 12px 20px !important;
+}
+
