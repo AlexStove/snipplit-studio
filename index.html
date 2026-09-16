@@ -2292,7 +2292,7 @@
     });
 
     let currentHfModelId = "inf_00_plitty";
-    let currentHfAngle = "portrait";
+    let currentHfAngle = "face";
     let currentHfStyle = "cyberpunk";
     let isHfRendering = false;
     let hfRecentGenerations = [
@@ -2425,8 +2425,6 @@
       switchHfPreviewAngle(currentHfAngle || 'face');
       showToast(`✨ Выбран инфлюенсер: ${m.name}`);
     }
-
-    let currentHfAngle = 'face';
 
     const HF_ANGLE_META = {
       'face': { title: '👩 Лицо (Face-Lock)', tag: 'Face-Lock 100%', desc: 'Фронтальный эталонный кадр для 100% фиксации черт лица' },
