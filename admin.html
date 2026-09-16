@@ -204,6 +204,9 @@
         <button id="nav-btn-pult" onclick="navToView('pult')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
           🎮 Пульт
         </button>
+        <button id="nav-btn-studio" onclick="navToView('studio')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1">
+          <span>🎨</span> Студия Генерации
+        </button>
       </nav>
 
       <!-- Live Device & Network Indicators -->
@@ -276,8 +279,8 @@
       </div>
     </div>
 
-    <!-- 3 Big Main Navigation Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- 4 Big Main Navigation Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       
       <!-- Card 1: Minifarm -->
       <div onclick="navToView('minifarm')" class="cyber-card p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
@@ -286,11 +289,11 @@
             📱
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">10 ИНФЛЮЕНСЕРОВ • 10 СЛУЖЕБНЫХ</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма (20 тел)</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">20 СМАРТФОНОВ · ИНДИВИДУАЛЬНЫЙ ТРАСТ</span>
+            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            10 слотов под героинь студии (Кира, Айми, Кико, Рин, Мира...) + 10 служебных телефонов (прогрев TT, автолайкер сторис, сидер контактов VCF, прокси-монитор).
+            10 персональных аппаратов для топ-девочек (Айми, Кико, Рин, Мира, Рада, Хейли, Алекса, Амели, Марта, Миа) + 10 служебных модулей прогрева и контент-дроппинга.
           </p>
         </div>
         <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
@@ -302,15 +305,15 @@
       <!-- Card 2: Stand -->
       <div onclick="navToView('stand')" class="cyber-card p-7 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
         <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[rgba(45,212,191,0.15)] border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          <div class="w-14 h-14 rounded-2xl bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             🏢
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF]">3 ПОЛКИ • СЛОТЫ 51–100</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#2DD4BF] transition-colors">Стенд (50 тел)</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF]">50 СМАРТФОНОВ · 3 ПОЛКИ · МАССОВЫЙ БАСЕЙН</span>
+            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#2DD4BF] transition-colors">Стенд-ферма</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Аппаратная стойка Samsung Galaxy A26 на порту TCP 2222. Морская панорама, мониторинг батарей, температур, живые экраны через Scrcpy Web, перезагрузка и пинг.
+            Массовый пул для фонового алгоритмического прогрева аккаунтов, эмуляции человеческого скроллинга и создания вирального социального охвата сетки.
           </p>
         </div>
         <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
@@ -335,6 +338,26 @@
         </div>
         <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
           <span>Запустить Пульт</span>
+          <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
+        </div>
+      </div>
+
+      <!-- Card 4: AI Generation Studio -->
+      <div onclick="navToView('studio')" class="cyber-card p-7 group cursor-pointer hover:border-[var(--plitty-rose)] transition-all flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            🎨
+          </div>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">HIGGSFIELD GENJUTSU</span>
+            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Студия Генерации</h2>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Генерация 2K фото (Qwen 3.0 Pro) и видео-танцев (Kling 2.6 / Wan 2.2 / Omni). Двухколоночный интерфейс: выбор инструментов слева, холст справа, автоподвязка 12 моделей.
+          </p>
+        </div>
+        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
+          <span>Открыть Студию</span>
           <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
         </div>
       </div>
@@ -710,6 +733,28 @@
   </div>
 
   <!-- ================================================================= -->
+  <!-- SCREEN 5: STUDIO VIEW (Студия генерации Higgsfield)                 -->
+  <!-- ================================================================= -->
+  <main id="view-studio" class="screen-view max-w-[1800px] mx-auto px-4 lg:px-8 pt-6 space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>🎨</span> Plitty AI Studio — Higgsfield Generation Hub
+        </h2>
+        <p class="text-xs text-slate-400 mt-0.5">Двухколоночный интерфейс генерации 2K фото и видео танцев с автоподвязкой моделей</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="http://localhost:8501" target="_blank" class="pill-btn-rose text-xs py-1.5 px-4 shadow-lg">
+          <span>Открыть во весь экран ↗</span>
+        </a>
+      </div>
+    </div>
+    <div class="cyber-card p-2 overflow-hidden border-[rgba(229,136,166,0.3)] shadow-2xl rounded-2xl">
+      <iframe id="iframe-studio" src="http://localhost:8501" style="width: 100%; height: 86vh; border: none; border-radius: 16px; background: #06070B;" allow="clipboard-write; camera; microphone"></iframe>
+    </div>
+  </main>
+
+  <!-- ================================================================= -->
   <!-- JAVASCRIPT LOGIC & STATE                                          -->
   <!-- ================================================================= -->
   <script>
@@ -731,7 +776,7 @@
       if (targetEl) targetEl.classList.add('active');
 
       // Update header nav buttons
-      ['gateway', 'minifarm', 'stand', 'pult'].forEach(v => {
+      ['gateway', 'minifarm', 'stand', 'pult', 'studio'].forEach(v => {
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
