@@ -188,9 +188,7 @@
         <button id="nav-btn-pult" onclick="navToView('pult')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🎮 Пульт
         </button>
-        <button id="nav-btn-creativestudio" onclick="navToView('creativestudio')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
-          🎬 Студия
-        </button>
+
       </nav>
 
       <!-- Telemetry & Assistant Trigger -->
@@ -251,16 +249,14 @@
             <button onclick="navToView('pult')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-amber-500/60 text-amber-300">
               <span>🎮 Мастер-Пульт</span>
             </button>
-            <button onclick="navToView('creativestudio')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-purple-400/60 text-purple-300">
-              <span>🎬 Студия</span>
-            </button>
+
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 4 Main Route Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- 3 Main Route Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Card 1: Minifarm (20 phones) -->
       <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(229,136,166,0.3)]">
         <div class="space-y-3.5">
@@ -321,25 +317,6 @@
         </div>
       </div>
 
-      <!-- Card 4: Creative Studio -->
-      <div onclick="navToView('creativestudio')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(168,85,247,0.3)]">
-        <div class="space-y-3.5">
-          <div class="w-14 h-14 rounded-2xl bg-purple-500/18 border border-purple-500/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
-            🎬
-          </div>
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300">HIGGSFIELD & GPU</span>
-            <h2 class="text-xl font-black text-white mt-1 group-hover:text-purple-300 transition-colors">Студия</h2>
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Генерация 8K фотосетов (Flux / Qwen) и видео-танцев (Wan 2.1 / Kling / Omni) с ускорением на RTX 4060 GPU.
-          </p>
-        </div>
-        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-purple-300">
-          <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Студию</span>
-          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
-        </div>
-      </div>
     </div>
   </main>
 
@@ -627,7 +604,7 @@
             </button>
 
             <button id="btn-action-render" onclick="triggerDancerRender()" class="glass-btn-accent w-full py-3 px-4 rounded-2xl text-xs font-extrabold">
-              <span>🎬 Запустить генерацию танца на RTX 4060</span>
+              <span>💃 Запустить публикацию танца на смартфоне</span>
             </button>
           </div>
 
@@ -816,51 +793,6 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 5: CREATIVE STUDIO (Сниппеты & Генератор)                  -->
-  <!-- ================================================================= -->
-  <main id="view-creativestudio" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
-    <div class="text-center space-y-2 mb-6">
-      <h1 class="text-3xl font-black text-white">Творческая Студия SnipPlit</h1>
-      <p class="text-xs text-slate-400">Генерация картинок 8K, видео-сниппетов и танцевальных моделей</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Card 1: Image Gen -->
-      <div class="glass rounded-3xl p-7 space-y-4 hover:border-pink-500/50 transition">
-        <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-3xl flex items-center justify-center">🎨</div>
-        <h3 class="text-xl font-bold text-white">Генератор картинок 8K</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">Рендер фотосетов на локальной RTX 4060 GPU и Flux Ultra.</p>
-        <button onclick="showToast('Запуск генератора картинок...')" class="glass-btn w-full py-2.5 rounded-xl text-xs font-bold text-pink-300 hover:border-pink-400/60">
-          Открыть Генератор
-        </button>
-      </div>
-
-      <!-- Card 2: Video Snippets -->
-      <div class="glass rounded-3xl p-7 space-y-4 hover:border-purple-500/50 transition">
-        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 text-3xl flex items-center justify-center">🎬</div>
-        <h3 class="text-xl font-bold text-white">Видео Сниппеты</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">Монтаж хуков, нарезка аудио, динамические субтитры для TikTok.</p>
-        <button onclick="showToast('Запуск видеомонтажа...')" class="glass-btn w-full py-2.5 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400/60">
-          Открыть Сниппеты
-        </button>
-      </div>
-
-      <!-- Card 3: Dance Models -->
-      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-7 space-y-4 hover:border-[#d946ef] transition cursor-pointer border-[#d946ef]/40">
-        <div class="w-14 h-14 rounded-2xl bg-fuchsia-500/20 text-3xl flex items-center justify-center">💃</div>
-        <div class="flex items-center justify-between">
-          <h3 class="text-xl font-bold text-white">Dance AI Influencers</h3>
-          <span class="text-[9px] font-bold px-2.5 py-0.5 rounded-full bg-[#d946ef] text-white">10 МОДЕЛЕЙ</span>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">Центр управления 10 танцовщицами: Face-Lock, паспорта, комнаты, фотосеты и промпты.</p>
-        <button class="glass-btn-accent w-full py-2.5 rounded-xl text-xs font-bold text-white">
-          Открыть Танцульки &rarr;
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- ================================================================= -->
   <!-- FLOATING PLITTY ASSISTANT WIDGET                                  -->
   <!-- ================================================================= -->
   <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] glass rounded-3xl p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)]/60 hidden backdrop-blur-2xl">
@@ -891,7 +823,7 @@
         </div>
         <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
           <div class="text-[9px] font-bold text-[#F3A6BF]">Плитти</div>
-          <p>Привет! Чем помочь? Могу подсказать статус фермы, запустить генерацию танца на RTX 4060 или отправить команду в Пульт.</p>
+          <p>Привет! Чем помочь? Могу подсказать статус фермы, запустить сценарий прогрева или отправить команду в Пульт.</p>
         </div>
       </div>
     </div>
@@ -968,7 +900,7 @@
       const targetEl = document.getElementById('view-' + viewName);
       if (targetEl) targetEl.classList.add('active');
 
-      ['gateway', 'minifarm', 'stand', 'pult', 'creativestudio'].forEach(v => {
+      ['gateway', 'minifarm', 'stand', 'pult'].forEach(v => {
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
@@ -1690,8 +1622,8 @@
 
     function triggerDancerRender() {
       const m = DANCERS_DATA[currentModelIndex];
-      showToast(`🎬 Запущен рендер танца для ${m.name_ru} на RTX 4060!`);
-      appendConsoleLog(`[Render Engine] Старт Wan 2.1 видеогенерации для ${m.id} (${m.name_ru}) под бит ${m.neon_text}`);
+      showToast(`🎬 Запущен сценарий танца для ${m.name_ru} (Слот #${m.slot})!`);
+      appendConsoleLog(`[Farm Action] Запуск публикации видео для ${m.id} (${m.name_ru})`);
     }
 
     // --- SCRCPY MODAL ---
@@ -1783,7 +1715,7 @@
       if (l.includes('статус') || l.includes('ферм')) {
         reply = '📊 Мини-ферма: 10 танцовщиц (слоты 1–10) + 10 служебных. Стенд: 50 телефонов A26. Батареи 95%. Ошибок нет!';
       } else if (l.includes('айми') || l.includes('танец')) {
-        reply = '💡 Для Айми рекомендую запустить хип-хоп body roll в комнате SHIBUYA FLOW! Генерация на RTX 4060 займет 11 секунд.';
+        reply = '💡 Для Айми рекомендую запустить хип-хоп body roll в комнате SHIBUYA FLOW! Прогрев аккаунта и публикация займет пару минут.';
       } else {
         reply = `Поняла твой запрос: "${userText}". Готова запустить нужный сценарий!`;
       }
@@ -1824,8 +1756,7 @@
         navToView('stand');
       } else if (tabParam === 'pult') {
         navToView('pult');
-      } else if (tabParam === 'creativestudio') {
-        navToView('creativestudio');
+
       } else {
         if (window.location.pathname.endsWith('studio.html')) {
           navToView('minifarm');
