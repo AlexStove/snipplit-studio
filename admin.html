@@ -1,146 +1,71 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Plitty AI Studio — Command Hub</title>
+  <title>Plitty AI Studio — Command & Dance Center</title>
   
-  <!-- Instant Telegram WebApp Ready Handler -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       try {
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
-      } catch (e) { console.warn("[Plitty WebApp Early Init]", e); }
+      } catch (e) { console.warn("[Plitty Init]", e); }
     }
   </script>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Local high-speed Tailwind CSS engine -->
+  <!-- Local Tailwind Engine -->
   <script src="tailwind.js"></script>
 
   <style>
     :root {
-      --bg-pitch: #06070B;
-      --card-bg-top: rgba(20, 24, 35, 0.75);
-      --card-bg-bottom: rgba(10, 13, 19, 0.95);
+      --bg-dark: #050814;
+      --theme-color: #d946ef;
+      --theme-glow: rgba(217, 70, 239, 0.4);
       --plitty-rose: #E588A6;
-      --plitty-rose-light: #F3A6BF;
-      --plitty-rose-dark: #C95F81;
-      --plitty-border: rgba(229, 136, 166, 0.22);
-      --plitty-border-hover: rgba(229, 136, 166, 0.55);
-      --plitty-glow: rgba(229, 136, 166, 0.18);
-      --text-heading: #F8FAFC;
-      --text-body: #CBD5E1;
-      --text-muted: #94A3B8;
-      --cyber-teal: #2DD4BF;
-      --cyber-amber: #F59E0B;
     }
 
     body {
-      background-color: var(--bg-pitch);
-      color: var(--text-body);
+      background-color: var(--bg-dark);
+      color: #E2E8F0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
       min-height: 100vh;
     }
 
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* Cyber background pattern */
-    .cyber-tech-grid {
-      background-image: radial-gradient(rgba(229, 136, 166, 0.08) 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-
-    /* Ambient atmospheric glow */
-    .ambient-server-glow {
+    /* Ambient dynamic glow backdrop */
+    .ambient-bg {
       position: fixed;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 900px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(229, 136, 166, 0.09) 0%, rgba(45, 212, 191, 0.04) 40%, transparent 75%);
+      inset: 0;
       pointer-events: none;
       z-index: 0;
-      filter: blur(90px);
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Plitty Cyber Glass Card */
-    .cyber-card {
-      background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--plitty-border);
-      border-radius: 24px;
-      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    /* High-End Glassmorphism Card */
+    .glass {
+      background: rgba(10, 15, 28, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
     }
-    .cyber-card:hover {
-      border-color: var(--plitty-border-hover);
-      box-shadow: 0 20px 44px -8px rgba(0, 0, 0, 0.9), 0 0 24px -6px var(--plitty-glow);
-      transform: translateY(-2px);
-    }
-
-    /* Pill Buttons */
-    .pill-btn-rose {
-      background: rgba(229, 136, 166, 0.16);
-      border: 1px solid rgba(229, 136, 166, 0.4);
-      color: #F8E7ED;
-      border-radius: 9999px;
-      padding: 7px 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .pill-btn-rose:hover {
-      background: rgba(229, 136, 166, 0.28);
-      border-color: var(--plitty-rose-light);
-      color: #FFFFFF;
-      box-shadow: 0 0 16px rgba(229, 136, 166, 0.3);
-    }
-
-    .pill-btn-dark {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-body);
-      border-radius: 9999px;
-      padding: 7px 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .pill-btn-dark:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
+    .glass:hover {
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
     /* Screen Views */
-    .screen-view {
-      display: none;
-    }
-    .screen-view.active {
-      display: block;
-      animation: fadeIn 0.3s ease-out forwards;
-    }
+    .screen-view { display: none; }
+    .screen-view.active { display: block; animation: fadeIn 0.3s ease-out forwards; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
@@ -148,80 +73,88 @@
     }
 
     /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #06070B;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(229, 136, 166, 0.25);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(229, 136, 166, 0.5);
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
   </style>
 </head>
 
-<body class="cyber-tech-grid relative pb-32">
-  <div class="ambient-server-glow"></div>
+<body class="text-slate-100 antialiased relative pb-28">
 
-  <!-- ================================================================= -->
-  <!-- TOP GLOBAL HEADER                                                 -->
-  <!-- ================================================================= -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#06070B]/85 border-b border-white/10 px-4 lg:px-8 py-3.5 transition-all">
-    <div class="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
+  <!-- FULLSCREEN AMBIENT COLOR BACKDROP -->
+  <div id="ambient-backdrop" class="ambient-bg"></div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-500/90 text-white font-medium shadow-2xl backdrop-blur-md border border-emerald-400/40 text-xs">
+    <span id="toast-msg">Скопировано в буфер!</span>
+  </div>
+
+  <!-- FULLSCREEN IMAGE MODAL (ZOOM) -->
+  <div id="img-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
+    <div class="relative max-w-4xl max-h-[95vh] flex flex-col items-center" onclick="event.stopPropagation()">
+      <img id="modal-img" src="" class="max-h-[85vh] max-w-full rounded-2xl shadow-2xl object-contain border border-slate-700">
+      <div class="flex items-center justify-between w-full mt-3 px-2">
+        <span id="modal-caption" class="text-xs text-slate-300 font-medium"></span>
+        <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white border border-slate-600 transition">Закрыть (Esc)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP GLOBAL HEADER -->
+  <header id="main-header" class="sticky top-0 z-40 backdrop-blur-xl bg-[#050814]/85 border-b border-white/10 px-4 lg:px-8 py-3 transition-all">
+    <div class="max-w-[1900px] mx-auto flex items-center justify-between gap-4">
       
       <!-- Brand & Hub Return -->
       <div class="flex items-center gap-3.5">
-        <button onclick="navToView('gateway')" class="flex items-center gap-3 group focus:outline-none" title="В главный шлюз студии">
-          <div class="relative w-10 h-10 rounded-2xl overflow-hidden border border-[var(--plitty-border)] group-hover:border-[var(--plitty-rose)] transition-colors shadow-sm shrink-0">
+        <button onclick="navToView('gateway')" class="flex items-center gap-3 group focus:outline-none" title="В главный портал">
+          <div class="relative w-10 h-10 rounded-2xl overflow-hidden border border-[var(--plitty-rose)]/40 group-hover:border-[var(--plitty-rose)] transition-colors shadow-sm shrink-0">
             <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
           </div>
           <div class="text-left">
             <div class="flex items-center gap-2">
-              <span class="text-base font-extrabold tracking-tight text-white group-hover:text-[#F3A6BF] transition-colors">Plitty AI Studio</span>
-              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.18)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)]">v3.1 Ultra</span>
+              <span class="text-base font-black tracking-tight text-white group-hover:text-[#F3A6BF] transition-colors">Plitty AI Studio</span>
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.18)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)]">v3.2 Ultra</span>
             </div>
-            <div class="text-[10px] text-slate-400 font-medium">Центральный командный шлюз медиа-империи</div>
+            <div class="text-[10px] text-slate-400 font-medium">Digital Talent & Farm Command Hub</div>
           </div>
         </button>
       </div>
 
-      <!-- Navigation Breadcrumb / Section Buttons -->
+      <!-- Navigation Section Buttons -->
       <nav class="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-white/5 border border-white/10">
-        <button id="nav-btn-gateway" onclick="navToView('gateway')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]">
+        <button id="nav-btn-gateway" onclick="navToView('gateway')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]">
           🏠 Портал
         </button>
-        <button id="nav-btn-minifarm" onclick="navToView('minifarm')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-minifarm" onclick="navToView('minifarm')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
           📱 Мини-ферма (20)
         </button>
-        <button id="nav-btn-stand" onclick="navToView('stand')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-stand" onclick="navToView('stand')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
           🏢 Стенд (50)
         </button>
-        <button id="nav-btn-pult" onclick="navToView('pult')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <button id="nav-btn-pult" onclick="navToView('pult')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
           🎮 Пульт
         </button>
-        <button id="nav-btn-studio" onclick="navToView('studio')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1">
-          <span>🎨</span> Студия Генерации
+        <button id="nav-btn-creativestudio" onclick="navToView('creativestudio')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+          🎬 Студия
         </button>
       </nav>
 
-      <!-- Live Device & Network Indicators -->
+      <!-- Telemetry & Assistant Trigger -->
       <div class="flex items-center gap-2.5">
-        <div class="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-900/80 border border-white/10 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-white/10 text-xs font-mono">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="text-slate-200 font-semibold">70/70</span>
-            <span class="text-[10px] text-slate-400">ТЕЛЕФОНОВ</span>
+            <span class="text-[10px] text-slate-400">ТЕЛ</span>
           </div>
           <span class="text-white/20">|</span>
-          <div class="text-[11px] text-[#2DD4BF] font-medium">⚡ ADB TCP:2222</div>
+          <div class="text-[11px] text-[#2DD4BF] font-medium">⚡ TCP:2222</div>
         </div>
 
-        <button onclick="togglePlittyAssistant()" class="pill-btn-rose shadow-md" title="Открыть диалог с Плитти">
+        <button onclick="togglePlittyAssistant()" class="px-3 py-1.5 rounded-full bg-[rgba(229,136,166,0.18)] hover:bg-[rgba(229,136,166,0.28)] border border-[rgba(229,136,166,0.4)] text-[#F8E7ED] hover:text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition">
           <span>🌸 Спросить Плитти</span>
         </button>
       </div>
@@ -230,15 +163,13 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 1: GATEWAY HUB (Шлюз входа)                                -->
+  <!-- SCREEN 1: GATEWAY HUB (Главный портал)                            -->
   <!-- ================================================================= -->
-  <main id="view-gateway" class="screen-view active max-w-[1500px] mx-auto px-4 lg:px-8 pt-8 space-y-10">
+  <main id="view-gateway" class="screen-view active max-w-[1500px] mx-auto px-4 lg:px-8 pt-8 space-y-8 relative z-10">
     
-    <!-- Hero Welcoming Box with Plitty -->
-    <div class="cyber-card p-6 lg:p-10 relative overflow-hidden border-[rgba(229,136,166,0.35)]">
+    <!-- Hero Box with Plitty -->
+    <div class="glass rounded-3xl p-6 lg:p-10 relative overflow-hidden border-[var(--plitty-rose)]/30">
       <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
-        
-        <!-- Plitty Avatar -->
         <div class="relative shrink-0">
           <div class="w-28 h-28 lg:w-36 lg:h-36 rounded-3xl overflow-hidden border-2 border-[var(--plitty-rose)] shadow-[0_0_35px_rgba(229,136,166,0.4)] bg-slate-900">
             <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
@@ -248,7 +179,6 @@
           </div>
         </div>
 
-        <!-- Welcoming Text -->
         <div class="flex-1 text-center md:text-left space-y-3">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(229,136,166,0.12)] border border-[rgba(229,136,166,0.25)] text-xs text-[#F3A6BF] font-medium">
             <span>✨ Главный ИИ-Ассистент студии готов к работе</span>
@@ -257,177 +187,416 @@
             Привет! Я <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F3A6BF] via-[#E588A6] to-[#C95F81]">Плитти</span>.
           </h1>
           <p class="text-sm lg:text-base text-slate-300 max-w-2xl leading-relaxed">
-            Вся инфраструктура фермы под моим полным контролем: <b>Мини-ферма на 20 телефонов</b> (10 персональных слотов девочек + 10 служебных функций), аппаратный <b>Стенд на 50 телефонов</b> и единый <b>Мастер-Пульт</b>. Выбери модуль для работы:
+            Вся инфраструктура фермы объединена: <b>Мини-ферма на 20 телефонов</b> (10 танцевальных моделей + 10 служебных функций), аппаратный <b>Стенд на 50 телефонов</b> и единый <b>Мастер-Пульт</b>. Выбери модуль:
           </p>
           
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <button onclick="navToView('minifarm')" class="pill-btn-rose text-xs py-2 px-4 shadow-lg">
-              📱 Мини-ферма (20)
+            <button onclick="navToView('minifarm', 'dancers')" class="px-4 py-2 rounded-full font-bold bg-[#E588A6] text-slate-950 text-xs shadow-lg hover:brightness-110 transition">
+              💃 ТАНЦУЛЬКИ (10 моделей)
             </button>
-            <button onclick="navToView('stand')" class="pill-btn-dark text-xs py-2 px-4 border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF]">
+            <button onclick="navToView('minifarm', 'all')" class="px-4 py-2 rounded-full font-semibold bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs transition">
+              📱 Мини-ферма (Все 20)
+            </button>
+            <button onclick="navToView('stand')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF] text-xs transition">
               🏢 Стенд (50)
             </button>
-            <button onclick="navToView('pult')" class="pill-btn-dark text-xs py-2 px-4 border-amber-500/40 text-amber-300 hover:border-amber-400">
+            <button onclick="navToView('pult')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-amber-500/40 text-amber-300 hover:border-amber-400 text-xs transition">
               🎮 Мастер-Пульт
-            </button>
-            <button onclick="togglePlittyAssistant()" class="pill-btn-dark text-xs py-2 px-4">
-              💬 Открыть диалог
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- 4 Big Main Navigation Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      
-      <!-- Card 1: Minifarm -->
-      <div onclick="navToView('minifarm')" class="cyber-card p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+    <!-- 4 Main Route Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1: Dancers -->
+      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            💃
+          </div>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">10 МОДЕЛЕЙ • 50 ФОТО</span>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#F3A6BF] transition-colors">Танцульки</h2>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            3-колоночный центр управления: Face-Lock, паспорта ДНК, 5 ракурсов с зумом, учетки и запуск видеогенерации.
+          </p>
+        </div>
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
+          <span>Открыть Танцульки</span>
+          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Minifarm Overview -->
+      <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             📱
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">20 СМАРТФОНОВ · ИНДИВИДУАЛЬНЫЙ ТРАСТ</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">СЛОТЫ 1–20</span>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-emerald-300 transition-colors">Мини-ферма</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            10 персональных аппаратов для топ-девочек (Айми, Кико, Рин, Мира, Рада, Хейли, Алекса, Амели, Марта, Миа) + 10 служебных модулей прогрева и контент-дроппинга.
+            Сетка всех 20 смартфонов: 10 персональных слотов танцовщиц + 10 служебных сервисов (прогрев, сторис, сидер VCF).
           </p>
         </div>
-        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
-          <span>Открыть Мини-ферму</span>
-          <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-emerald-400">
+          <span>Обзор всех 20</span>
+          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 2: Stand -->
-      <div onclick="navToView('stand')" class="cyber-card p-7 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <!-- Card 3: Stand -->
+      <div onclick="navToView('stand')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-[rgba(45,212,191,0.15)] border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             🏢
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF]">50 СМАРТФОНОВ · 3 ПОЛКИ · МАССОВЫЙ БАСЕЙН</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#2DD4BF] transition-colors">Стенд-ферма</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF]">3 ПОЛКИ • СЛОТЫ 51–100</span>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#2DD4BF] transition-colors">Стенд (50)</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Массовый пул для фонового алгоритмического прогрева аккаунтов, эмуляции человеческого скроллинга и создания вирального социального охвата сетки.
+            Аппаратная стойка Samsung Galaxy A26 на порту TCP 2222. Мониторинг батарей, температур, живые экраны Scrcpy.
           </p>
         </div>
-        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
           <span>Открыть Стенд</span>
-          <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
+          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 3: Pult -->
-      <div onclick="navToView('pult')" class="cyber-card p-7 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <!-- Card 4: Pult -->
+      <div onclick="navToView('pult')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             🎮
           </div>
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">МУЛЬТИ-ТАРГЕТ КОМАНДЫ</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-amber-300 transition-colors">Мастер-Пульт</h2>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-amber-300 transition-colors">Мастер-Пульт</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Единый командный шлюз. Выбор цели (Все 70 / Только Мини / Только Стенд), массовое пробуждение, усыпление, запуск прогрева TikTok, скроллинга и выкладки.
+            Выбор цели (Все 70 / Мини-ферма 20 / Стенд 50), массовые триггеры ADB, сценарии прогрева и консоль команд.
           </p>
         </div>
-        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
           <span>Запустить Пульт</span>
-          <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
+          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </div>
-
-      <!-- Card 4: AI Generation Studio -->
-      <div onclick="navToView('studio')" class="cyber-card p-7 group cursor-pointer hover:border-[var(--plitty-rose)] transition-all flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-            🎨
-          </div>
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">HIGGSFIELD GENJUTSU</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Студия Генерации</h2>
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Генерация 2K фото (Qwen 3.0 Pro) и видео-танцев (Kling 2.6 / Wan 2.2 / Omni). Двухколоночный интерфейс: выбор инструментов слева, холст справа, автоподвязка 12 моделей.
-          </p>
-        </div>
-        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
-          <span>Открыть Студию</span>
-          <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
-        </div>
-      </div>
-
     </div>
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 2: MINIFARM VIEW (20 телефонов)                             -->
+  <!-- SCREEN 2: MINIFARM VIEW (Слоты 1–20 & Танцульки)                   -->
   <!-- ================================================================= -->
-  <main id="view-minifarm" class="screen-view max-w-[1800px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
+  <main id="view-minifarm" class="screen-view max-w-[1900px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
     
-    <!-- Header Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Minifarm Top Control Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-2xl">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-[#E588A6]">МИНИ-ФЕРМА 20 СМАРТФОНОВ</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#E588A6]">МИНИ-ФЕРМА: СЛОТЫ 1–20</span>
           <span class="text-xs text-slate-500">&bull;</span>
-          <span class="text-xs text-teal-400 font-mono">10 Инфлюенсеров + 10 Спец-функций</span>
+          <span class="text-xs text-teal-400 font-mono">10 Танцовщиц + 10 Служебных аппаратов</span>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мини-ферма: Слоты 1–20</h1>
+        <h1 class="text-2xl font-black text-white tracking-tight mt-0.5">Управление Мини-фермой</h1>
       </div>
 
-      <!-- Scope Filters & Action -->
+      <!-- Scope Switcher Pills -->
       <div class="flex flex-wrap items-center gap-2.5">
-        <div class="inline-flex p-1 rounded-2xl bg-white/5 border border-white/10 text-xs">
-          <button id="minifarm-tab-all" onclick="filterMinifarmScope('all')" class="px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all">
-            Все (20)
+        <div class="inline-flex p-1 rounded-xl bg-slate-900/90 border border-white/10 text-xs font-bold">
+          <button id="minifarm-scope-all" onclick="setMinifarmScope('all')" class="px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">
+            🔘 Все (20)
           </button>
-          <button id="minifarm-tab-girls" onclick="filterMinifarmScope('girls')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all">
-            🌟 Инфлюенсеры (10)
+          <button id="minifarm-scope-dancers" onclick="setMinifarmScope('dancers')" class="px-3.5 py-1.5 rounded-lg transition-all bg-[#d946ef] text-white shadow-md">
+            💃 ТАНЦУЛЬКИ (10)
           </button>
-          <button id="minifarm-tab-service" onclick="filterMinifarmScope('service')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all">
+          <button id="minifarm-scope-service" onclick="setMinifarmScope('service')" class="px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">
             ⚙️ Служебные (10)
           </button>
         </div>
 
-        <input type="text" id="minifarm-search" oninput="applyMinifarmFilter()" placeholder="Поиск по слоту, имени, роли..." class="bg-white/5 border border-white/10 rounded-2xl px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-56">
+        <input type="text" id="minifarm-search" oninput="handleMinifarmSearch()" placeholder="Поиск по имени, слоту, городу..." class="bg-slate-900/80 border border-white/10 rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-56">
         
-        <button onclick="navToView('pult', 'minifarm')" class="pill-btn-rose text-xs py-1.5">
-          🎮 Пульт Мини-фермы
+        <button onclick="navToView('pult', 'minifarm')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition flex items-center gap-1.5">
+          <span>🎮 Пульт Мини-фермы</span>
         </button>
       </div>
     </div>
 
-    <!-- SECTION 1: INFLUENCERS GRID (10 Girls / Slots 1-10) -->
-    <div id="minifarm-girls-section" class="space-y-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#E588A6]"></span>
-          <h2 class="text-lg font-bold text-white tracking-tight">Персональные слоты инфлюенсеров (Слоты 1–10)</h2>
-          <span class="text-xs text-slate-400 font-mono">1 слот = 1 инфлюенсер</span>
+    <!-- =============================================================== -->
+    <!-- SCOPE 1: 'ALL' OVERVIEW (20 Смартфонов в Glassmorphism)         -->
+    <!-- =============================================================== -->
+    <div id="minifarm-view-all" class="space-y-6 hidden">
+      <!-- Section A: 10 Dancers Overview Grid -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#E588A6] animate-pulse"></span>
+            <h3 class="text-base font-bold text-white tracking-tight">Персональные слоты танцовщиц (Слоты 1–10)</h3>
+            <span class="text-xs text-slate-400 font-mono">1 слот = 1 инфлюенсер-танцовщица</span>
+          </div>
+          <button onclick="setMinifarmScope('dancers')" class="text-xs font-bold text-[#F3A6BF] hover:underline flex items-center gap-1">
+            <span>Открыть Студию «Танцульки»</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+        <div id="all-dancers-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Rendered via JS -->
         </div>
       </div>
-      <div id="minifarm-girls-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <!-- Generated via JS -->
+
+      <!-- Section B: 10 Service Phones Grid -->
+      <div class="space-y-3 pt-4 border-t border-white/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#2DD4BF]"></span>
+            <h3 class="text-base font-bold text-white tracking-tight">Служебные функции фермы (Слоты 11–20)</h3>
+            <span class="text-xs text-slate-400 font-mono">Прогрев, Сторис, Сидер контактов, Прокси</span>
+          </div>
+          <button onclick="setMinifarmScope('service')" class="text-xs font-bold text-teal-300 hover:underline flex items-center gap-1">
+            <span>Только служебные аппараты</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+        <div id="all-service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Rendered via JS -->
+        </div>
       </div>
     </div>
 
-    <!-- SECTION 2: SERVICE PHONES GRID (10 Phones / Slots 11-20) -->
-    <div id="minifarm-service-section" class="space-y-4 pt-6 border-t border-white/10">
+    <!-- =============================================================== -->
+    <!-- SCOPE 2: 'DANCERS' FULL 3-COLUMN STUDIO (from dashboard.html)    -->
+    <!-- =============================================================== -->
+    <div id="minifarm-view-dancers" class="glass rounded-3xl p-4 lg:p-6 shadow-2xl relative overflow-hidden theme-transition">
+      
+      <!-- Top Subheader -->
+      <div class="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-white/10 gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl animate-bounce">✨</span>
+          <div>
+            <h2 id="dancers-brand-title" class="text-base font-black tracking-wide uppercase theme-transition text-white">
+              AI DANCE STUDIO — 10 ТАНЦОВЩИЦ
+            </h2>
+            <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Интерактивный центр управления ДНК, фотосессиями и промптами</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs">
+          <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-semibold">
+            50 Мастер-Ассетов ✅
+          </span>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold">
+            10/10 Привязаны к слотам 1–10
+          </span>
+          <button onclick="openModalCurrent()" class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition">
+            🔍 Зум фото
+          </button>
+        </div>
+      </div>
+
+      <!-- 3-COLUMNS WORKSPACE -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[640px]">
+        
+        <!-- COL 1: ROSTER LIST (LEFT, 3 cols) -->
+        <div class="lg:col-span-3 flex flex-col space-y-3 border-r border-white/5 pr-4">
+          <!-- Filter Pills -->
+          <div class="flex gap-1 overflow-x-auto pb-1 text-[10px]">
+            <button onclick="setNicheFilter('all')" class="niche-btn px-2 py-1 rounded-lg font-bold bg-[#d946ef] text-white whitespace-nowrap" data-filter="all">Все (10)</button>
+            <button onclick="setNicheFilter('asia')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="asia">K-Pop (3)</button>
+            <button onclick="setNicheFilter('anime')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="anime">Аниме (2)</button>
+            <button onclick="setNicheFilter('alt')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="alt">Готика (2)</button>
+            <button onclick="setNicheFilter('lifestyle')" class="niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap" data-filter="lifestyle">Лайф (3)</button>
+          </div>
+
+          <!-- Dancers Scrollable Cards List -->
+          <div id="dancers-roster-list" class="space-y-2 overflow-y-auto max-h-[600px] pr-1">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- COL 2: MAIN ASSET INSPECTOR (CENTER, 5 cols) -->
+        <div class="lg:col-span-5 flex flex-col space-y-4">
+          <!-- Selected Model Hero Banner -->
+          <div id="dancer-hero-card" class="glass rounded-2xl p-4 relative overflow-hidden border border-white/10 theme-transition">
+            <div id="dancer-hero-accent-glow" class="absolute -right-16 -top-16 w-60 h-60 rounded-full blur-3xl opacity-30 pointer-events-none ambient-bg"></div>
+
+            <div class="flex items-start justify-between gap-3 relative z-10">
+              <div class="flex items-center gap-3">
+                <div class="relative shrink-0">
+                  <img id="dancer-avatar" src="" class="w-14 h-14 rounded-2xl object-cover border-2 shadow-xl theme-transition">
+                  <span id="dancer-flag" class="absolute -bottom-1 -right-1 text-sm bg-slate-900 rounded-full px-1 border border-slate-700"></span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 id="dancer-name-ru" class="text-lg font-black text-white"></h3>
+                    <span id="dancer-badge-niche" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider theme-transition"></span>
+                  </div>
+                  <div id="dancer-meta" class="text-xs text-slate-400 mt-0.5 font-medium"></div>
+                </div>
+              </div>
+
+              <!-- Slot & Phone Badge -->
+              <div class="text-right font-mono">
+                <span id="dancer-slot-badge" class="px-2.5 py-1 rounded-xl bg-[#d946ef]/20 border border-[#d946ef]/40 text-[#f3a6bf] text-xs font-bold block">
+                  СЛОТ #1
+                </span>
+                <span id="dancer-battery-badge" class="text-[10px] text-emerald-400 font-bold block mt-1">98% 🔋</span>
+              </div>
+            </div>
+
+            <p id="dancer-bio" class="text-xs text-slate-300 mt-3 leading-relaxed bg-slate-950/60 p-2.5 rounded-xl border border-white/5"></p>
+          </div>
+
+          <!-- 5 Photo Tabs -->
+          <div class="glass rounded-2xl p-4 flex flex-col flex-1 border border-white/10 theme-transition">
+            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-2">
+              <div class="flex flex-wrap gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800" id="photo-tabs-bar">
+                <button onclick="switchPhotoTab('dance')" id="ptab-dance" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 bg-[#d946ef] text-white">
+                  <span>💃 В комнате (9:16)</span>
+                </button>
+                <button onclick="switchPhotoTab('studio')" id="ptab-studio" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                  <span>🧍 Студия (9:16)</span>
+                </button>
+                <button onclick="switchPhotoTab('room')" id="ptab-room" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                  <span>🏠 Зал (9:16)</span>
+                </button>
+                <button onclick="switchPhotoTab('face')" id="ptab-face" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                  <span>👩 Лицо (1:1)</span>
+                </button>
+                <button onclick="switchPhotoTab('avatar')" id="ptab-avatar" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                  <span>🖼️ Аватар</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="openModalCurrent()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
+                  🔍 Увеличить
+                </button>
+                <button onclick="copyCurrentImagePath()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
+                  📋 Путь
+                </button>
+              </div>
+            </div>
+
+            <!-- Preview Image Frame -->
+            <div id="image-stage" class="flex-1 min-h-[420px] flex items-center justify-center p-3 bg-slate-950/70 rounded-xl mt-3 relative overflow-hidden border border-white/5 theme-transition">
+              <img id="dancer-main-preview-img" src="" alt="Preview" class="max-h-[460px] max-w-full rounded-xl shadow-2xl object-contain cursor-pointer transition-all hover:scale-[1.01]" onclick="openModalCurrent()">
+              <div id="photo-tag-pill" class="absolute bottom-4 left-4 px-3 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-white border border-white/15 shadow-lg"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COL 3: PROMPTS & OPS ACTION HUB (RIGHT, 4 cols) -->
+        <div class="lg:col-span-4 flex flex-col space-y-4 border-l border-white/5 pl-4 overflow-y-auto max-h-[720px]">
+          
+          <!-- 1. Credentials Box -->
+          <div class="bg-slate-900/85 rounded-2xl p-4 border border-white/5 shadow-sm space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-300">🔐 Учетные данные TikTok</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Активен ✅</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="text-[10px] text-slate-500 block uppercase font-medium">Email / Логин</span>
+                <div class="flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 mt-0.5">
+                  <span id="cred-email" class="font-mono text-slate-200 truncate"></span>
+                  <button onclick="copyText('cred-email')" class="text-slate-400 hover:text-white p-1">📋</button>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[10px] text-slate-500 block uppercase font-medium">Пароль</span>
+                <div class="flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 mt-0.5">
+                  <span id="cred-pass" class="font-mono text-slate-200">•••••••••••</span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="togglePassword()" id="btn-toggle-pass" class="text-slate-400 hover:text-white p-1 text-xs">👁️</button>
+                    <button onclick="copyPassword()" class="text-slate-400 hover:text-white p-1">📋</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Master Prompts Vault -->
+          <div class="space-y-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">🎨 Мастер-Промпты (Без Стоп-Слов)</span>
+
+            <!-- Prompt 1: Video Motion -->
+            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-pink-400">🎬 Motion Prompt (Kling / Wan 2.1)</span>
+                <button onclick="copyPrompt('video')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+              </div>
+              <p id="prompt-video" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+            </div>
+
+            <!-- Prompt 2: Face DNA -->
+            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-sky-400">👩 Face DNA Lock Prompt</span>
+                <button onclick="copyPrompt('face')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+              </div>
+              <p id="prompt-face" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+            </div>
+
+            <!-- Prompt 3: Body & Outfit -->
+            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-purple-400">🧍 Body & Outfit Prompt</span>
+                <button onclick="copyPrompt('body')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+              </div>
+              <p id="prompt-body" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+            </div>
+
+            <!-- Prompt 4: Room -->
+            <div class="bg-slate-900/85 rounded-xl p-3 border border-white/5 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-amber-400">🏠 Dance Room Interior</span>
+                <button onclick="copyPrompt('room')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200">Копировать</button>
+              </div>
+              <p id="prompt-room" class="text-[10px] text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800/80 line-clamp-3 hover:line-clamp-none transition-all"></p>
+            </div>
+          </div>
+
+          <!-- 3. Direct Farm Actions -->
+          <div class="pt-2 border-t border-white/5 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">⚡ Операции со Смартфоном Фермы</span>
+            
+            <button onclick="openCurrentDancerScrcpy()" class="w-full py-2.5 px-3 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-xs font-bold text-teal-300 flex items-center justify-center gap-2 transition">
+              <span>👁️ Открыть экран Scrcpy (Слот <span id="btn-scrcpy-slot-num">#1</span>)</span>
+            </button>
+
+            <button onclick="triggerDancerRender()" class="w-full py-2.5 px-3 rounded-xl bg-[#d946ef]/20 hover:bg-[#d946ef]/30 border border-[#d946ef]/40 text-xs font-bold text-[#f3a6bf] flex items-center justify-center gap-2 transition">
+              <span>🎬 Запустить генерацию танца на RTX 4060</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- SCOPE 3: 'SERVICE' PHONES (Слоты 11–20)                         -->
+    <!-- =============================================================== -->
+    <div id="minifarm-view-service" class="space-y-4 hidden">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-[#2DD4BF]"></span>
           <h2 class="text-lg font-bold text-white tracking-tight">Служебные функции & Автоматизация (Слоты 11–20)</h2>
-          <span class="text-xs text-slate-400 font-mono">Прогрев, Сторис, Сидер контактов, Прокси</span>
         </div>
       </div>
-      <div id="minifarm-service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <!-- Generated via JS -->
+      <div id="service-only-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <!-- Rendered via JS -->
       </div>
     </div>
 
@@ -436,60 +605,50 @@
   <!-- ================================================================= -->
   <!-- SCREEN 3: STAND VIEW (50 телефонов / Полки 1, 2, 3)                -->
   <!-- ================================================================= -->
-  <main id="view-stand" class="screen-view max-w-[1800px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
-    
+  <main id="view-stand" class="screen-view max-w-[1900px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
     <!-- Stand Header & Shelf Filter -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass p-4 rounded-2xl">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">АППАРАТНАЯ СТОЙКА</span>
           <span class="text-xs text-slate-500">&bull;</span>
           <span class="text-xs text-teal-300 font-mono">Samsung Galaxy A26 • ADB Port 2222</span>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Стенд: 50 Смартфонов</h1>
+        <h1 class="text-2xl font-black text-white tracking-tight mt-0.5">Стенд: 50 Смартфонов</h1>
       </div>
 
-      <!-- Shelf Selection Pills -->
       <div class="flex flex-wrap items-center gap-2">
-        <button id="btn-shelf-all" onclick="filterShelf('all')" class="pill-btn-dark bg-[#2DD4BF]/20 border-[#2DD4BF]/50 text-white font-bold">
+        <button id="btn-shelf-all" onclick="filterShelf('all')" class="px-3 py-1.5 rounded-xl font-bold bg-[#2DD4BF]/20 border border-[#2DD4BF]/50 text-white text-xs">
           Вся стойка (50)
         </button>
-        <button id="btn-shelf-1" onclick="filterShelf(1)" class="pill-btn-dark text-slate-400">
+        <button id="btn-shelf-1" onclick="filterShelf(1)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
           Полка 1 (Тел 51–60)
         </button>
-        <button id="btn-shelf-2" onclick="filterShelf(2)" class="pill-btn-dark text-slate-400">
+        <button id="btn-shelf-2" onclick="filterShelf(2)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
           Полка 2 (Тел 61–80)
         </button>
-        <button id="btn-shelf-3" onclick="filterShelf(3)" class="pill-btn-dark text-slate-400">
+        <button id="btn-shelf-3" onclick="filterShelf(3)" class="px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs">
           Полка 3 (Тел 81–100)
-        </button>
-        
-        <button onclick="navToView('pult', 'stand')" class="pill-btn-rose text-xs ml-2">
-          🎮 Пульт для Стенда
         </button>
       </div>
     </div>
 
-    <!-- 50 Phones Grid (Slots 51..100) -->
-    <div id="stand-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-3">
-      <!-- Generated via JS -->
-    </div>
+    <!-- 50 Phones Grid -->
+    <div id="stand-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-3"></div>
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 4: MASTER PULT VIEW (Единый пульт управления)              -->
+  <!-- SCREEN 4: MASTER PULT VIEW                                        -->
   <!-- ================================================================= -->
-  <main id="view-pult" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
-    
-    <!-- Pult Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <main id="view-pult" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-4 rounded-2xl">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-amber-400">КОМАНДНЫЙ ЦЕНТР</span>
           <span class="text-xs text-slate-500">&bull;</span>
           <span class="text-xs text-slate-300 font-mono">ADB Master Trigger</span>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мастер-Пульт Фермы</h1>
+        <h1 class="text-2xl font-black text-white tracking-tight mt-0.5">Мастер-Пульт Фермы</h1>
       </div>
 
       <div class="flex items-center gap-2">
@@ -501,16 +660,15 @@
     </div>
 
     <!-- TARGET SELECTOR TABS -->
-    <div class="cyber-card p-6 space-y-4 border-amber-500/30">
+    <div class="glass rounded-3xl p-6 space-y-4 border-amber-500/30">
       <div class="text-xs font-bold uppercase tracking-wider text-slate-300">1. Выберите целевую группу (Target Scope):</div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        
         <button id="target-btn-all" onclick="setPultTarget('all')" class="p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all">
           <div class="text-lg font-black text-white flex items-center justify-between">
             <span>🔘 ВСЕ ТЕЛЕФОНЫ</span>
             <span class="text-xs px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">70 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Мини-ферма (20) + Стенд (50). Массовые синхронные команды.</div>
+          <div class="text-xs text-slate-300 mt-1">Мини-ферма (20) + Стенд (50). Массовые команды.</div>
         </button>
 
         <button id="target-btn-minifarm" onclick="setPultTarget('minifarm')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
@@ -518,7 +676,7 @@
             <span>📱 ТОЛЬКО МИНИ-ФЕРМА</span>
             <span class="text-xs px-2 py-0.5 rounded-full bg-rose-400 text-slate-950 font-mono font-black">20 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Слоты 1–20 (10 инфлюенсеров + 10 служебных сервисов).</div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 1–20 (10 танцовщиц + 10 служебных).</div>
         </button>
 
         <button id="target-btn-stand" onclick="setPultTarget('stand')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
@@ -526,98 +684,135 @@
             <span>🏢 ТОЛЬКО СТЕНД</span>
             <span class="text-xs px-2 py-0.5 rounded-full bg-teal-400 text-slate-950 font-mono font-black">50 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Слоты 51–100 (Samsung Galaxy A26, стойка порт 2222).</div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 51–100 (Samsung Galaxy A26, порт 2222).</div>
         </button>
-
       </div>
     </div>
 
     <!-- COMMAND SECTIONS -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <!-- Box 1: Hardware ADB Actions -->
-      <div class="cyber-card p-6 space-y-4">
+      <div class="glass rounded-3xl p-6 space-y-4">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <span>⚡ Аппаратные триггеры ADB</span>
-          <span class="text-[10px] text-slate-400 font-mono">(Выполняется параллельно)</span>
+          <span class="text-[10px] text-slate-400 font-mono">(Параллельно)</span>
         </h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-          <button onclick="sendPultCommand('wake')" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-slate-200 hover:text-emerald-300 font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('wake')" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-slate-200 font-semibold text-left transition">
             ☀️ Разбудить экраны
           </button>
-          <button onclick="sendPultCommand('sleep')" class="p-3 rounded-xl bg-white/5 hover:bg-slate-500/20 border border-white/10 hover:border-slate-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('sleep')" class="p-3 rounded-xl bg-white/5 hover:bg-slate-500/20 border border-white/10 hover:border-slate-500/40 text-slate-200 font-semibold text-left transition">
             🌙 Погасить экраны
           </button>
-          <button onclick="sendPultCommand('home')" class="p-3 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 hover:text-teal-300 font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('home')" class="p-3 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 font-semibold text-left transition">
             🏠 Выйти на Главный
           </button>
-          <button onclick="sendPultCommand('clear_apps')" class="p-3 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-200 hover:text-rose-300 font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('clear_apps')" class="p-3 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-200 font-semibold text-left transition">
             🧹 Сбросить приложения
           </button>
-          <button onclick="sendPultCommand('reboot_adb')" class="p-3 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 hover:text-amber-300 font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('reboot_adb')" class="p-3 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 font-semibold text-left transition">
             🔄 Мягкий рестарт ADB
           </button>
-          <button onclick="sendPultCommand('check_proxy')" class="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 hover:text-purple-300 font-semibold transition-all text-left">
+          <button onclick="sendPultCommand('check_proxy')" class="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 font-semibold text-left transition">
             🌐 Проверить DNS/Сеть
           </button>
         </div>
       </div>
 
       <!-- Box 2: Automation Scenarios -->
-      <div class="cyber-card p-6 space-y-4">
+      <div class="glass rounded-3xl p-6 space-y-4">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <span>🚀 Сценарии автоматизации</span>
           <span class="text-[10px] text-slate-400 font-mono">(TikTok / Охваты)</span>
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <button onclick="runScenario('tt_warmup')" class="p-3.5 rounded-xl bg-white/5 hover:bg-[#E588A6]/20 border border-white/10 hover:border-[#E588A6]/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+          <button onclick="runScenario('tt_warmup')" class="p-3.5 rounded-xl bg-white/5 hover:bg-[#E588A6]/20 border border-white/10 hover:border-[#E588A6]/40 text-slate-200 font-semibold text-left transition">
             <div class="font-bold text-[#F3A6BF]">🔥 TikTok: Прогрев новичка</div>
-            <div class="text-[10px] text-slate-400 mt-1">18 минут органического скролла и визитов</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">18 мин органического скролла</div>
           </button>
-          <button onclick="runScenario('tt_scroll')" class="p-3.5 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+          <button onclick="runScenario('tt_scroll')" class="p-3.5 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 font-semibold text-left transition">
             <div class="font-bold text-teal-300">📱 TikTok: Скроллинг ленты</div>
-            <div class="text-[10px] text-slate-400 mt-1">Массовый серфинг FYP с паузами 5–35 сек</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Серфинг FYP с паузами 5–35 сек</div>
           </button>
-          <button onclick="runScenario('ai_comments')" class="p-3.5 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+          <button onclick="runScenario('ai_comments')" class="p-3.5 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 font-semibold text-left transition">
             <div class="font-bold text-purple-300">💬 Авто-ответы AI</div>
-            <div class="text-[10px] text-slate-400 mt-1">Генерация ответов в тональности девушек</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Ответы в стиле персонажей</div>
           </button>
-          <button onclick="runScenario('push_videos')" class="p-3.5 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+          <button onclick="runScenario('push_videos')" class="p-3.5 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 font-semibold text-left transition">
             <div class="font-bold text-amber-300">🚀 Пуш готовых видео</div>
-            <div class="text-[10px] text-slate-400 mt-1">Рассылка отрендеренных танцев с RTX 4060</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Рассылка сниппетов с RTX 4060</div>
           </button>
         </div>
       </div>
-
     </div>
 
-    <!-- PULT LIVE TERMINAL CONSOLE -->
-    <div class="cyber-card p-6 space-y-3">
+    <!-- LIVE CONSOLE -->
+    <div class="glass rounded-3xl p-6 space-y-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span class="text-xs font-bold text-white font-mono">Журнал команд и ответов ADB (Live Terminal)</span>
         </div>
-        <button onclick="clearConsoleLog()" class="text-[10px] font-mono text-slate-400 hover:text-white underline">
-          Очистить консоль
-        </button>
+        <button onclick="clearConsoleLog()" class="text-[10px] font-mono text-slate-400 hover:text-white underline">Очистить</button>
       </div>
 
-      <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-48 overflow-y-auto space-y-1">
-        <div class="text-slate-500">[System] Plitty Master Pult v3.1 инициализирован. Все 70 устройств на связи.</div>
+      <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-40 overflow-y-auto space-y-1">
+        <div class="text-slate-500">[System] Plitty Master Pult v3.2 инициализирован. Все 70 устройств на связи.</div>
         <div class="text-teal-400">[Stand] 50 телефонов Samsung Galaxy A26 подключены на порту TCP 2222.</div>
-        <div class="text-rose-400">[Minifarm] 10 инфлюенсеров (Слоты 1–10) + 10 служебных сервисов (Слоты 11–20) готовы к работе.</div>
+        <div class="text-pink-400">[Minifarm] 10 танцовщиц (Слоты 1–10) + 10 служебных сервисов (Слоты 11–20) готовы к работе.</div>
       </div>
     </div>
-
   </main>
 
   <!-- ================================================================= -->
-  <!-- FLOATING PLITTY ASSISTANT MODAL (Dual-Brain: Gemini / IDE Bridge) -->
+  <!-- SCREEN 5: CREATIVE STUDIO (Сниппеты & Генератор)                  -->
   <!-- ================================================================= -->
-  <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] cyber-card p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)] hidden">
-    
-    <!-- Chat Header -->
+  <main id="view-creativestudio" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
+    <div class="text-center space-y-2 mb-6">
+      <h1 class="text-3xl font-black text-white">Творческая Студия SnipPlit</h1>
+      <p class="text-xs text-slate-400">Генерация картинок 8K, видео-сниппетов и танцевальных моделей</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Card 1: Image Gen -->
+      <div class="glass rounded-3xl p-6 space-y-4 hover:border-pink-500/50 transition">
+        <div class="w-12 h-12 rounded-2xl bg-pink-500/20 text-2xl flex items-center justify-center">🎨</div>
+        <h3 class="text-xl font-bold text-white">Генератор картинок 8K</h3>
+        <p class="text-xs text-slate-400 leading-relaxed">Рендер фотосетов на локальной RTX 4060 GPU и Flux Ultra.</p>
+        <button onclick="showToast('Запуск генератора картинок...')" class="w-full py-2 rounded-xl bg-pink-500/20 border border-pink-500/40 text-xs font-bold text-pink-300 hover:bg-pink-500/30 transition">
+          Открыть Генератор
+        </button>
+      </div>
+
+      <!-- Card 2: Video Snippets -->
+      <div class="glass rounded-3xl p-6 space-y-4 hover:border-purple-500/50 transition">
+        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-2xl flex items-center justify-center">🎬</div>
+        <h3 class="text-xl font-bold text-white">Видео Сниппеты</h3>
+        <p class="text-xs text-slate-400 leading-relaxed">Монтаж хуков, нарезка аудио, динамические субтитры для TikTok.</p>
+        <button onclick="showToast('Запуск видеомонтажа...')" class="w-full py-2 rounded-xl bg-purple-500/20 border border-purple-500/40 text-xs font-bold text-purple-300 hover:bg-purple-500/30 transition">
+          Открыть Сниппеты
+        </button>
+      </div>
+
+      <!-- Card 3: Dance Models -->
+      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-6 space-y-4 hover:border-[#d946ef] transition cursor-pointer border-[#d946ef]/40">
+        <div class="w-12 h-12 rounded-2xl bg-fuchsia-500/20 text-2xl flex items-center justify-center">💃</div>
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-white">Dance AI Influencers</h3>
+          <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#d946ef] text-white">10 МОДЕЛЕЙ</span>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">Центр управления 10 танцовщицами: Face-Lock, паспорта, комнаты, фотосеты и промпты.</p>
+        <button class="w-full py-2 rounded-xl bg-[#d946ef] text-xs font-bold text-white hover:brightness-110 transition">
+          Открыть Танцульки &rarr;
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- FLOATING PLITTY ASSISTANT WIDGET                                  -->
+  <!-- ================================================================= -->
+  <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] glass rounded-3xl p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)]/50 hidden">
     <div class="flex items-center justify-between border-b border-white/10 pb-3">
       <div class="flex items-center gap-3">
         <div class="relative w-9 h-9 rounded-xl overflow-hidden border border-[var(--plitty-rose)] shrink-0">
@@ -629,61 +824,42 @@
         </div>
       </div>
 
-      <!-- Mode Switcher & Close -->
       <div class="flex items-center gap-1.5">
         <div class="p-0.5 rounded-xl bg-white/5 border border-white/10 text-[9px]">
-          <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900 transition-all">
-            ИИ
-          </button>
-          <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white transition-all">
-            IDE Мост
-          </button>
+          <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900 transition-all">ИИ</button>
+          <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white transition-all">IDE Мост</button>
         </div>
         <button onclick="togglePlittyAssistant()" class="p-1 text-slate-400 hover:text-white">✕</button>
       </div>
     </div>
 
-    <!-- Chat Messages Window -->
-    <div id="plitty-messages" class="h-64 overflow-y-auto space-y-3 p-2 text-xs">
+    <div id="plitty-messages" class="h-60 overflow-y-auto space-y-3 p-2 text-xs">
       <div class="flex gap-2.5">
         <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
           <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
         </div>
         <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
           <div class="text-[9px] font-bold text-[#F3A6BF]">Плитти</div>
-          <p>Привет! Чем помочь? Могу подсказать статус фермы, сгенерировать идеи для танцев или отправить команду в Пульт.</p>
+          <p>Привет! Чем помочь? Могу подсказать статус фермы, прогнать хореографию в Студии или отправить команду в Пульт.</p>
         </div>
       </div>
     </div>
 
-    <!-- Quick Prompt Pills -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
-      <button onclick="sendQuickPrompt('Статус фермы')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 whitespace-nowrap">
-        📊 Статус фермы
-      </button>
-      <button onclick="sendQuickPrompt('Идея для танца Киры')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[#F3A6BF] whitespace-nowrap">
-        💡 Идея танца
-      </button>
-      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-teal-300 whitespace-nowrap">
-        🔥 Прогрев полки
-      </button>
+      <button onclick="sendQuickPrompt('Статус фермы')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 whitespace-nowrap">📊 Статус фермы</button>
+      <button onclick="sendQuickPrompt('Идея танца для Айми')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[#F3A6BF] whitespace-nowrap">💡 Танец Айми</button>
+      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-teal-300 whitespace-nowrap">🔥 Прогрев полки</button>
     </div>
 
-    <!-- Chat Input Box -->
     <div class="flex items-center gap-2 pt-1 border-t border-white/10">
       <input type="text" id="plitty-input" onkeydown="handleChatKeyDown(event)" placeholder="Напишите Плитти вопрос или команду..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6]">
-      <button onclick="sendChatMessage()" class="pill-btn-rose px-3 py-2 text-xs">
-        ➤
-      </button>
+      <button onclick="sendChatMessage()" class="px-3 py-2 rounded-xl bg-[#E588A6] text-slate-950 font-bold text-xs hover:brightness-110 transition">➤</button>
     </div>
-
   </div>
 
-  <!-- ================================================================= -->
-  <!-- MODAL: SCRCPY LIVE STREAM SIMULATOR                               -->
-  <!-- ================================================================= -->
+  <!-- SCRCPY MODAL -->
   <div id="modal-scrcpy" class="fixed inset-0 z-50 backdrop-blur-md bg-black/80 flex items-center justify-center p-4 hidden">
-    <div class="cyber-card max-w-lg w-full p-6 space-y-4 border-[#2DD4BF]/50">
+    <div class="glass max-w-lg w-full p-6 space-y-4 rounded-3xl border-[#2DD4BF]/50">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-3">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -692,100 +868,69 @@
         <button onclick="closeScrcpyModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
 
-      <!-- Scrcpy Phone Display Frame -->
-      <div class="relative w-full aspect-[9/16] max-h-[460px] mx-auto bg-slate-950 rounded-3xl border-4 border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
-        <!-- Status Bar -->
+      <div class="relative w-full aspect-[9/16] max-h-[440px] mx-auto bg-slate-950 rounded-3xl border-4 border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
         <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
           <span>13:37</span>
-          <div class="flex items-center gap-1.5">
-            <span>5G</span>
-            <span id="scrcpy-battery">98% 🔋</span>
-          </div>
+          <span id="scrcpy-battery">98% 🔋</span>
         </div>
 
-        <!-- Simulated App Content -->
-        <div class="flex-1 flex flex-col items-center justify-center text-center p-4 space-y-3">
-          <div class="w-16 h-16 rounded-full bg-[#E588A6]/20 border border-[#E588A6] flex items-center justify-center text-3xl animate-bounce">
-            📱
-          </div>
+        <div class="flex-1 flex flex-col items-center justify-center text-center p-4 space-y-2">
+          <div class="w-14 h-14 rounded-full bg-[#E588A6]/20 border border-[#E588A6] flex items-center justify-center text-2xl animate-bounce">📱</div>
           <div id="scrcpy-device-info" class="text-sm font-bold text-white font-mono">Телефон Слот #1</div>
-          <div id="scrcpy-task-info" class="text-xs text-teal-300 font-mono">Статус: Скроллинг TikTok (FYP)</div>
-          <div class="text-[10px] text-slate-400">Scrcpy Web-Stream • 1080x2400 @ 60fps • 0 latency</div>
+          <div id="scrcpy-task-info" class="text-xs text-teal-300 font-mono">Статус: Готов к работе</div>
+          <div class="text-[9px] text-slate-500 font-mono">Scrcpy Web-Stream • 1080x2400 @ 60fps</div>
         </div>
 
-        <!-- Android Bottom Nav Bar -->
-        <div class="flex items-center justify-around pt-2 border-t border-white/10 text-slate-500 text-sm">
-          <button onclick="logAction('Scrcpy: Нажата кнопка Назад')" class="hover:text-white">◀</button>
-          <button onclick="logAction('Scrcpy: Нажата кнопка Домой')" class="hover:text-white">●</button>
-          <button onclick="logAction('Scrcpy: Нажата кнопка Приложения')" class="hover:text-white">■</button>
+        <div class="flex items-center justify-around pt-2 border-t border-white/10 text-slate-500 text-xs">
+          <button onclick="showToast('Scrcpy: Назад')" class="hover:text-white">◀</button>
+          <button onclick="showToast('Scrcpy: Домой')" class="hover:text-white">●</button>
+          <button onclick="showToast('Scrcpy: Приложения')" class="hover:text-white">■</button>
         </div>
       </div>
 
       <div class="flex items-center justify-between text-xs pt-2">
-        <button onclick="logAction('Scrcpy: Скриншот сохранен')" class="pill-btn-dark py-1.5 px-3">
-          📸 Скриншот
-        </button>
-        <button onclick="closeScrcpyModal()" class="pill-btn-rose py-1.5 px-4">
-          Закрыть
-        </button>
+        <button onclick="showToast('📸 Скриншот сохранен')" class="px-3 py-1.5 rounded-xl bg-white/10 text-white font-semibold">📸 Скриншот</button>
+        <button onclick="closeScrcpyModal()" class="px-4 py-1.5 rounded-xl bg-[#E588A6] text-slate-950 font-bold">Закрыть</button>
       </div>
     </div>
   </div>
 
-  <!-- ================================================================= -->
-  <!-- SCREEN 5: STUDIO VIEW (Студия генерации Higgsfield)                 -->
-  <!-- ================================================================= -->
-  <main id="view-studio" class="screen-view max-w-[1800px] mx-auto px-4 lg:px-8 pt-6 space-y-4">
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🎨</span> Plitty AI Studio — Higgsfield Generation Hub
-        </h2>
-        <p class="text-xs text-slate-400 mt-0.5">Двухколоночный интерфейс генерации 2K фото и видео танцев с автоподвязкой моделей</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="http://localhost:8501" target="_blank" class="pill-btn-rose text-xs py-1.5 px-4 shadow-lg">
-          <span>Открыть во весь экран ↗</span>
-        </a>
-      </div>
-    </div>
-    <div class="cyber-card p-2 overflow-hidden border-[rgba(229,136,166,0.3)] shadow-2xl rounded-2xl">
-      <iframe id="iframe-studio" src="http://localhost:8501" style="width: 100%; height: 86vh; border: none; border-radius: 16px; background: #06070B;" allow="clipboard-write; camera; microphone"></iframe>
-    </div>
-  </main>
-
-  <!-- ================================================================= -->
-  <!-- JAVASCRIPT LOGIC & STATE                                          -->
-  <!-- ================================================================= -->
+  <!-- JAVASCRIPT APP LOGIC -->
   <script>
-    // Injected Data
-    const INFLUENCERS_DATA = [{"id": "inf_01_aimi", "slot": 1, "name": "Айми Сато (Aimi Sato)", "alias": "SHIBUYA FLOW 🇯🇵", "avatar": "img/models/01_aimi.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "20 лет (14 мая 2006, Телец ♉)", "location": "Токио, Япония 🇯🇵", "archetype": "Евразийская уличная танцовщица", "room": "Лофт в стиле Сибуя: светлый дубовый паркет, темно-серый акцентный ковер, синее хаори на стене, монстера в кашпо (Неон: SHIBUYA FLOW)", "battery": 94, "status": "Скроллинг TT (прогрев)", "ip": "10.25.201.11:9999", "serial": "R5GL220ZZDT", "networks": {"tiktok": "@aimisato.dance", "instagram": "@aimi_sato_official", "youtube": "Aimi Sato Dance", "x": "@aimi_sato"}, "views": "915,000", "posts": 28, "ready_videos": 5}, {"id": "inf_02_kiko", "slot": 2, "name": "Кико Ито (Kiko Ito)", "alias": "K-POP REVOLUTION 🇰🇷", "avatar": "img/models/02_kiko.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "21 год (30 марта 2005, Овен ♈)", "location": "Сеул / Токио 🇰🇷", "archetype": "Высокая вижуал-айдол", "room": "Зеркальный K-pop зал для тренировок: светлый ламинат, лавандовая неоновая подсветка, зеркальная стена во весь рост (Неон: K-POP REVOLUTION)", "battery": 95, "status": "Готов к заливу танца", "ip": "10.25.201.12:9999", "serial": "R5GL2217RTF", "networks": {"tiktok": "@kikoito.dance", "instagram": "@kiko_ito_official", "youtube": "Kiko Ito Dance", "x": "@kiko_ito"}, "views": "980,000", "posts": 31, "ready_videos": 5}, {"id": "inf_03_rin", "slot": 3, "name": "Рин Мураками (Rin Murakami)", "alias": "KAWAII FLOW 🇯🇵", "avatar": "img/models/03_rin.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "22 года (19 января 2004, Козерог ♑)", "location": "Осака, Япония 🇯🇵", "archetype": "Милая танцовщица в маске", "room": "Каваи-студия в пастельно-мятных тонах: березовый пол, сияющий мятный неон KAWAII FLOW, мягкие светлые стены (Неон: KAWAII FLOW)", "battery": 96, "status": "Скроллинг TT (прогрев)", "ip": "10.25.201.13:9999", "serial": "R5GL2217SBF", "networks": {"tiktok": "@rinmurakami.dance", "instagram": "@rin_murakami_official", "youtube": "Rin Murakami Dance", "x": "@rin_murakami"}, "views": "1045,000", "posts": 34, "ready_videos": 5}, {"id": "inf_04_mira", "slot": 4, "name": "Мира Ланская (Mira Lanskaya)", "alias": "ANIME VIBES 🇷🇺", "avatar": "img/models/04_mira.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "18 лет (7 июля 2008, Рак ♋)", "location": "Санкт-Петербург, Россия 🇷🇺", "archetype": "Живая аниме-тян с большими глазами", "room": "Уютная светлая комната: канадский клен на полу, нежно-голубая акцентная стена с неоном ANIME VIBES, зеркало и окно в сад (Неон: ANIME VIBES)", "battery": 97, "status": "Готов к заливу танца", "ip": "10.25.201.14:9999", "serial": "R5GL2217XHM", "networks": {"tiktok": "@miralanskaya.dance", "instagram": "@mira_lanskaya_official", "youtube": "Mira Lanskaya Dance", "x": "@mira_lanskaya"}, "views": "1110,000", "posts": 37, "ready_videos": 5}, {"id": "inf_05_rada", "slot": 5, "name": "Рада Заречная (Rada Zarechnaya)", "alias": "SUNSHINE FLOW ☀️", "avatar": "img/models/05_rada.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "20 лет (24 июня 2006, Рак ♋)", "location": "Сочи / Киев ☀️", "archetype": "Солнечная славянка с веснушками", "room": "Теплая терракотовая студия: золотистый дубовый пол, неон SUNSHINE FLOW, струящиеся лучи закатного солнца (Неон: SUNSHINE FLOW)", "battery": 98, "status": "Скроллинг TT (прогрев)", "ip": "10.25.201.15:9999", "serial": "R5GL2217YQP", "networks": {"tiktok": "@radazarechnaya.dance", "instagram": "@rada_zarechnaya_official", "youtube": "Rada Zarechnaya Dance", "x": "@rada_zarechnaya"}, "views": "1175,000", "posts": 40, "ready_videos": 5}, {"id": "inf_06_hailey", "slot": 6, "name": "Хейли Миллер (Hailey Miller)", "alias": "MIDNIGHT FLOW 🇬🇧", "avatar": "img/models/06_hailey.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "21 год (2 августа 2005, Лев ♌)", "location": "Берлин / Лондон 🇬🇧", "archetype": "Готическая глэм-танцовщица", "room": "Атмосферная графитовая студия: темный эбеновый пол, винный неон MIDNIGHT FLOW, драматичные контрастные споты (Неон: MIDNIGHT FLOW)", "battery": 99, "status": "Готов к заливу танца", "ip": "10.25.201.16:9999", "serial": "R5GL2218AZA", "networks": {"tiktok": "@haileymiller.dance", "instagram": "@hailey_miller_official", "youtube": "Hailey Miller Dance", "x": "@hailey_miller"}, "views": "1240,000", "posts": 43, "ready_videos": 5}, {"id": "inf_07_alexa", "slot": 7, "name": "Алекса Кинг (Alexa King)", "alias": "REBEL FLOW 🇬🇧", "avatar": "img/models/07_alexa.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "22 года (4 ноября 2004, Скорпион ♏)", "location": "Манчестер / Лондон 🇬🇧", "archetype": "Бунтарка в цепях и рваном топе", "room": "Индустриальный лофт: сырые бетонные стены, ядовито-лаймовый неон REBEL FLOW, металлическая вентиляция, зеркала (Неон: REBEL FLOW)", "battery": 93, "status": "Скроллинг TT (прогрев)", "ip": "10.25.201.17:9999", "serial": "R5GYB0705MH", "networks": {"tiktok": "@alexaking.dance", "instagram": "@alexa_king_official", "youtube": "Alexa King Dance", "x": "@alexa_king"}, "views": "1305,000", "posts": 46, "ready_videos": 5}, {"id": "inf_08_amelie", "slot": 8, "name": "Амели Дюбуа (Amélie Dubois)", "alias": "BARBIE DREAMS 🇫🇷", "avatar": "img/models/08_amelie.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "19 лет (12 октября 2006, Весы ♎)", "location": "Париж, Франция 🇫🇷", "archetype": "Барби-косплеерша, пикми герл", "room": "Гламурная розовая спальня-студия: беленый дуб, розовая лепнина, неон BARBIE DREAMS, пушистый коврик и французский балкон (Неон: BARBIE DREAMS)", "battery": 94, "status": "Готов к заливу танца", "ip": "10.25.201.18:9999", "serial": "R5GYB0706GV", "networks": {"tiktok": "@améliedubois.dance", "instagram": "@amélie_dubois_official", "youtube": "Amélie Dubois Dance", "x": "@amélie_dubois"}, "views": "1370,000", "posts": 49, "ready_videos": 5}, {"id": "inf_09_marta", "slot": 9, "name": "Марта Бергман (Marta Bergman)", "alias": "STREET CIPHER 🇩🇪", "avatar": "img/models/09_marta.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "22 года (5 февраля 2004, Водолей ♒)", "location": "Стокгольм / Берлин 🇩🇪", "archetype": "Хип-хоперша в карго-штанах", "room": "Урбан-лофт студия: темный пепельный паркет, графитовый бетон, сияющий кобальтовый неон STREET CIPHER, зеркала и ночной мегаполис (Неон: STREET CIPHER)", "battery": 95, "status": "Скроллинг TT (прогрев)", "ip": "10.25.201.19:9999", "serial": "R5GYB0707CF", "networks": {"tiktok": "@martabergman.dance", "instagram": "@marta_bergman_official", "youtube": "Marta Bergman Dance", "x": "@marta_bergman"}, "views": "1435,000", "posts": 52, "ready_videos": 5}, {"id": "inf_10_mia", "slot": 10, "name": "Миа Вега (Mia Vega)", "alias": "HONEY GLOW 🇪🇺", "avatar": "img/models/10_mia.jpg", "fallback_avatar": "catgirl_avatar.png", "age": "19 лет (18 августа 2007, Лев ♌)", "location": "Париж / Барселона 🇪🇺", "archetype": "Худенькая блондинка с каре в мини-сарафане", "room": "Светлые парижские апартаменты: классические молдинги на кремовых стенах, теплый неон HONEY GLOW, арочный балкон, золотистый свет и дубовый паркет (Неон: HONEY GLOW)", "battery": 96, "status": "Готов к заливу танца", "ip": "10.25.201.20:9999", "serial": "R5GYB0707GN", "networks": {"tiktok": "@miavega.dance", "instagram": "@mia_vega_official", "youtube": "Mia Vega Dance", "x": "@mia_vega"}, "views": "1500,000", "posts": 55, "ready_videos": 5}];
+    const DANCERS_DATA = [{"id": "01_Aimi_Sato", "code": "inf_01_aimi", "name_ru": "Айми Сато", "name_en": "Aimi Sato", "city": "Токио, Япония", "country_flag": "🇯🇵", "age": "20 лет (14 мая 2006, Телец ♉)", "height": "178 см", "weight": "50 кг", "niche": "Streetwear Dance & Fitness Aesthetic", "archetype": "Евразийская уличная танцовщица", "color": "#E0A96D", "accent_glow": "rgba(224, 169, 109, 0.4)", "neon_text": "SHIBUYA FLOW", "email": "satoaimi319@gmail.com", "password": "123Alex123!", "bio": "Очаровательная евразийская танцовщица и фитнес-блогер из Токио. Снимает трендовые вирусные танцы и пластичные связки в оверсайз джоггерах и кроп-топах. Спокойный магнетический взгляд со стрелками, идеальная фигура и чистая уличная эстетика.", "outfit": "Бежевый нюдовый кроп-топ на тонких бретелях, черные оверсайз джоггеры, белые ретро-сникеры", "room_desc": "Лофт в стиле Сибуя: светлый дубовый паркет, темно-серый акцентный ковер, синее хаори на стене, монстера в кашпо", "face_prompt": "20-year-old attractive Eurasian girl, delicate porcelain pale milky skin, captivating hazel-brown almond eyes with signature sharp black winged cat-eye eyeliner, softly arched dark brown natural eyebrows, slender straight nose, unsmiling mauve-pink lips, long silky straight dark chocolate brown hair with middle parting", "body_prompt": "breathtaking athletic hourglass physique, very large natural rounded perky bust size 5, ultra-narrow tiny snatched wasp waist, flat smooth toned stomach with distinct vertical abdominal definition, delicate silver navel piercing barbell, shapely curvy wide hips, smooth toned legs", "room_prompt": "cozy compact modern apartment dance studio room, centered one-point perspective, textured dark charcoal grey accent rug in center on light oak wood floor, dark grey bean bag in left niche, dark blue Japanese haori robe hanging on center back wall, lush green monstera on right, warm pastel cream walls, soft natural daylight", "video_prompt": "Full length vertical 9:16 shot of Eurasian dancer Aimi Sato executing a smooth fluid hip-hop body roll and isolation choreography in her Tokyo loft. Beige tube crop top, black baggy sweatpants, natural hair movement, calm confident eye contact with the camera.", "category": "asia", "slot": 1, "serial": "R5GL220ZZDT", "ip": "10.25.201.11:9999", "battery": 94, "status": "Скроллинг TT (прогрев)"}, {"id": "02_Kiko_Ito", "code": "inf_02_kiko", "name_ru": "Кико Ито", "name_en": "Kiko Ito", "city": "Сеул / Токио", "country_flag": "🇰🇷", "age": "21 год (30 марта 2005, Овен ♈)", "height": "180 см", "weight": "45 кг", "niche": "K-Pop Visual Idol & Sharp Choreography", "archetype": "Высокая вижуал-айдол", "color": "#B388FF", "accent_glow": "rgba(179, 136, 255, 0.4)", "neon_text": "K-POP REVOLUTION", "email": "itokiko505@gmail.com", "password": "123Alex123!", "bio": "Высокая и невероятно грациозная вижуал-айдол с бесконечными ногами и кукольным лицом. Зажигает TikTok синхронными четкими движениями под треки NewJeans, LE SSERAFIM и IVE в плиссированных юбках и кроп-топах.", "outfit": "Черный минималистичный кроп-топ, плиссированная белая мини-юбка с высокой посадкой, белые носки, черно-белые ретро-сникеры", "room_desc": "Зеркальный K-pop зал для тренировок: светлый ламинат, лавандовая неоновая подсветка, зеркальная стена во весь рост", "face_prompt": "21-year-old tall Korean-Japanese visual idol dancer, porcelain skin, large expressive dark brown almond eyes with subtle aegyo-sal and neat winged eyeliner, straight slender nose, naturally pink glossy gradient lips, sleek straight jet-black hair with airy curtain bangs", "body_prompt": "tall slender idol dancer physique, height 180 cm, weight 45 kg, extremely long legs, tiny waist, flat stomach, graceful upright posture", "room_prompt": "minimalist K-pop dance rehearsal studio, full-length mirror wall, light ash wood dance floor, soft ambient lilac and cool white overhead neon lighting, clean spacious interior ready for dance rehearsal", "video_prompt": "Full length vertical 9:16 video of K-pop idol Kiko Ito performing a razor-sharp synchronized chorus dance routine. Black crop top, white pleated tennis mini skirt, long hair swaying gracefully with dynamic pirouettes and point choreography.", "category": "asia", "slot": 2, "serial": "R5GL2217RTF", "ip": "10.25.201.12:9999", "battery": 95, "status": "Готов к заливу танца"}, {"id": "03_Rin_Murakami", "code": "inf_03_rin", "name_ru": "Рин Мураками", "name_en": "Rin Murakami", "city": "Осака, Япония", "country_flag": "🇯🇵", "age": "22 года (19 января 2004, Козерог ♑)", "height": "163 см", "weight": "43 кг", "niche": "Kawaii Masked Dancer & J-Pop Bounces", "archetype": "Милая танцовщица в маске", "color": "#2DD4BF", "accent_glow": "rgba(45, 212, 191, 0.4)", "neon_text": "KAWAII FLOW", "email": "rinmurakami56@gmail.com", "password": "123Alex123!", "bio": "Таинственная звезда TikTok в фирменной черной тканевой маске и с милыми двойными пучками. Огромные сияющие аниме-глаза с эгьё-саль, миниатюрная фигурка и сверхпопулярные вирусные каваи-танцы.", "outfit": "Черная медицинская маска, черный укороченный лонгслив, мятно-пастельная плиссированная юбка, гетры, кроссовки", "room_desc": "Каваи-студия в пастельно-мятных тонах: березовый пол, сияющий мятный неон KAWAII FLOW, мягкие светлые стены", "face_prompt": "22-year-old Japanese kawaii dancer Rin Murakami, black pleated medical mask covering lower face and nose, large expressive hazel doe eyes with winged eyeliner, defined aegyo-sal, styled twin buns with loose strands, fair porcelain skin", "body_prompt": "petite slender dancer silhouette, height 163 cm, weight 43 kg, tiny waist, flat stomach, shapely legs in white leg warmers, cute upright posture", "room_prompt": "pastel mint dance rehearsal room, light birch wood floor, glowing pastel mint neon sign KAWAII FLOW on center wall, full-length mirror, soft ambient daylight", "video_prompt": "Full length vertical 9:16 clip of masked dancer Rin Murakami executing a viral cute kawaii bounce and heart-hand gestures. Twin buns bouncing, black fitted long sleeve, pleated skirt in motion, energetic cheerful tempo.", "category": "asia", "slot": 3, "serial": "R5GL2217SBF", "ip": "10.25.201.13:9999", "battery": 96, "status": "Скроллинг TT (прогрев)"}, {"id": "04_Mira_Lanskaya", "code": "inf_04_mira", "name_ru": "Мира Ланская", "name_en": "Mira Lanskaya", "city": "Санкт-Петербург, Россия", "country_flag": "🇷🇺", "age": "18 лет (7 июля 2008, Рак ♋)", "height": "168 см", "weight": "47 кг", "niche": "Slavic Anime Cosplay & J-Pop Trends", "archetype": "Живая аниме-тян с большими глазами", "color": "#38BDF8", "accent_glow": "rgba(56, 189, 248, 0.4)", "neon_text": "ANIME VIBES", "email": "lanskayamira7@gmail.com", "password": "123Alex123!", "bio": "Юная славянская косплеерша с огромными серо-голубыми аниме-глазами, золотисто-русыми волосами со шторкой и открытой улыбкой. Танцует вирусные аниме-опенинги и J-Pop тренды.", "outfit": "Кремовый кроп-топ, серо-голубая плиссированная мини-юбка, белые гольфы выше колена, белые сникеры", "room_desc": "Уютная светлая комната: канадский клен на полу, нежно-голубая акцентная стена с неоном ANIME VIBES, зеркало и окно в сад", "face_prompt": "18-year-old gorgeous Slavic anime girl Mira Lanskaya, large expressive anime-style grey-blue doe eyes with winged liner, small button nose, beaming natural smile showing teeth, honey-blonde hair with curtain bangs, fair smooth skin", "body_prompt": "slender toned petite dancer body, height 168 cm, weight 47 kg, tiny waist, flat stomach, smooth legs, cheerful youthful posture", "room_prompt": "bright anime aesthetic dance studio, powder blue feature wall with glowing cyan neon sign ANIME VIBES, light maple hardwood floor, full-length mirror, sunny afternoon daylight", "video_prompt": "Full length vertical 9:16 dance video of anime girl Mira Lanskaya dancing a high-energy J-pop choreography. Honey-blonde hair flowing, cream crop tee, pleated sky-blue skirt fluttering, warm bright smile to camera.", "category": "anime", "slot": 4, "serial": "R5GL2217XHM", "ip": "10.25.201.14:9999", "battery": 97, "status": "Готов к заливу танца"}, {"id": "05_Rada_Zarechnaya", "code": "inf_05_rada", "name_ru": "Рада Заречная", "name_en": "Rada Zarechnaya", "city": "Сочи / Киев", "country_flag": "☀️", "age": "20 лет (24 июня 2006, Рак ♋)", "height": "168 см", "weight": "51 кг", "niche": "Cottagecore Bounce & Afrobeat Grooves", "archetype": "Солнечная славянка с веснушками", "color": "#F97316", "accent_glow": "rgba(249, 115, 22, 0.4)", "neon_text": "SUNSHINE FLOW", "email": "zarechnayarada@gmail.com", "password": "123Alex123!", "bio": "Поцелованная солнцем танцовщица с изумрудными глазами, россыпью золотистых веснушек и кудрявыми медовыми волосами. Танцует жизнерадостные Afrobeat, дэнсхолл и летние связки.", "outfit": "Кремовый кроп-топ, терракотовая плиссированная мини-юбка, белые носочки, светлые кроссовки", "room_desc": "Теплая терракотовая студия: золотистый дубовый пол, неон SUNSHINE FLOW, струящиеся лучи закатного солнца", "face_prompt": "20-year-old sun-kissed Slavic beauty Rada Zarechnaya, sparkling emerald-green eyes, natural golden freckles across nose and cheeks, radiant warm smile, voluminous honey-caramel curly hair framing face", "body_prompt": "toned feminine dancer silhouette, height 168 cm, weight 51 kg, hourglass waist, shapely hips, athletic legs, vibrant warm posture", "room_prompt": "warm terracotta dance studio, golden oak hardwood floor, glowing amber-orange neon sign SUNSHINE FLOW on warm plaster wall, large window with golden hour sunset light, tall arched mirror", "video_prompt": "Full length vertical 9:16 dance video of Rada Zarechnaya grooving to an upbeat Afrobeat track. Honey curls bouncing, terracotta skirt swishing, energetic hip movements, warm glowing smile, golden light.", "category": "lifestyle", "slot": 5, "serial": "R5GL2217YQP", "ip": "10.25.201.15:9999", "battery": 98, "status": "Скроллинг TT (прогрев)"}, {"id": "06_Hailey_Miller", "code": "inf_06_hailey", "name_ru": "Хейли Миллер", "name_en": "Hailey Miller", "city": "Берлин / Лондон", "country_flag": "🇬🇧", "age": "21 год (2 августа 2005, Лев ♌)", "height": "172 см", "weight": "49 кг", "niche": "Gothic Glam & Midnight Techno Choreography", "archetype": "Готическая глэм-танцовщица", "color": "#E11D48", "accent_glow": "rgba(225, 29, 72, 0.4)", "neon_text": "MIDNIGHT FLOW", "email": "heileymiller3213@gmail.com", "password": "123Alex123!", "bio": "Ослепительная королева полуночного техно и готик-глэма. Иссиня-черные волны, пронзительные лазурные глаза, бархатный чокер с луной, черный корсет на шнуровке и высокие армейские ботинки.", "outfit": "Черный корсет на шнуровке с жесткими косточками, плиссированная черная готическая мини-юбка, черные кожаные берцы", "room_desc": "Атмосферная графитовая студия: темный эбеновый пол, винный неон MIDNIGHT FLOW, драматичные контрастные споты", "face_prompt": "21-year-old gothic glam dancer Hailey Miller, piercing vivid azure-blue eyes with dramatic winged eyeliner, jet-black wavy hair, dazzling smile, velvet choker with silver crescent moon, fair skin", "body_prompt": "tall slender dancer physique, height 172 cm, weight 49 kg, tiny waist in structured corset, long toned legs, commanding upright dance posture", "room_prompt": "moody dark dance studio, dark charcoal concrete wall with crimson red neon sign MIDNIGHT FLOW, dark ebony hardwood floor, full-length mirror, dramatic spotlighting", "video_prompt": "Full length vertical 9:16 video of gothic dancer Hailey Miller dancing to dark melodic techno. Black lace-up corset, flowing black pleated skirt, combat boots, sharp voguing and dynamic hand movements.", "category": "alt", "slot": 6, "serial": "R5GL2218AZA", "ip": "10.25.201.16:9999", "battery": 99, "status": "Готов к заливу танца"}, {"id": "07_Alexa_King", "code": "inf_07_alexa", "name_ru": "Алекса Кинг", "name_en": "Alexa King", "city": "Манчестер / Лондон", "country_flag": "🇬🇧", "age": "22 года (4 ноября 2004, Скорпион ♏)", "height": "176 см", "weight": "53 кг", "niche": "Alt Grunge Baddie & Hard Electro Dance", "archetype": "Бунтарка в цепях и рваном топе", "color": "#84CC16", "accent_glow": "rgba(132, 204, 22, 0.4)", "neon_text": "REBEL FLOW", "email": "kingalexa413@gmail.com", "password": "123Alex123!", "bio": "Дерзкая неформалка с текстурным вольф-катом и серебристыми прядями, янтарными кошачьими глазами, пирсингом носа и цепью с замком. Взрывает TikTok тяжелыми битами и резкой бэдди-хореографией.", "outfit": "Черный рваный кроп-топ, плиссированная гранж-юбка с цепями и люверсами, колготки в крупную сетку, армейские ботинки", "room_desc": "Индустриальный лофт: сырые бетонные стены, ядовито-лаймовый неон REBEL FLOW, металлическая вентиляция, зеркала", "face_prompt": "22-year-old alt grunge dancer Alexa King, edgy textured wolf-cut dark hair with silver streaks, feline amber-brown eyes, silver nostril hoop, chunky padlock chain, subtle smirk", "body_prompt": "tall athletic toned dancer frame, height 176 cm, weight 53 kg, flat stomach, long athletic legs in fishnets, bold grounded upright stance", "room_prompt": "raw industrial loft dance room, exposed concrete wall with glowing acid-lime neon sign REBEL FLOW, dark industrial wood floor, black metal pipes, full-length mirror", "video_prompt": "Full length vertical 9:16 clip of alt baddie Alexa King dancing an aggressive electro-shuffle routine. Distressed crop top, chains rattling with bass drops, combat boots tapping concrete floor, intense gaze.", "category": "alt", "slot": 7, "serial": "R5GYB0705MH", "ip": "10.25.201.17:9999", "battery": 93, "status": "Скроллинг TT (прогрев)"}, {"id": "08_Amelie_Dubois", "code": "inf_08_amelie", "name_ru": "Амели Дюбуа", "name_en": "Amélie Dubois", "city": "Париж, Франция", "country_flag": "🇫🇷", "age": "19 лет (12 октября 2006, Весы ♎)", "height": "167 см", "weight": "45 кг", "niche": "Hot Barbie Cosplayer & Pick-Me Aegyo Dances", "archetype": "Барби-косплеерша, пикми герл", "color": "#F472B6", "accent_glow": "rgba(244, 114, 182, 0.4)", "neon_text": "BARBIE DREAMS", "email": "ameliedubois2005@gmail.com", "password": "123Alex123!", "bio": "Кукольная парижанка в эстетике живой Барби. Платиновые волны с жемчужными бантиками, сияющие голубые глаза, пухлые губки бантиком и розовая мини-юбка с белыми чулками.", "outfit": "Пастельно-розовый топ с белым кружевом, розовая плиссированная мини-юбка, белые чулки выше колена, бело-розовые платформы", "room_desc": "Гламурная розовая спальня-студия: беленый дуб, розовая лепнина, неон BARBIE DREAMS, пушистый коврик и французский балкон", "face_prompt": "19-year-old gorgeous Barbie cosplayer Amélie Dubois, doll-like facial features, large sparkling blue doe eyes with aegyo-sal, small button nose, plump glossy pink lips, silky platinum hair with pearl bow clips", "body_prompt": "petite ultra-slender doll dancer body, height 167 cm, weight 45 kg, tiny snatched waist, shapely legs in white over-knee socks, graceful cute posture", "room_prompt": "glamorous Barbie bedroom studio, pastel bubblegum-pink feature wall with moulding, glowing magenta neon BARBIE DREAMS, bleached white hardwood floor, tall French window", "video_prompt": "Full length vertical 9:16 video of Barbie girl Amélie Dubois dancing a playful flirtatious aegyo dance. Pearl bows twinkling, pink pleated skirt swishing, delicate hand poses, dazzling sweet smile.", "category": "anime", "slot": 8, "serial": "R5GYB0706GV", "ip": "10.25.201.18:9999", "battery": 94, "status": "Готов к заливу танца"}, {"id": "09_Marta_Bergman", "code": "inf_09_marta", "name_ru": "Марта Бергман", "name_en": "Marta Bergman", "city": "Стокгольм / Берлин", "country_flag": "🇩🇪", "age": "22 года (5 февраля 2004, Водолей ♒)", "height": "174 см", "weight": "52 кг", "niche": "Urban Hip-Hop Queen & Street Dance Baddie", "archetype": "Хип-хоперша в карго-штанах", "color": "#3B82F6", "accent_glow": "rgba(59, 130, 246, 0.4)", "neon_text": "STREET CIPHER", "email": "bergmanmarta02@gmail.com", "password": "123Alex123!", "bio": "Дерзкая королева уличных джемов и урбан-хип-хопа. Тугие платиново-пепельные брейды в высокий хвост, ледяные серо-голубые глаза, массивные золотые серьги и цепи, свободные темные карго-штаны и сникеры.", "outfit": "Черный спортивный кроп-топ, свободные темно-серые карго-штаны с карманами и ремешками, черно-белые баскетбольные сникеры", "room_desc": "Урбан-лофт студия: темный пепельный паркет, графитовый бетон, сияющий кобальтовый неон STREET CIPHER, зеркала и ночной мегаполис", "face_prompt": "22-year-old Scandinavian urban hip-hop dancer Marta Bergman, sharp athletic facial structure, icy-blue eyes with winged eyeliner, defined cheekbones, tight platinum-ash cornrow braids into high ponytail with baby hairs, gold hoops and chains", "body_prompt": "tall athletic dancer silhouette, height 174 cm, weight 52 kg, toned flat stomach, confident grounded upright hip-hop posture", "room_prompt": "urban loft dance rehearsal room, dark slate concrete wall with electric cobalt blue neon sign STREET CIPHER, matte dark ash wood floor, loft window with twilight skyline, mirror wall", "video_prompt": "Full length vertical 9:16 capture of Marta Bergman dropping a powerful hip-hop isolation and popping routine. Gold chains flashing under spotlights, loose cargo pants, heavy bass vibrations, sharp precise footwork.", "category": "hiphop", "slot": 9, "serial": "R5GYB0707CF", "ip": "10.25.201.19:9999", "battery": 95, "status": "Скроллинг TT (прогрев)"}, {"id": "10_Mia_Vega", "code": "inf_10_mia", "name_ru": "Миа Вега", "name_en": "Mia Vega", "city": "Париж / Барселона", "country_flag": "🇪🇺", "age": "19 лет (18 августа 2007, Лев ♌)", "height": "158 см", "weight": "40 кг", "niche": "Petite Aesthetic Dance & Sundress Trends", "archetype": "Худенькая блондинка с каре в мини-сарафане", "color": "#EAB308", "accent_glow": "rgba(234, 179, 8, 0.4)", "neon_text": "HONEY GLOW", "email": "miavegamia2005@gmail.com", "password": "123Alex123!", "bio": "Ультра-утонченная, худенькая блондинка со светлым каре до подбородка и воздушной челкой. Точеные скулы, взрослый элегантный вечерний макияж, пышный кружевной мини-сарафан цвета айвори и завораживающие плавные танцы.", "outfit": "Пышный кружевной мини-сарафан цвета айвори на тонких бретелях, белые носочки с рюшами, туфли Мэри Джейн на платформе", "room_desc": "Светлые парижские апартаменты: классические молдинги на кремовых стенах, теплый неон HONEY GLOW, арочный балкон, золотистый свет и дубовый паркет", "face_prompt": "19-year-old petite blonde dancer Mia Vega, slim sharply sculpted facial structure, high defined cheekbones, narrow tapered jawline, slender neck and clavicles, straight silky chin-length blonde bob with wispy bangs, hazel-green doe eyes with winged eyeliner, satin mauve-nude lipstick", "body_prompt": "petite slender delicate dancer silhouette, height 158 cm, weight 40 kg, very skinny frame, narrow waist, visible clavicles, slender legs, graceful upright posture", "room_prompt": "chic sunlit Parisian apartment dance studio, matte bleached blonde oak floor, warm vanilla cream wall with moulding, glowing amber-gold neon cursive sign HONEY GLOW, arched balcony window with golden sunlight, arched floor mirror", "video_prompt": "Full length vertical 9:16 shot of petite blonde Mia Vega performing a graceful slow-motion twirl. Voluminous puffy ivory lace sundress flaring out, blonde bob catching golden afternoon sunlight, poised elegant gaze.", "category": "lifestyle", "slot": 10, "serial": "R5GYB0707GN", "ip": "10.25.201.20:9999", "battery": 96, "status": "Готов к заливу танца"}];
     const SERVICE_DATA = [{"slot": 11, "name": "Прогрев ленты TikTok #1", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "🔥", "color": "#10B981", "task": "Скроллинг рекомендаций FYP", "status": "Активен • Цикл 18 мин", "battery": 96, "ip": "10.25.201.21:9999", "serial": "R5GL220ZZDT", "script_id": "tt_warmup", "description": "Имитация органических просмотров видео (5–35 сек), случайные свайпы, защита от спам-фильтров."}, {"slot": 12, "name": "Прогрев профилей TikTok #2", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "📱", "color": "#10B981", "task": "Обход целевых профилей", "status": "Активен • Визит 4/6", "battery": 92, "ip": "10.25.201.22:9999", "serial": "R5GL2217RTF", "script_id": "tt_warmup", "description": "Переходы в профили авторов, просмотр первых видео, прогрев поискового алгоритмического следа."}, {"slot": 13, "name": "Автолайкер Сторис Instagram", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "❤️", "color": "#EC4899", "task": "Эмуляция story_seen", "status": "Активен • Пауза 40 сек", "battery": 97, "ip": "10.25.201.23:9999", "serial": "R5GL2217SBF", "script_id": "story_autoliker", "description": "Обход подписчиков конкурентов, эмуляция просмотра сторис, соблюдение жестких антифрод-лимитов 24/7."}, {"slot": 14, "name": "Smart AI-Комментирование", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "💬", "color": "#EC4899", "task": "Генерация реакций Gemini", "status": "Ожидание комментариев", "battery": 89, "ip": "10.25.201.24:9999", "serial": "R5GL2217XHM", "script_id": "ai_comments", "description": "Генерация контекстных ответов на входящие комментарии аудитории в тональности каждого персонажа."}, {"slot": 15, "name": "Сидер Контактов #1 (VCF Trust)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "👥", "color": "#3B82F6", "task": "Импорт базы contacts_1.vcf", "status": "150 контактов импортировано", "battery": 99, "ip": "10.25.201.25:9999", "serial": "R5GL2217YQP", "script_id": "deploy_contacts", "description": "Внедрение телефонной книги в Android для повышения траст-фактора и обхода спам-фильтров TT/IG."}, {"slot": 16, "name": "Сидер Контактов #2 (Social Graph)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "📇", "color": "#3B82F6", "task": "Ротация базы contacts_2.vcf", "status": "База контактов готова", "battery": 94, "ip": "10.25.201.26:9999", "serial": "R5GL2218AZA", "script_id": "deploy_contacts", "description": "Ротация телефонных номеров в памяти смартфона через ADB shell am start перед сменой учетных записей."}, {"slot": 17, "name": "Мобильный Прокси & Ротация IP", "category": "network", "category_title": "🌐 Сеть & Шлюз", "icon": "🌐", "color": "#2DD4BF", "task": "Мониторинг прокси-шлюза", "status": "Шлюз в норме • Ping 38ms", "battery": 98, "ip": "10.25.201.27:9999", "serial": "R5GYB0705MH", "script_id": "check_proxy", "description": "Контроль резидентных прокси, проверка DNS/WebRTC, смена мобильного IP через передергивание авиарежима."}, {"slot": 18, "name": "Контент-Дроппер & Стейджинг", "category": "content", "category_title": "🚀 Медиа-Стейджинг", "icon": "🚀", "color": "#F59E0B", "task": "Прием видео с RTX 4060", "status": "8 роликов в /sdcard/DCIM", "battery": 93, "ip": "10.25.201.28:9999", "serial": "R5GYB0706GV", "script_id": "push_videos", "description": "Синхронный прием видеофайлов через ADB push, индексация в системной галерее Android перед публикацией."}, {"slot": 19, "name": "Sandbox / Тест-Стенд Скриптов", "category": "dev", "category_title": "🧪 Отладка & Sandbox", "icon": "🧪", "color": "#A855F7", "task": "Калибровка touch x=0.16 y=0.60", "status": "Отладка координат ADB", "battery": 91, "ip": "10.25.201.29:9999", "serial": "R5GYB0707CF", "script_id": "run_test", "description": "Изолированное устройство для безопасного тестирования новых версий TikTok, APK-файлов и ADB-кликеров."}, {"slot": 20, "name": "Горячий Резерв (Failover Standby)", "category": "standby", "category_title": "🛡️ Запасной Аппарат", "icon": "🛡️", "color": "#94A3B8", "task": "Режим готовности к подмене", "status": "100% готов к замене любого слота", "battery": 100, "ip": "10.25.201.30:9999", "serial": "R5GYB0707GN", "script_id": "standby", "description": "Чистый отказоустойчивый смартфон для оперативной горячей замены любого аппарата фермы при сбое."}];
     const STAND_DATA = [{"slot": 51, "shelf": 1, "serial": "R5GL52C6QDB", "ip": "10.25.201.93:2222", "email": "phone51@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 52, "shelf": 1, "serial": "R5GL52C0JJM", "ip": "10.25.201.94:2222", "email": "phone52@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 53, "shelf": 1, "serial": "R5GL52C1SJZ", "ip": "10.25.201.97:2222", "email": "phone53@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 54, "shelf": 1, "serial": "R5GL522XNYR", "ip": "10.25.201.98:2222", "email": "phone54@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 55, "shelf": 1, "serial": "R5GL522Y1HA", "ip": "10.25.201.99:2222", "email": "phone55@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 56, "shelf": 1, "serial": "R5GL52C3ERF", "ip": "10.25.201.100:2222", "email": "phone56@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 57, "shelf": 1, "serial": "R5GL43WF6QL", "ip": "10.25.201.101:2222", "email": "phone57@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 58, "shelf": 1, "serial": "R5GL43WF2SR", "ip": "10.25.201.102:2222", "email": "phone58@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 59, "shelf": 1, "serial": "R5GL52C6WGK", "ip": "10.25.201.2:2222", "email": "phone59@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 60, "shelf": 1, "serial": "R5GL52C1QCZ", "ip": "10.25.201.104:2222", "email": "phone60@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 61, "shelf": 2, "serial": "R5GL447ZDBZ", "ip": "10.25.201.109:2222", "email": "phone61@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 62, "shelf": 2, "serial": "R5GL52C53YH", "ip": "10.25.201.105:2222", "email": "phone62@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 63, "shelf": 2, "serial": "R5GL50AGWKX", "ip": "10.25.201.106:2222", "email": "phone63@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 64, "shelf": 2, "serial": "R5GL52C1RBW", "ip": "10.25.201.107:2222", "email": "phone64@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 65, "shelf": 2, "serial": "R5GL447YDCY", "ip": "10.25.201.108:2222", "email": "phone65@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 66, "shelf": 2, "serial": "R5GL43WEJZD", "ip": "10.25.201.110:2222", "email": "phone66@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 67, "shelf": 2, "serial": "R5GL447YCQZ", "ip": "10.25.201.111:2222", "email": "phone67@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 68, "shelf": 2, "serial": "R5GL447ZTGX", "ip": "10.25.201.114:2222", "email": "phone68@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 69, "shelf": 2, "serial": "R5GL52C6W7V", "ip": "10.25.201.112:2222", "email": "phone69@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 70, "shelf": 2, "serial": "R5GL43WF2QK", "ip": "10.25.201.113:2222", "email": "phone70@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}, {"slot": 71, "shelf": 2, "serial": "R5GL447ZPEB", "ip": "10.25.201.135:2222", "email": "phone71@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 91, "temp": 33}, {"slot": 72, "shelf": 2, "serial": "R5GL447WRXB", "ip": "10.25.201.136:2222", "email": "phone72@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 92, "temp": 28}, {"slot": 73, "shelf": 2, "serial": "R5GL43WEKAM", "ip": "10.25.201.139:2222", "email": "phone73@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 93, "temp": 29}, {"slot": 74, "shelf": 2, "serial": "R5GL43WDG8X", "ip": "10.25.201.137:2222", "email": "phone74@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 94, "temp": 30}, {"slot": 75, "shelf": 2, "serial": "R5GL447WXJL", "ip": "10.25.201.138:2222", "email": "phone75@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 95, "temp": 31}, {"slot": 76, "shelf": 2, "serial": "R5GL447XX1H", "ip": "10.25.201.140:2222", "email": "phone76@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 96, "temp": 32}, {"slot": 77, "shelf": 2, "serial": "R5GL447WXDR", "ip": "10.25.201.141:2222", "email": "phone77@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 97, "temp": 33}, {"slot": 78, "shelf": 2, "serial": "R5GL13V9KST", "ip": "10.25.201.142:2222", "email": "phone78@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 98, "temp": 28}, {"slot": 79, "shelf": 2, "serial": "R5GL13V953T", "ip": "10.25.201.143:2222", "email": "phone79@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 99, "temp": 29}, {"slot": 80, "shelf": 2, "serial": "R5GL13V9Z0N", "ip": "10.25.201.145:2222", "email": "phone80@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 90, "temp": 30}, {"slot": 81, "shelf": 3, "serial": "R5GL447XPXW", "ip": "10.25.201.144:2222", "email": "phone81@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 82, "shelf": 3, "serial": "R5GL43WEERH", "ip": "10.25.201.150:2222", "email": "phone82@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 83, "shelf": 3, "serial": "R5GL44GS9GA", "ip": "10.25.201.146:2222", "email": "phone83@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 84, "shelf": 3, "serial": "R5GL51RXV0B", "ip": "10.25.201.152:2222", "email": "phone84@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 85, "shelf": 3, "serial": "R5GL43WEDLZ", "ip": "10.25.201.147:2222", "email": "phone85@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 86, "shelf": 3, "serial": "R5GL13V915X", "ip": "10.25.201.148:2222", "email": "phone86@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 87, "shelf": 3, "serial": "R5GL447ZLGL", "ip": "10.25.201.149:2222", "email": "phone87@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 88, "shelf": 3, "serial": "R5GL447Z02B", "ip": "10.25.201.151:2222", "email": "phone88@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 89, "shelf": 3, "serial": "R5GL43WEHCV", "ip": "10.25.201.154:2222", "email": "phone89@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 90, "shelf": 3, "serial": "R5GL43WEMND", "ip": "10.25.201.153:2222", "email": "phone90@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 91, "shelf": 3, "serial": "R5GL13V9AGD", "ip": "10.25.201.165:2222", "email": "phone91@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 92, "shelf": 3, "serial": "R5GL44GS9QD", "ip": "10.25.201.166:2222", "email": "phone92@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 93, "shelf": 3, "serial": "R5GL44GS2BN", "ip": "10.25.201.167:2222", "email": "phone93@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 94, "shelf": 3, "serial": "R5GL13V9RRT", "ip": "10.25.201.168:2222", "email": "phone94@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 95, "shelf": 3, "serial": "R5GL447WTWY", "ip": "10.25.201.169:2222", "email": "phone95@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 96, "shelf": 3, "serial": "R5GL447XSGM", "ip": "10.25.201.170:2222", "email": "phone96@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 97, "shelf": 3, "serial": "R5GL13V8YBW", "ip": "10.25.201.171:2222", "email": "phone97@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 98, "shelf": 3, "serial": "R5GL447WWYZ", "ip": "10.25.201.174:2222", "email": "phone98@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 99, "shelf": 3, "serial": "R5GL13VA6BR", "ip": "10.25.201.172:2222", "email": "phone99@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 100, "shelf": 3, "serial": "R5GL447WT7X", "ip": "10.25.201.173:2222", "email": "phone100@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}];
 
     let currentView = 'gateway';
+    let currentMinifarmScope = 'dancers'; // 'all', 'dancers', 'service'
+    let currentModelIndex = 0;
+    let currentPhotoTab = 'dance';
+    let currentNicheFilter = 'all';
     let pultTarget = 'all';
-    let plittyMode = 'ai'; // 'ai' or 'ide'
-    let currentMinifarmScope = 'all';
+    let plittyMode = 'ai';
+    let isPasswordRevealed = false;
 
-    // --- NAVIGATION ROUTING ---
+    // --- NAVIGATION ROUTER ---
     function navToView(viewName, targetParam = null) {
       currentView = viewName;
       document.querySelectorAll('.screen-view').forEach(el => el.classList.remove('active'));
       const targetEl = document.getElementById('view-' + viewName);
       if (targetEl) targetEl.classList.add('active');
 
-      // Update header nav buttons
-      ['gateway', 'minifarm', 'stand', 'pult', 'studio'].forEach(v => {
+      ['gateway', 'minifarm', 'stand', 'pult', 'creativestudio'].forEach(v => {
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
-            b.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-white bg-[rgba(229,136,166,0.22)] border border-[rgba(229,136,166,0.35)]';
           } else {
-            b.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all';
           }
         }
       });
+
+      if (viewName === 'minifarm' && targetParam) {
+        setMinifarmScope(targetParam);
+      }
 
       if (viewName === 'pult' && targetParam) {
         setPultTarget(targetParam);
@@ -794,190 +939,445 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- RENDER MINIFARM CARDS (10 Girls + 10 Service Phones) ---
-    function renderMinifarmGrids() {
-      renderInfluencersGrid(INFLUENCERS_DATA);
-      renderServiceGrid(SERVICE_DATA);
+    // --- MINIFARM SCOPE SWITCHER ---
+    function setMinifarmScope(scope) {
+      currentMinifarmScope = scope;
+
+      const btnAll = document.getElementById('minifarm-scope-all');
+      const btnDancers = document.getElementById('minifarm-scope-dancers');
+      const btnService = document.getElementById('minifarm-scope-service');
+
+      const viewAll = document.getElementById('minifarm-view-all');
+      const viewDancers = document.getElementById('minifarm-view-dancers');
+      const viewService = document.getElementById('minifarm-view-service');
+
+      // Reset buttons
+      [btnAll, btnDancers, btnService].forEach(b => {
+        if (b) b.className = 'px-3.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white';
+      });
+
+      viewAll.classList.add('hidden');
+      viewDancers.classList.add('hidden');
+      viewService.classList.add('hidden');
+
+      if (scope === 'all') {
+        btnAll.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-emerald-500 text-slate-950 font-bold shadow-md';
+        viewAll.classList.remove('hidden');
+        renderAllGrids();
+        resetAmbientBackdrop();
+      } else if (scope === 'dancers') {
+        btnDancers.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-[#d946ef] text-white font-bold shadow-md';
+        viewDancers.classList.remove('hidden');
+        renderDancersRoster();
+        selectDancer(currentModelIndex);
+      } else if (scope === 'service') {
+        btnService.className = 'px-3.5 py-1.5 rounded-lg transition-all bg-teal-400 text-slate-950 font-bold shadow-md';
+        viewService.classList.remove('hidden');
+        renderServiceOnlyGrid();
+        resetAmbientBackdrop();
+      }
     }
 
-    function renderInfluencersGrid(items) {
-      const grid = document.getElementById('minifarm-girls-grid');
-      if (!grid) return;
+    // --- SCOPE 1: RENDER ALL 20 PHONES OVERVIEW ---
+    function renderAllGrids(searchQuery = '') {
+      const dGrid = document.getElementById('all-dancers-grid');
+      const sGrid = document.getElementById('all-service-grid');
+      const q = (searchQuery || (document.getElementById('minifarm-search')?.value || '')).toLowerCase();
 
-      grid.innerHTML = items.map(g => `
-        <div class="cyber-card p-6 space-y-4 hover:border-[#E588A6] transition-all flex flex-col justify-between">
-          <div class="space-y-3.5">
-            <!-- Header with Avatar & Slot Badge -->
-            <div class="flex items-center gap-3.5">
-              <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[rgba(229,136,166,0.4)] shadow-md shrink-0 bg-slate-900">
-                <img src="${g.avatar}" onerror="this.src='${g.fallback_avatar}'" alt="${g.name}" class="w-full h-full object-cover">
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-bold text-[#F3A6BF] uppercase tracking-wider truncate">${g.alias}</span>
-                  <span class="text-[10px] font-mono font-black text-slate-950 bg-[#F3A6BF] px-2 py-0.5 rounded-full">
-                    СЛОТ #${g.slot}
-                  </span>
+      const filteredDancers = DANCERS_DATA.map((d, idx) => ({ ...d, origIdx: idx })).filter(d => 
+        !q || 
+        d.name_ru.toLowerCase().includes(q) || 
+        d.name_en.toLowerCase().includes(q) || 
+        d.city.toLowerCase().includes(q) || 
+        d.archetype.toLowerCase().includes(q) || 
+        String(d.slot).includes(q)
+      );
+
+      const filteredService = SERVICE_DATA.filter(s => 
+        !q || 
+        s.name.toLowerCase().includes(q) || 
+        s.category_title.toLowerCase().includes(q) || 
+        s.task.toLowerCase().includes(q) || 
+        String(s.slot).includes(q)
+      );
+
+      if (dGrid) {
+        dGrid.innerHTML = filteredDancers.map(d => `
+          <div class="glass rounded-2xl p-6 space-y-4 hover:border-[#E588A6] transition-all flex flex-col justify-between border" style="border-color: ${d.color}40; box-shadow: 0 12px 32px -10px rgba(0,0,0,0.7);">
+            <div class="space-y-3.5">
+              <!-- Header with Avatar & Slot Badge -->
+              <div class="flex items-center gap-3.5">
+                <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 shadow-md shrink-0 bg-slate-900" style="border-color: ${d.color};">
+                  <img src="dance_models/${d.id}/photos/master/avatar.jpg" alt="${d.name_ru}" class="w-full h-full object-cover">
                 </div>
-                <h3 class="text-base font-extrabold text-white truncate mt-0.5">${g.name}</h3>
-                <div class="text-[11px] text-slate-400 truncate">${g.location} • ${g.age} лет</div>
-              </div>
-            </div>
-
-            <!-- Archetype & Room -->
-            <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
-              <div><b class="text-slate-300">Архетип:</b> <span class="text-slate-400">${g.archetype}</span></div>
-              <div><b class="text-slate-300">Dance Room:</b> <span class="text-slate-400">${g.room}</span></div>
-            </div>
-
-            <!-- Single Dedicated Phone Box -->
-            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-2 font-mono">
-              <div class="flex items-center justify-between text-xs">
-                <div class="flex items-center gap-1.5 font-bold text-teal-300">
-                  <span>📱 Телефон инфлюенсера</span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold uppercase tracking-wider truncate" style="color: ${d.color};">${d.neon_text} ${d.country_flag}</span>
+                    <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full text-slate-950" style="background: ${d.color};">
+                      СЛОТ #${d.slot}
+                    </span>
+                  </div>
+                  <h3 class="text-base font-extrabold text-white truncate mt-0.5">${d.name_ru} (${d.name_en})</h3>
+                  <div class="text-[11px] text-slate-400 truncate">${d.city} • ${d.age}</div>
                 </div>
-                <span class="text-emerald-400 font-bold">${g.battery}% 🔋</span>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-400">
-                <span>IP: ${g.ip}</span>
-                <span class="text-[10px] text-slate-500">${g.serial}</span>
+
+              <!-- Archetype & Room -->
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
+                <div><b class="text-slate-300">Архетип:</b> <span class="text-slate-400">${d.archetype}</span></div>
+                <div><b class="text-slate-300">Dance Room:</b> <span class="text-slate-400">${d.room_desc}</span></div>
               </div>
-              <div class="text-[10px] text-emerald-400 truncate pt-1 border-t border-white/5">
-                ● ${g.status}
+
+              <!-- Single Dedicated Phone Box -->
+              <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-2 font-mono">
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-1.5 font-bold text-teal-300">
+                    <span>📱 Телефон танцовщицы</span>
+                  </div>
+                  <span class="text-emerald-400 font-bold">${d.battery}% 🔋</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                  <span>IP: ${d.ip}</span>
+                  <span class="text-[10px] text-slate-500">${d.serial}</span>
+                </div>
+                <div class="text-[10px] text-emerald-400 truncate pt-1 border-t border-white/5">
+                  ● ${d.status}
+                </div>
+              </div>
+
+              <!-- Networks / Badges -->
+              <div class="flex flex-wrap gap-1.5 text-[10px]">
+                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300 font-mono">TT: ${d.email}</span>
+                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300 font-mono">Pass: •••••••••</span>
+                <span class="px-2 py-0.5 rounded-md border text-slate-300 font-bold" style="border-color: ${d.color}50; color: ${d.color};">Неон: ${d.neon_text}</span>
               </div>
             </div>
 
-            <!-- Networks Badges -->
-            <div class="flex flex-wrap gap-1.5 text-[10px]">
-              <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">TT: ${g.networks.tiktok}</span>
-              <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">IG: ${g.networks.instagram}</span>
-              <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">YT: ${g.networks.youtube}</span>
+            <!-- Bottom Actions -->
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+              <button onclick="openScrcpyModal(${d.slot}, '${d.name_ru}', '${d.status}', ${d.battery})" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-semibold transition">
+                👁️ Экран #${d.slot}
+              </button>
+              <button onclick="jumpToDancer(${d.origIdx})" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition flex items-center gap-1.5" style="background: ${d.color};">
+                <span>💃 В Студию</span>
+                <span>&rarr;</span>
+              </button>
             </div>
           </div>
+        `).join('');
+      }
 
-          <!-- Bottom Actions -->
-          <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-            <button onclick="openScrcpyModal(${g.slot}, '${g.name}', '${g.status}', ${g.battery})" class="pill-btn-dark text-[11px] py-1.5 px-3">
-              👁️ Экран #${g.slot}
-            </button>
-            <button onclick="logAction('Запуск видеогенератора для ' + '${g.name}')" class="pill-btn-rose text-[11px] py-1.5 px-3">
-              🎬 Создать танец
-            </button>
+      if (sGrid) {
+        sGrid.innerHTML = filteredService.map(s => `
+          <div class="glass rounded-2xl p-6 space-y-4 hover:border-[#2DD4BF] transition-all flex flex-col justify-between border border-white/10" style="box-shadow: 0 12px 32px -10px rgba(0,0,0,0.7);">
+            <div class="space-y-3.5">
+              <!-- Header with Icon & Slot Badge -->
+              <div class="flex items-center gap-3.5">
+                <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0">
+                  ${s.icon}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">${s.category_title}</span>
+                    <span class="text-[10px] font-mono font-black text-slate-950 bg-teal-400 px-2 py-0.5 rounded-full">
+                      СЛОТ #${s.slot}
+                    </span>
+                  </div>
+                  <h3 class="text-base font-extrabold text-white truncate mt-0.5">${s.name}</h3>
+                  <div class="text-[11px] text-slate-400 truncate">IP: ${s.ip} • ${s.serial}</div>
+                </div>
+              </div>
+
+              <!-- Description & Algorithm -->
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
+                <div class="text-slate-300 leading-relaxed">${s.description}</div>
+              </div>
+
+              <!-- Current Task Status Box -->
+              <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400 text-[10px]">Текущая задача:</span>
+                  <span class="text-emerald-400 font-bold">${s.battery}% 🔋</span>
+                </div>
+                <div class="text-xs font-bold text-teal-300 truncate">${s.task}</div>
+                <div class="text-[10px] text-amber-300 truncate">● ${s.status}</div>
+              </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+              <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-semibold transition">
+                👁️ Экран #${s.slot}
+              </button>
+              <button onclick="runScenario('${s.script_id}')" class="px-3.5 py-1.5 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 hover:text-white text-xs font-bold transition">
+                ▶️ Запустить
+              </button>
+              <button onclick="sendPultCommand('reboot_adb')" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-300 text-xs transition" title="Рестарт ADB">
+                🔄
+              </button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
     }
 
-    function renderServiceGrid(items) {
-      const grid = document.getElementById('minifarm-service-grid');
-      if (!grid) return;
+    function jumpToDancer(idx) {
+      setMinifarmScope('dancers');
+      selectDancer(idx);
+    }
 
-      grid.innerHTML = items.map(s => `
-        <div class="cyber-card p-6 space-y-4 hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
-          <div class="space-y-3.5">
-            <!-- Header with Icon & Slot Badge -->
-            <div class="flex items-center gap-3.5">
-              <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0">
+    // --- SCOPE 2: DANCERS INTERACTIVE STUDIO (from dashboard.html) ---
+    function renderDancersRoster() {
+      const container = document.getElementById('dancers-roster-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = (document.getElementById('minifarm-search')?.value || '').toLowerCase();
+
+      DANCERS_DATA.forEach((m, idx) => {
+        let matchNiche = true;
+        if (currentNicheFilter !== 'all') {
+          matchNiche = (m.category === currentNicheFilter);
+        }
+
+        const matchSearch = m.name_ru.toLowerCase().includes(query) ||
+                            m.name_en.toLowerCase().includes(query) ||
+                            m.city.toLowerCase().includes(query) ||
+                            m.archetype.toLowerCase().includes(query) ||
+                            String(m.slot).includes(query);
+
+        if (!matchNiche || !matchSearch) return;
+
+        const isSelected = idx === currentModelIndex;
+        const card = document.createElement('div');
+        card.className = `p-2.5 rounded-xl cursor-pointer transition-all duration-300 border flex items-center gap-2.5 relative overflow-hidden ${
+          isSelected 
+            ? 'shadow-xl transform scale-[1.02]' 
+            : 'bg-slate-900/60 border-white/5 hover:bg-slate-800/50 hover:border-white/10'
+        }`;
+
+        if (isSelected) {
+          card.style.background = `linear-gradient(135deg, ${m.color}25 0%, rgba(15, 23, 42, 0.9) 100%)`;
+          card.style.borderColor = m.color;
+          card.style.boxShadow = `0 0 18px -3px ${m.color}44`;
+        }
+
+        card.onclick = () => selectDancer(idx);
+
+        const avatarPath = `dance_models/${m.id}/photos/master/avatar.jpg`;
+
+        card.innerHTML = `
+          <div class="relative flex-shrink-0">
+            <img src="${avatarPath}" class="w-10 h-10 rounded-xl object-cover border" style="border-color: ${isSelected ? m.color : 'rgba(255,255,255,0.1)'}">
+            <span class="absolute -bottom-1 -right-1 text-[10px]">${m.country_flag}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold ${isSelected ? 'text-white font-black' : 'text-slate-200'} truncate">${m.name_ru}</h4>
+              <span class="text-[9px] font-mono font-bold text-slate-400">СЛОТ #${m.slot}</span>
+            </div>
+            <p class="text-[10px] text-slate-400 truncate mt-0.5">${m.niche}</p>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="text-[8px] font-bold px-1.5 py-0.2 rounded" style="background: ${m.color}22; color: ${m.color}; border: 1px solid ${m.color}44;">
+                ${m.neon_text}
+              </span>
+              <span class="text-[9px] text-slate-500 font-mono">${m.height}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function selectDancer(idx) {
+      currentModelIndex = idx;
+      const m = DANCERS_DATA[idx];
+      if (!m) return;
+
+      renderDancersRoster();
+      applyDancerTheme(m);
+
+      // Hero
+      document.getElementById('dancer-avatar').src = `dance_models/${m.id}/photos/master/avatar.jpg`;
+      document.getElementById('dancer-flag').textContent = m.country_flag;
+      document.getElementById('dancer-name-ru').textContent = m.name_ru;
+      document.getElementById('dancer-badge-niche').textContent = m.niche;
+      document.getElementById('dancer-badge-niche').style.background = m.color + '25';
+      document.getElementById('dancer-badge-niche').style.color = m.color;
+      document.getElementById('dancer-badge-niche').style.border = '1px solid ' + m.color + '50';
+      document.getElementById('dancer-meta').textContent = `${m.city} • ${m.age} • ${m.height} • ${m.weight}`;
+      document.getElementById('dancer-slot-badge').textContent = `СЛОТ #${m.slot}`;
+      document.getElementById('dancer-battery-badge').textContent = `${m.battery}% 🔋 (${m.status})`;
+      document.getElementById('dancer-bio').textContent = m.bio;
+      document.getElementById('btn-scrcpy-slot-num').textContent = `#${m.slot}`;
+
+      // Credentials
+      document.getElementById('cred-email').textContent = m.email;
+      document.getElementById('cred-pass').textContent = isPasswordRevealed ? m.password : '•••••••••••';
+
+      // Prompts
+      document.getElementById('prompt-video').textContent = m.video_prompt;
+      document.getElementById('prompt-face').textContent = m.face_prompt;
+      document.getElementById('prompt-body').textContent = m.body_prompt;
+      document.getElementById('prompt-room').textContent = m.room_prompt;
+
+      // Photo
+      switchPhotoTab(currentPhotoTab);
+    }
+
+    function switchPhotoTab(tabKey) {
+      currentPhotoTab = tabKey;
+      const m = DANCERS_DATA[currentModelIndex];
+      if (!m) return;
+
+      const photoMap = {
+        'dance': { file: 'body_dance_room_full.jpg', tag: '💃 В комнате (9:16) • Ростовой кадр' },
+        'studio': { file: 'body_frontal_full.jpg', tag: '🧍 Студия (9:16) • Фронтальный мастер-кадр' },
+        'room': { file: 'room.jpg', tag: '🏠 Зал (9:16) • Интерьер с фирменным неоном' },
+        'face': { file: 'official_face_lock.jpg', tag: '👩 Лицо (1:1) • Official Face-Lock' },
+        'avatar': { file: 'avatar.jpg', tag: '🖼️ Аватарка (1:1) • Square Avatar' }
+      };
+
+      ['dance', 'studio', 'room', 'face', 'avatar'].forEach(k => {
+        const btn = document.getElementById('ptab-' + k);
+        if (btn) {
+          if (k === tabKey) {
+            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 text-white';
+            btn.style.background = m.color;
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+            btn.style.background = 'transparent';
+          }
+        }
+      });
+
+      const entry = photoMap[tabKey];
+      const imgPath = `dance_models/${m.id}/photos/master/${entry.file}`;
+      const mainImg = document.getElementById('dancer-main-preview-img');
+      if (mainImg) {
+        mainImg.src = imgPath;
+      }
+      document.getElementById('photo-tag-pill').textContent = entry.tag;
+    }
+
+    function applyDancerTheme(m) {
+      const color = m.color;
+      const backdrop = document.getElementById('ambient-backdrop');
+      if (backdrop) {
+        backdrop.style.background = `
+          radial-gradient(ellipse 90% 60% at 50% -10%, ${color}35 0%, transparent 70%),
+          radial-gradient(ellipse 70% 50% at 85% 35%, ${color}25 0%, transparent 65%),
+          radial-gradient(ellipse 65% 55% at 15% 80%, ${color}22 0%, transparent 60%),
+          #050814
+        `;
+      }
+
+      const brandTitle = document.getElementById('dancers-brand-title');
+      if (brandTitle) {
+        brandTitle.style.background = `linear-gradient(135deg, #ffffff 0%, ${color} 100%)`;
+        brandTitle.style.webkitBackgroundClip = 'text';
+        brandTitle.style.webkitTextFillColor = 'transparent';
+      }
+
+      const imgStage = document.getElementById('image-stage');
+      if (imgStage) {
+        imgStage.style.boxShadow = `inset 0 0 35px -10px ${color}35, 0 0 20px -8px ${color}30`;
+        imgStage.style.borderColor = color + '40';
+      }
+    }
+
+    function resetAmbientBackdrop() {
+      const backdrop = document.getElementById('ambient-backdrop');
+      if (backdrop) {
+        backdrop.style.background = `
+          radial-gradient(circle at 50% -100px, rgba(229,136,166,0.12) 0%, rgba(45,212,191,0.05) 50%, transparent 75%),
+          #050814
+        `;
+      }
+    }
+
+    function setNicheFilter(filter) {
+      currentNicheFilter = filter;
+      document.querySelectorAll('.niche-btn').forEach(btn => {
+        if (btn.dataset.filter === filter) {
+          btn.className = 'niche-btn px-2 py-1 rounded-lg font-bold bg-[#d946ef] text-white whitespace-nowrap';
+        } else {
+          btn.className = 'niche-btn px-2 py-1 rounded-lg font-semibold bg-slate-900 text-slate-400 hover:text-white whitespace-nowrap';
+        }
+      });
+      renderDancersRoster();
+    }
+
+    function handleMinifarmSearch() {
+      const q = (document.getElementById('minifarm-search')?.value || '').toLowerCase();
+      if (currentMinifarmScope === 'all') {
+        renderAllGrids(q);
+      } else if (currentMinifarmScope === 'dancers') {
+        renderDancersRoster();
+      } else if (currentMinifarmScope === 'service') {
+        renderServiceOnlyGrid(q);
+      }
+    }
+
+    // --- SCOPE 3: SERVICE ONLY ---
+    function renderServiceOnlyGrid(searchQuery = '') {
+      const grid = document.getElementById('service-only-grid');
+      if (!grid) return;
+      const q = (searchQuery || (document.getElementById('minifarm-search')?.value || '')).toLowerCase();
+
+      const filtered = SERVICE_DATA.filter(s => 
+        !q || 
+        s.name.toLowerCase().includes(q) || 
+        s.category_title.toLowerCase().includes(q) || 
+        s.task.toLowerCase().includes(q) || 
+        String(s.slot).includes(q)
+      );
+
+      grid.innerHTML = filtered.map(s => `
+        <div class="glass rounded-2xl p-6 space-y-4 border border-white/10 hover:border-teal-400/50 transition flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shrink-0">
                 ${s.icon}
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">${s.category_title}</span>
-                  <span class="text-[10px] font-mono font-black text-slate-950 bg-teal-400 px-2 py-0.5 rounded-full">
+                  <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider">${s.category_title}</span>
+                  <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-teal-400 text-slate-950">
                     СЛОТ #${s.slot}
                   </span>
                 </div>
-                <h3 class="text-base font-extrabold text-white truncate mt-0.5">${s.name}</h3>
-                <div class="text-[11px] text-slate-400 truncate">IP: ${s.ip} • ${s.serial}</div>
+                <h3 class="text-sm font-bold text-white truncate mt-0.5">${s.name}</h3>
+                <div class="text-[10px] text-slate-400 truncate">IP: ${s.ip}</div>
               </div>
             </div>
 
-            <!-- Description & Algorithm -->
-            <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
-              <div class="text-slate-300 leading-relaxed">${s.description}</div>
-            </div>
+            <p class="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-white/5">${s.description}</p>
 
-            <!-- Current Task Status Box -->
-            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-slate-400 text-[10px]">Текущая задача:</span>
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1 font-mono text-xs">
+              <div class="flex justify-between text-slate-400 text-[10px]">
+                <span>Задача:</span>
                 <span class="text-emerald-400 font-bold">${s.battery}% 🔋</span>
               </div>
-              <div class="text-xs font-bold text-teal-300 truncate">${s.task}</div>
+              <div class="text-teal-300 font-bold truncate">${s.task}</div>
               <div class="text-[10px] text-amber-300 truncate">● ${s.status}</div>
             </div>
           </div>
 
-          <!-- Bottom Actions -->
-          <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-            <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="pill-btn-dark text-[11px] py-1.5 px-3">
+          <div class="pt-3 border-t border-white/10 flex items-center gap-2 text-xs">
+            <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-center transition">
               👁️ Экран #${s.slot}
             </button>
-            <button onclick="runScenario('${s.script_id}')" class="pill-btn-dark bg-teal-500/15 border-teal-500/30 text-teal-300 hover:text-white text-[11px] py-1.5 px-3">
+            <button onclick="runScenario('${s.script_id}')" class="py-2 px-3 rounded-xl bg-teal-500/20 border border-teal-500/40 text-teal-300 font-bold transition">
               ▶️ Запустить
-            </button>
-            <button onclick="restartAdbDevice(${s.slot})" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-300 text-xs transition-all" title="Рестарт ADB">
-              🔄
             </button>
           </div>
         </div>
       `).join('');
     }
 
-    function filterMinifarmScope(scope) {
-      currentMinifarmScope = scope;
-      
-      const btnAll = document.getElementById('minifarm-tab-all');
-      const btnGirls = document.getElementById('minifarm-tab-girls');
-      const btnService = document.getElementById('minifarm-tab-service');
-      
-      const secGirls = document.getElementById('minifarm-girls-section');
-      const secService = document.getElementById('minifarm-service-section');
-
-      // Reset styles
-      [btnAll, btnGirls, btnService].forEach(b => {
-        if (b) b.className = 'px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all';
-      });
-
-      if (scope === 'all') {
-        btnAll.className = 'px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all';
-        secGirls.style.display = 'block';
-        secService.style.display = 'block';
-      } else if (scope === 'girls') {
-        btnGirls.className = 'px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all';
-        secGirls.style.display = 'block';
-        secService.style.display = 'none';
-      } else if (scope === 'service') {
-        btnService.className = 'px-3 py-1.5 rounded-xl font-bold bg-teal-400 text-slate-900 transition-all';
-        secGirls.style.display = 'none';
-        secService.style.display = 'block';
-      }
-    }
-
-    function applyMinifarmFilter() {
-      const query = (document.getElementById('minifarm-search')?.value || '').toLowerCase();
-      
-      const filteredGirls = INFLUENCERS_DATA.filter(g => 
-        g.name.toLowerCase().includes(query) ||
-        g.alias.toLowerCase().includes(query) ||
-        g.location.toLowerCase().includes(query) ||
-        String(g.slot).includes(query)
-      );
-
-      const filteredService = SERVICE_DATA.filter(s => 
-        s.name.toLowerCase().includes(query) ||
-        s.category_title.toLowerCase().includes(query) ||
-        s.task.toLowerCase().includes(query) ||
-        String(s.slot).includes(query)
-      );
-
-      renderInfluencersGrid(filteredGirls);
-      renderServiceGrid(filteredService);
-    }
-
-    // --- RENDER STAND PHONES GRID (50 Phones) ---
+    // --- STAND GRID ---
     let currentShelfFilter = 'all';
-
     function renderStandGrid(filter = currentShelfFilter) {
       currentShelfFilter = filter;
       const grid = document.getElementById('stand-grid');
@@ -986,31 +1386,18 @@
       const filtered = filter === 'all' ? STAND_DATA : STAND_DATA.filter(p => p.shelf === filter);
 
       grid.innerHTML = filtered.map(p => `
-        <div class="cyber-card p-3 space-y-2 hover:border-[#2DD4BF] transition-all flex flex-col justify-between text-left">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="text-base font-black text-white font-mono">#${p.slot}</span>
-              <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-500/20">
-                ${p.battery}%
-              </span>
-            </div>
-            <div class="text-[9px] text-teal-300 font-mono truncate mt-0.5">${p.ip}</div>
-            <div class="text-[8px] text-slate-500 font-mono truncate">${p.serial}</div>
+        <div class="glass rounded-xl p-2.5 space-y-1.5 border border-white/5 hover:border-[#2DD4BF] transition text-left text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-black text-white font-mono">#${p.slot}</span>
+            <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-500/20">
+              ${p.battery}%
+            </span>
           </div>
-
-          <div class="text-[9px] text-slate-300 truncate pt-1 border-t border-white/5">
-            <span class="w-1.5 h-1.5 rounded-full inline-block ${p.slot % 3 === 0 ? 'bg-teal-400' : 'bg-emerald-400'} mr-1"></span>
-            ${p.task}
-          </div>
-
-          <div class="flex items-center gap-1 pt-1">
-            <button onclick="openScrcpyModal(${p.slot}, 'Телефон #${p.slot}', '${p.task}', ${p.battery})" class="flex-1 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[9px] font-bold text-slate-300 hover:text-white transition-all text-center" title="Scrcpy Экран">
-              👁️ Экран
-            </button>
-            <button onclick="restartAdbDevice(${p.slot})" class="py-1 px-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[9px] font-bold text-slate-400 hover:text-rose-300 transition-all" title="Рестарт ADB">
-              🔄
-            </button>
-          </div>
+          <div class="text-[9px] text-teal-300 font-mono truncate">${p.ip}</div>
+          <div class="text-[9px] text-slate-300 truncate pt-1 border-t border-white/5">● ${p.task}</div>
+          <button onclick="openScrcpyModal(${p.slot}, 'Телефон #${p.slot}', '${p.task}', ${p.battery})" class="w-full py-1 rounded bg-white/5 hover:bg-white/10 text-[9px] font-bold text-slate-300 text-center transition">
+            👁️ Экран
+          </button>
         </div>
       `).join('');
     }
@@ -1019,96 +1406,136 @@
       ['all', 1, 2, 3].forEach(s => {
         const b = document.getElementById('btn-shelf-' + s);
         if (b) {
-          if (s === shelf) {
-            b.className = 'pill-btn-dark bg-[#2DD4BF]/20 border-[#2DD4BF]/50 text-white font-bold';
-          } else {
-            b.className = 'pill-btn-dark text-slate-400';
-          }
+          b.className = s === shelf 
+            ? 'px-3 py-1.5 rounded-xl font-bold bg-[#2DD4BF]/20 border border-[#2DD4BF]/50 text-white text-xs'
+            : 'px-3 py-1.5 rounded-xl text-slate-400 bg-white/5 border border-white/10 text-xs';
         }
       });
       renderStandGrid(shelf);
     }
 
-    // --- PULT TARGET SELECTOR ---
+    // --- PULT ACTIONS ---
     function setPultTarget(target) {
       pultTarget = target;
-      const summaryBadge = document.getElementById('target-summary-badge');
-      
+      const badge = document.getElementById('target-summary-badge');
       ['all', 'minifarm', 'stand'].forEach(t => {
         const b = document.getElementById('target-btn-' + t);
         if (b) {
-          if (t === target) {
-            b.className = 'p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all';
-          } else {
-            b.className = 'p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all';
-          }
+          b.className = t === target
+            ? 'p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all'
+            : 'p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all';
         }
       });
 
-      if (target === 'all') {
-        summaryBadge.textContent = 'Вся ферма: 70 телефонов';
-        appendConsoleLog('[Pult] Целевая группа переключена на: ВСЕ 70 ТЕЛЕФОНОВ');
-      } else if (target === 'minifarm') {
-        summaryBadge.textContent = 'Только Мини-ферма: 20 телефонов';
-        appendConsoleLog('[Pult] Целевая группа: ТОЛЬКО МИНИ-ФЕРМА (Слоты 1–20)');
-      } else if (target === 'stand') {
-        summaryBadge.textContent = 'Только Стенд: 50 телефонов';
-        appendConsoleLog('[Pult] Целевая группа: ТОЛЬКО СТЕНД (Слоты 51–100)');
-      }
+      if (target === 'all') badge.textContent = 'Вся ферма: 70 телефонов';
+      else if (target === 'minifarm') badge.textContent = 'Только Мини-ферма: 20 телефонов';
+      else if (target === 'stand') badge.textContent = 'Только Стенд: 50 телефонов';
+
+      appendConsoleLog(`[Pult] Целевая группа: ${target.toUpperCase()}`);
     }
 
     function sendPultCommand(cmd) {
-      const map = {
-        'wake': 'Команда WAKE UP (Разбудить экраны)',
-        'sleep': 'Команда SLEEP (Погасить экраны)',
-        'home': 'Команда KEYEVENT_HOME (Главный экран)',
-        'clear_apps': 'Команда KILL_BACKGROUND_APPS (Закрыть приложения)',
-        'reboot_adb': 'Команда SOFT_REBOOT_ADB (Мягкий рестарт ADB)',
-        'check_proxy': 'Команда CHECK_PROXY_DNS (Проверка сетевого шлюза)'
-      };
-      appendConsoleLog(`[Pult CMD] -> ${map[cmd] || cmd} отправлена на [${pultTarget.toUpperCase()}]`);
-      showToast(`⚡ ${map[cmd]} отправлена`);
+      appendConsoleLog(`[Pult CMD] -> ${cmd.toUpperCase()} отправлена на [${pultTarget.toUpperCase()}]`);
+      showToast(`⚡ Команда ${cmd} отправлена`);
     }
 
     function runScenario(sc) {
-      const names = {
-        'tt_warmup': '🔥 TikTok: Прогрев новичка',
-        'tt_scroll': '📱 TikTok: Массовый скроллинг',
-        'ai_comments': '💬 Авто-ответы AI',
-        'push_videos': '🚀 Синхронный пуш видео',
-        'story_autoliker': '❤️ Автолайкер сторис Instagram',
-        'deploy_contacts': '👥 Импорт базы контактов VCF'
-      };
-      appendConsoleLog(`[Сценарий] Запущен: ${names[sc] || sc} на целевой группе [${pultTarget.toUpperCase()}]`);
-      showToast(`🚀 Запущен ${names[sc] || sc}`);
+      appendConsoleLog(`[Сценарий] Запущен: ${sc} на [${pultTarget.toUpperCase()}]`);
+      showToast(`🚀 Запущен ${sc}`);
     }
 
     function appendConsoleLog(msg) {
-      const logBox = document.getElementById('pult-console-log');
-      if (!logBox) return;
+      const box = document.getElementById('pult-console-log');
+      if (!box) return;
       const now = new Date().toTimeString().split(' ')[0];
       const div = document.createElement('div');
       div.textContent = `[${now}] ${msg}`;
-      logBox.appendChild(div);
-      logBox.scrollTop = logBox.scrollHeight;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
     }
 
     function clearConsoleLog() {
-      const logBox = document.getElementById('pult-console-log');
-      if (logBox) logBox.innerHTML = '';
+      const box = document.getElementById('pult-console-log');
+      if (box) box.innerHTML = '';
     }
 
-    function logAction(msg) {
-      appendConsoleLog(msg);
-      showToast(msg);
+    // --- MODAL & IMAGE ZOOM ---
+    function openModalCurrent() {
+      const m = DANCERS_DATA[currentModelIndex];
+      if (!m) return;
+      const photoMap = {
+        'dance': 'body_dance_room_full.jpg',
+        'studio': 'body_frontal_full.jpg',
+        'room': 'room.jpg',
+        'face': 'official_face_lock.jpg',
+        'avatar': 'avatar.jpg'
+      };
+      const imgPath = `dance_models/${m.id}/photos/master/${photoMap[currentPhotoTab]}`;
+      document.getElementById('modal-img').src = imgPath;
+      document.getElementById('modal-caption').textContent = `${m.name_ru} (${m.name_en}) — ${photoMap[currentPhotoTab]}`;
+      document.getElementById('img-modal').classList.remove('hidden');
     }
 
-    function restartAdbDevice(slot) {
-      appendConsoleLog(`[ADB] Рестарт порта для телефона #${slot}... ОК.`);
-      showToast(`🔄 Телефон #${slot} перезапущен по ADB`);
+    function closeModal() {
+      document.getElementById('img-modal').classList.add('hidden');
     }
 
-    // --- SCRCPY MODAL SIMULATOR ---
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function copyCurrentImagePath() {
+      const m = DANCERS_DATA[currentModelIndex];
+      const photoMap = {
+        'dance': 'body_dance_room_full.jpg',
+        'studio': 'body_frontal_full.jpg',
+        'room': 'room.jpg',
+        'face': 'official_face_lock.jpg',
+        'avatar': 'avatar.jpg'
+      };
+      const p = `dance_models/${m.id}/photos/master/${photoMap[currentPhotoTab]}`;
+      navigator.clipboard.writeText(p).then(() => showToast('Путь скопирован: ' + p));
+    }
+
+    function copyPrompt(type) {
+      const m = DANCERS_DATA[currentModelIndex];
+      const map = {
+        'video': m.video_prompt,
+        'face': m.face_prompt,
+        'body': m.body_prompt,
+        'room': m.room_prompt
+      };
+      navigator.clipboard.writeText(map[type]).then(() => showToast('Промпт скопирован!'));
+    }
+
+    function copyText(elemId) {
+      const txt = document.getElementById(elemId)?.textContent || '';
+      navigator.clipboard.writeText(txt).then(() => showToast('Скопировано: ' + txt));
+    }
+
+    function togglePassword() {
+      isPasswordRevealed = !isPasswordRevealed;
+      const m = DANCERS_DATA[currentModelIndex];
+      document.getElementById('cred-pass').textContent = isPasswordRevealed ? m.password : '•••••••••••';
+    }
+
+    function copyPassword() {
+      const m = DANCERS_DATA[currentModelIndex];
+      navigator.clipboard.writeText(m.password).then(() => showToast('Пароль скопирован!'));
+    }
+
+    function openCurrentDancerScrcpy() {
+      const m = DANCERS_DATA[currentModelIndex];
+      openScrcpyModal(m.slot, m.name_ru, m.status, m.battery);
+    }
+
+    function triggerDancerRender() {
+      const m = DANCERS_DATA[currentModelIndex];
+      showToast(`🎬 Запущен рендер сниппета для ${m.name_ru} на RTX 4060!`);
+      appendConsoleLog(`[Render Engine] Старт Wan 2.1 видеогенерации для ${m.id} (${m.name_ru}) под бит ${m.neon_text}`);
+    }
+
+    // --- SCRCPY MODAL ---
     function openScrcpyModal(slot, title, task, battery) {
       document.getElementById('scrcpy-title').textContent = `📱 Экран: ${title}`;
       document.getElementById('scrcpy-device-info').textContent = `Слот #${slot}`;
@@ -1121,7 +1548,7 @@
       document.getElementById('modal-scrcpy').classList.add('hidden');
     }
 
-    // --- PLITTY CHAT FLOATING ASSISTANT ---
+    // --- PLITTY ASSISTANT ---
     function togglePlittyAssistant() {
       const c = document.getElementById('plitty-chat-container');
       if (c) c.classList.toggle('hidden');
@@ -1137,12 +1564,10 @@
         btnAi.className = 'px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900';
         btnIde.className = 'px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
         label.textContent = 'Режим: Gemini 3.6 Brain (ИИ-Ассистент)';
-        appendChatMessage('Плитти', 'Переключилась в режим ИИ-Ассистента! Готова отвечать на вопросы, давать советы по контенту и рулить фермой.');
       } else {
         btnIde.className = 'px-2 py-1 rounded-lg font-bold bg-purple-500 text-white';
         btnAi.className = 'px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white';
         label.textContent = 'Режим: IDE Dev Bridge (Связь с Разработчиком)';
-        appendChatMessage('IDE Bridge', '📡 Канал прямого моста в IDE активен. Напиши сюда любой баг или доработку — задача сразу передастся в разработку Antigravity!');
       }
     }
 
@@ -1153,12 +1578,12 @@
       input.value = '';
 
       appendChatMessage('Вы', text, true);
-
       setTimeout(() => {
         if (plittyMode === 'ai') {
           handleAiReply(text);
         } else {
-          handleIdeReply(text);
+          const tId = 'TASK-' + Math.floor(1000 + Math.random() * 9000);
+          appendChatMessage('IDE Bridge', `✅ Зафиксирован тикет [${tId}]: "${text}". Разработчик видит эту задачу.`);
         }
       }, 500);
     }
@@ -1176,69 +1601,75 @@
     function appendChatMessage(sender, text, isUser = false) {
       const box = document.getElementById('plitty-messages');
       if (!box) return;
-
       const div = document.createElement('div');
       div.className = isUser ? 'flex justify-end' : 'flex gap-2.5';
-      
-      if (isUser) {
-        div.innerHTML = `
-          <div class="p-3 rounded-2xl bg-[#E588A6]/20 border border-[#E588A6]/40 text-slate-100 max-w-[85%]">
-            <p>${text}</p>
-          </div>
-        `;
-      } else {
-        div.innerHTML = `
-          <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
-            <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
-          </div>
-          <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
-            <div class="text-[9px] font-bold text-[#F3A6BF]">${sender}</div>
-            <p>${text}</p>
-          </div>
-        `;
-      }
-
+      div.innerHTML = isUser ? `
+        <div class="p-2.5 rounded-2xl bg-[#E588A6]/20 border border-[#E588A6]/40 text-slate-100 max-w-[85%]">${text}</div>
+      ` : `
+        <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
+          <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
+        </div>
+        <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
+          <div class="text-[9px] font-bold text-[#F3A6BF]">${sender}</div>
+          <p>${text}</p>
+        </div>
+      `;
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
     }
 
     function handleAiReply(userText) {
-      const lower = userText.toLowerCase();
-      let reply = 'Принято в обработку!';
-
-      if (lower.includes('статус') || lower.includes('ферм')) {
-        reply = '📊 **Сводка фермы:**<br>• Мини-ферма: 20 телефонов (Слоты 1–10 — инфлюенсеры, Слоты 11–20 — служебные функции)<br>• Стенд: 50 телефонов Samsung A26 на порту 2222<br>• Батареи: в норме (95% в среднем)<br>• Ошибок нет!';
-      } else if (lower.includes('прогрев') || lower.includes('полк')) {
-        reply = '🔥 Запустила прогрев аккаунтов на указанных устройствах через Мастер-Пульт. Скроллинг активен!';
-        sendPultCommand('wake');
-      } else if (lower.includes('иде') || lower.includes('танец') || lower.includes('рилс')) {
-        reply = '💡 **Идея для танца Киры:**<br>Энергичный Shuffle под британский Drill ремикс! Локация: темная комната с неоном. Генерация через наш коллаж на RTX 4060 займет всего 11 секунд!';
+      let reply = 'Принято!';
+      const l = userText.toLowerCase();
+      if (l.includes('статус') || l.includes('ферм')) {
+        reply = '📊 Мини-ферма: 10 танцовщиц (слоты 1–10) + 10 служебных. Стенд: 50 телефонов A26. Батареи 95%. Ошибок нет!';
+      } else if (l.includes('айми') || l.includes('танец')) {
+        reply = '💡 Для Айми рекомендую запустить хип-хоп body roll в комнате SHIBUYA FLOW! Генерация на RTX 4060 займет 11 секунд.';
       } else {
-        reply = `Поняла твой запрос: "${userText}". Готова выполнить или передать в сценарий!`;
+        reply = `Поняла твой запрос: "${userText}". Готова запустить нужный сценарий!`;
       }
-
       appendChatMessage('Плитти', reply);
     }
 
-    function handleIdeReply(userText) {
-      const ticketId = 'TASK-' + Math.floor(1000 + Math.random() * 9000);
-      appendChatMessage('IDE Bridge', `✅ Задача **[${ticketId}]** зафиксирована в бэклоге разработки Antigravity: "${userText}". Разработчик видит этот тикет.`);
-      appendConsoleLog(`[IDE Bridge] Зарегистрирован тикет ${ticketId}: ${userText}`);
-    }
-
     function showToast(msg) {
-      const toast = document.createElement('div');
-      toast.className = 'fixed top-20 right-6 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-[var(--plitty-border)] text-white text-xs font-semibold shadow-2xl animate-fade-in';
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2800);
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-msg');
+      if (!toast || !msgEl) return;
+      msgEl.textContent = msg;
+      toast.classList.remove('opacity-0', '-translate-y-24');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-24');
+      }, 2600);
     }
 
-    // --- INIT ---
+    // --- URL QUERY PARAMS & INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-      renderMinifarmGrids();
+      renderAllGrids();
       renderStandGrid('all');
       setPultTarget('all');
+
+      // Check URL search parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      const scopeParam = urlParams.get('scope');
+
+      if (tabParam === 'dancers' || scopeParam === 'dancers') {
+        navToView('minifarm');
+        setMinifarmScope('dancers');
+      } else if (tabParam === 'minifarm') {
+        navToView('minifarm');
+        if (scopeParam) setMinifarmScope(scopeParam);
+      } else if (tabParam === 'stand') {
+        navToView('stand');
+      } else if (tabParam === 'pult') {
+        navToView('pult');
+      } else if (tabParam === 'creativestudio') {
+        navToView('creativestudio');
+      } else {
+        navToView('gateway');
+      }
     });
   </script>
 </body>
