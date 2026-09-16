@@ -835,21 +835,52 @@
           <span class="text-[10px] text-slate-400 font-mono">(TikTok / Охваты)</span>
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-          <button onclick="runScenario('tt_warmup')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-[#E588A6]/60">
-            <div class="font-bold text-[#F3A6BF]">🔥 TikTok: Прогрев новичка</div>
-            <div class="text-[10px] text-slate-400">18 мин органического скролла</div>
+          <button onclick="runScenario('warming')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-[#E588A6]/60 transition-all">
+            <div class="font-bold text-[#F3A6BF] flex items-center justify-between">
+              <span>🔥 Прогрев (18 мин / 3 этапа)</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-[#E588A6]/20 font-mono">main.py</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Скролл FYP 6 мин &bull; Визиты 6 мин &bull; Скролл 6 мин</div>
           </button>
-          <button onclick="runScenario('tt_scroll')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-teal-400/60">
-            <div class="font-bold text-teal-300">📱 TikTok: Скроллинг ленты</div>
-            <div class="text-[10px] text-slate-400">Серфинг FYP с паузами 5–35 сек</div>
+          
+          <button onclick="runScenario('boost')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-teal-400/60 transition-all">
+            <div class="font-bold text-teal-300 flex items-center justify-between">
+              <span>⚡ Накрутка (Органика / Лайки)</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/20 font-mono">nakrutka.py</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Умные переходы: диплинки, поиск и хэштеги</div>
           </button>
-          <button onclick="runScenario('ai_comments')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-purple-400/60">
-            <div class="font-bold text-purple-300">💬 Авто-ответы AI</div>
-            <div class="text-[10px] text-slate-400">Ответы в стиле персонажей</div>
+
+          <button onclick="runScenario('night_boost')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-purple-400/60 transition-all">
+            <div class="font-bold text-purple-300 flex items-center justify-between">
+              <span>🌙 Ночная накрутка (5 кругов)</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 font-mono">5 кругов</span>
+            </div>
+            <div class="text-[10px] text-slate-400">5 циклов с 15-мин отдыхом на главном экране</div>
           </button>
-          <button onclick="runScenario('push_videos')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-amber-400/60">
-            <div class="font-bold text-amber-300">🚀 Пуш готовых видео</div>
-            <div class="text-[10px] text-slate-400">Рассылка сниппетов с RTX 4060</div>
+
+          <button onclick="runScenario('live_stream')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-amber-400/60 transition-all">
+            <div class="font-bold text-amber-300 flex items-center justify-between">
+              <span>📺 Просмотр стримов (TikTok / Kick)</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 font-mono">AI Brain</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Имитация онлайна, лайки и умные комменты Gemini</div>
+          </button>
+
+          <button onclick="runScenario('auto_healer')" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 hover:border-emerald-400/60 transition-all">
+            <div class="font-bold text-emerald-300 flex items-center justify-between">
+              <span>🏥 Auto-Healer (Самолечение)</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 font-mono">Watchdog</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Сброс зависших окон, рестарт ADB, очистка кэша</div>
+          </button>
+
+          <button onclick="stopActiveScenario()" class="glass-btn p-4 rounded-2xl font-semibold text-left flex flex-col gap-1 border-red-500/40 hover:bg-red-500/20 transition-all">
+            <div class="font-bold text-red-400 flex items-center justify-between">
+              <span>🛑 Экстренная остановка</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 font-mono text-red-300">KILL</span>
+            </div>
+            <div class="text-[10px] text-red-300/80">Немедленно остановить все процессы на телефонах</div>
           </button>
         </div>
       </div>
@@ -2214,14 +2245,103 @@
       appendConsoleLog(`[Pult] Целевая группа: ${target.toUpperCase()}`);
     }
 
-    function sendPultCommand(cmd) {
-      appendConsoleLog(`[Pult CMD] -> ${cmd.toUpperCase()} отправлена на [${pultTarget.toUpperCase()}]`);
-      showToast(`⚡ Команда ${cmd} отправлена`);
+    let pultPollInterval = null;
+
+    async function sendPultCommand(cmd) {
+      appendConsoleLog(`[Pult CMD] -> ${cmd.toUpperCase()} на [${pultTarget.toUpperCase()}]...`);
+      showToast(`⚡ Команда ${cmd} отправляется...`);
+      try {
+        const r = await fetch('http://localhost:8000/api/pult/command', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: cmd, target: pultTarget })
+        });
+        const data = await r.json();
+        if (data.status === 'success') {
+          appendConsoleLog(`[Pult OK] Выполнено на ${data.devices_count} устройствах!`);
+          showToast(`✅ ${cmd} выполнено (${data.devices_count} устройств)`);
+        } else {
+          appendConsoleLog(`[Pult WARN] ${data.error || 'Ошибка'}`);
+        }
+      } catch (e) {
+        appendConsoleLog(`[Pult Offline] Ошибка связи с API: ${e.message}`);
+      }
     }
 
-    function runScenario(sc) {
-      appendConsoleLog(`[Сценарий] Запущен: ${sc} на [${pultTarget.toUpperCase()}]`);
-      showToast(`🚀 Запущен ${sc}`);
+    async function runScenario(sc) {
+      let accounts = '';
+      let streamer = '';
+      let platform = 'tiktok';
+      let duration = 10;
+
+      if (sc === 'boost' || sc === 'night_boost') {
+        accounts = prompt('Введите целевые аккаунты через пробел (или оставьте пустым для авто-выбора):', '') || '';
+      } else if (sc === 'live_stream') {
+        streamer = prompt('Введите никнейм стримера (например @username):', '@tiktok_live') || 'default';
+        duration = parseInt(prompt('Длительность просмотра (минут):', '10') || '10', 10);
+      }
+
+      appendConsoleLog(`[Сценарий] Запуск: ${sc} на [${pultTarget.toUpperCase()}]...`);
+      showToast(`🚀 Запуск ${sc}...`);
+
+      try {
+        const r = await fetch('http://localhost:8000/api/pult/run_script', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            script: sc,
+            target: pultTarget,
+            accounts: accounts,
+            streamer: streamer,
+            platform: platform,
+            duration: duration
+          })
+        });
+        const data = await r.json();
+        if (data.status === 'started') {
+          appendConsoleLog(`[Сценарий] ✅ Запущен: ${data.script}! Подключение к живому выводу...`);
+          showToast(`✅ Сценарий ${data.script} запущен!`);
+          startPultStatusPolling();
+        } else if (data.status === 'busy') {
+          appendConsoleLog(`[Сценарий] ⚠️ ${data.message}`);
+          showToast(`⚠️ ${data.message}`);
+        }
+      } catch (e) {
+        appendConsoleLog(`[Сценарий] Ошибка: ${e.message}`);
+      }
+    }
+
+    async function stopActiveScenario() {
+      try {
+        await fetch('http://localhost:8000/api/pult/stop', { method: 'POST' });
+        appendConsoleLog(`[Сценарий] 🛑 Команда остановки отправлена!`);
+        showToast(`🛑 Процессы остановлены`);
+      } catch (e) {
+        appendConsoleLog(`[Сценарий] Ошибка остановки: ${e.message}`);
+      }
+    }
+
+    function startPultStatusPolling() {
+      if (pultPollInterval) clearInterval(pultPollInterval);
+      let seenLogCount = 0;
+      pultPollInterval = setInterval(async () => {
+        try {
+          const r = await fetch('http://localhost:8000/api/pult/status');
+          if (r.ok) {
+            const data = await r.json();
+            if (data.logs && data.logs.length > seenLogCount) {
+              const newLogs = data.logs.slice(seenLogCount);
+              newLogs.forEach(l => appendConsoleLog(l));
+              seenLogCount = data.logs.length;
+            }
+            if (data.status && data.status.state === 'idle' && seenLogCount > 0) {
+              clearInterval(pultPollInterval);
+              pultPollInterval = null;
+              appendConsoleLog(`[Сценарий] 🏁 Выполнение завершено.`);
+            }
+          }
+        } catch (e) {}
+      }, 1500);
     }
 
     function appendConsoleLog(msg) {
