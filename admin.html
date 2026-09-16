@@ -927,16 +927,7 @@
               <option value="inf_10_mia">#10 — Mia Vega (Миа Вега, Latin Ruby)</option>
             </select>
 
-            <!-- Quick-Picker Horizontal Avatar Strip (12 models) -->
-            <div class="mt-2.5">
-              <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                <span>БЫСТРЫЙ ВЫБОР (ТАП ПО АВАТАРКЕ):</span>
-                <span class="text-pink-400 text-[9px] font-mono">12 АКТИВНЫХ</span>
-              </div>
-              <div id="hf-avatar-strip" class="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5" style="scrollbar-width: thin;">
-                <!-- Populated by renderHfQuickPillStrip() -->
-              </div>
-            </div>
+
           </div>
 
           <!-- Active Influencer Detailed Card -->
@@ -974,76 +965,61 @@
           </div>
         </div>
 
-        <!-- Angle quick tabs for active model with mini pictures -->
-        <div class="space-y-2.5 pt-2 border-t border-white/10">
+        <!-- Angle quick tabs for active model (скр 3) -->
+        <div class="space-y-3 pt-3 border-t border-white/10">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span>📸 Ракурсы мастер-кадров модели</span>
+              <span>📸 РАКУРСЫ МАСТЕР-КАДРОВ МОДЕЛИ</span>
             </span>
             <span class="text-[9px] font-mono text-pink-400 font-bold">5 РАКУРСОВ</span>
           </div>
 
-          <!-- 5 Angle Buttons Grid with Mini Picture in each button -->
-          <div class="grid grid-cols-5 gap-1.5">
-            <button id="btn-angle-face" onclick="switchHfPreviewAngle('face')" class="hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center group cursor-pointer">
-              <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 border border-white/10 bg-slate-900">
-                <img id="hf-angle-thumb-face" src="plitty_avatar.jpg?v=4" alt="Лицо" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <span class="hf-angle-btn-title text-[9px] font-bold text-slate-300 truncate w-full">Лицо</span>
+          <!-- 5 Clean Buttons Grid (3 + 2 layout matching скр 3) -->
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <button onclick="switchHfPreviewAngle('face')" id="btn-angle-face" class="glass-btn-accent py-2.5 px-2 rounded-xl font-bold text-white shadow-md flex items-center justify-center gap-1.5 transition-all">
+              👩 Лицо
             </button>
-
-            <button id="btn-angle-avatar" onclick="switchHfPreviewAngle('avatar')" class="hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center group cursor-pointer">
-              <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 border border-white/10 bg-slate-900">
-                <img id="hf-angle-thumb-avatar" src="catgirl_avatar.png?v=4" alt="Аватар" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <span class="hf-angle-btn-title text-[9px] font-bold text-slate-300 truncate w-full">Аватар</span>
+            <button onclick="switchHfPreviewAngle('avatar')" id="btn-angle-avatar" class="glass-btn py-2.5 px-2 rounded-xl font-bold text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all">
+              🖼️ Аватар
             </button>
-
-            <button id="btn-angle-studio" onclick="switchHfPreviewAngle('studio')" class="hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center group cursor-pointer">
-              <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 border border-white/10 bg-slate-900">
-                <img id="hf-angle-thumb-studio" src="plitty_bg.jpg?v=4" alt="Студия" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <span class="hf-angle-btn-title text-[9px] font-bold text-slate-300 truncate w-full">Студия</span>
+            <button onclick="switchHfPreviewAngle('studio')" id="btn-angle-studio" class="glass-btn py-2.5 px-2 rounded-xl font-bold text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all">
+              💃 Студия
             </button>
-
-            <button id="btn-angle-room" onclick="switchHfPreviewAngle('room')" class="hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center group cursor-pointer">
-              <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 border border-white/10 bg-slate-900">
-                <img id="hf-angle-thumb-room" src="plitty_bg.jpg?v=4" alt="Комната" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <span class="hf-angle-btn-title text-[9px] font-bold text-slate-300 truncate w-full">Комната</span>
+            <button onclick="switchHfPreviewAngle('room')" id="btn-angle-room" class="glass-btn py-2.5 px-2 rounded-xl font-bold text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all">
+              🛋️ Комната
             </button>
-
-            <button id="btn-angle-fullbody" onclick="switchHfPreviewAngle('fullbody')" class="hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center group cursor-pointer">
-              <div class="w-full aspect-square rounded-lg overflow-hidden mb-1 border border-white/10 bg-slate-900">
-                <img id="hf-angle-thumb-fullbody" src="plitty_bg.jpg?v=4" alt="В рост" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <span class="hf-angle-btn-title text-[9px] font-bold text-slate-300 truncate w-full">В рост</span>
+            <button onclick="switchHfPreviewAngle('fullbody')" id="btn-angle-fullbody" class="glass-btn py-2.5 px-2 rounded-xl font-bold text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all col-span-2">
+              🧍 В полный рост
             </button>
           </div>
 
-          <!-- Dedicated Mini Picture Card UNDER the selected button -->
-          <div id="hf-selected-angle-preview" class="p-2.5 rounded-2xl bg-black/50 border border-white/10 shadow-lg flex items-center gap-3 transition-all">
-            <div class="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 border border-white/20 shadow-md group cursor-pointer bg-slate-900" onclick="openSelectedAngleModal()">
-              <img id="hf-selected-angle-img" src="plitty_avatar.jpg?v=4" alt="Выбранный ракурс" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs text-white">
-                🔍
+          <!-- Photo of Selected Master Angle directly UNDER the buttons (скр 3) -->
+          <div id="hf-angle-photo-card" class="rounded-2xl overflow-hidden border border-white/15 bg-slate-950/90 shadow-2xl transition-all">
+            <div class="relative w-full h-64 sm:h-72 lg:h-80 bg-black/60 flex items-center justify-center group overflow-hidden">
+              <img id="hf-selected-angle-img" src="plitty_avatar.jpg?v=4" alt="Ракурс инфлюенсера" class="w-full h-full object-contain group-hover:scale-105 transition-all duration-300 cursor-pointer" onclick="openSelectedAngleModal()">
+              
+              <!-- Top floating badge with Angle name & tag -->
+              <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+                <span id="hf-selected-angle-title" class="px-3 py-1 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/20 text-xs font-bold text-white shadow-lg pointer-events-auto">
+                  👩 Лицо
+                </span>
+                <span id="hf-selected-angle-tag" class="px-2.5 py-1 rounded-xl bg-pink-500/20 backdrop-blur-md border border-pink-500/40 text-[10px] font-mono text-pink-300 font-bold shadow-lg pointer-events-auto">
+                  Face-Lock 100%
+                </span>
               </div>
-            </div>
-            <div class="space-y-1 min-w-0 flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span id="hf-selected-angle-title" class="text-xs font-bold text-white">👩 Лицо (Face-Lock)</span>
-                <span id="hf-selected-angle-tag" class="text-[9px] font-mono px-2 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-500/20 text-emerald-300 font-bold">Face-Lock 100%</span>
+
+              <!-- Bottom floating bar with description & 2K Zoom button -->
+              <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/95 via-black/70 to-transparent flex items-center justify-between gap-2">
+                <span id="hf-selected-angle-desc" class="text-[11px] text-slate-300 font-medium truncate">
+                  Фронтальный эталонный кадр для 100% Face-Lock
+                </span>
+                <button type="button" onclick="openSelectedAngleModal()" class="glass-btn px-3 py-1.5 rounded-xl text-[10px] font-bold text-white hover:border-pink-400 shrink-0 flex items-center gap-1 shadow-md cursor-pointer">
+                  <span>🔍 2K Просмотр</span>
+                </button>
               </div>
-              <p id="hf-selected-angle-desc" class="text-[10px] text-slate-400 leading-tight line-clamp-2">
-                Фронтальный эталонный кадр для 100% захвата лица в Qwen 2K
-              </p>
-              <button type="button" onclick="openSelectedAngleModal()" class="text-[9px] font-semibold text-pink-400 hover:text-pink-300 flex items-center gap-1 cursor-pointer">
-                <span>🔍 Увеличить мастер-кадр</span> &rarr;
-              </button>
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- ============================================================= -->
@@ -1468,7 +1444,6 @@
         viewAll.classList.remove('hidden');
         renderAllGrids();
       populateHfModelSelect();
-      renderHfQuickPillStrip();
       switchHiggsfieldModel('inf_00_plitty');
       renderHfRecentTray();
         resetAmbientBackdrop();
@@ -2338,26 +2313,7 @@
       `).join('');
     }
 
-    // Render Visual Quick-Picker Avatar Strip
-    function renderHfQuickPillStrip() {
-      const strip = document.getElementById('hf-avatar-strip');
-      if (!strip) return;
-      strip.innerHTML = HIGGSFIELD_MODELS.map(m => {
-        const isAct = m.id === currentHfModelId;
-        return `
-          <button onclick="switchHiggsfieldModel('${m.id}')"
-                  data-hf-pill="${m.id}"
-                  title="${m.slot_label} (${m.name_ru})"
-                  class="hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left ${isAct ? 'bg-white/20 shadow-md scale-105' : 'bg-slate-900/80 border-white/10 opacity-70 hover:opacity-100 hover:border-white/30'}"
-                  style="${isAct ? `border-color: ${m.color}; box-shadow: 0 0 14px ${m.color}66;` : ''}">
-            <img src="${m.avatar}" onerror="this.src='plitty_avatar.jpg?v=4'" class="w-5 h-5 rounded-full object-cover border" style="border-color: ${m.color};">
-            <span class="text-[11px] font-bold font-mono text-white">#${m.slot}</span>
-            <span class="text-[11px] font-medium text-slate-300 hidden xl:inline">${m.name.split(' ')[0]}</span>
-          </button>
-        `;
-      }).join('');
-    }
-
+    
     // Comprehensive model switch handler
     function switchHiggsfieldModel(modelId) {
       if (!modelId) return;
@@ -2379,20 +2335,7 @@
         selectEl.value = m.id;
       }
 
-      // 2. Synchronize Quick-Pill Strip
-      document.querySelectorAll('.hf-model-pill').forEach(pill => {
-        const pId = pill.getAttribute('data-hf-pill');
-        if (pId === m.id) {
-          pill.className = 'hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left bg-white/20 shadow-md scale-105';
-          pill.style.borderColor = m.color;
-          pill.style.boxShadow = `0 0 15px ${m.color}66`;
-        } else {
-          pill.className = 'hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left bg-slate-900/80 border-white/10 opacity-70 hover:opacity-100 hover:border-white/30';
-          pill.style.borderColor = '';
-          pill.style.boxShadow = '';
-        }
-      });
-
+      
       // 3. Top Header Active Name
       const topName = document.getElementById('hf-top-active-name');
       if (topName) {
@@ -2486,11 +2429,11 @@
     let currentHfAngle = 'face';
 
     const HF_ANGLE_META = {
-      'face': { title: '👩 Лицо (Face-Lock)', tag: 'Face-Lock 100%', desc: 'Фронтальный эталонный кадр для 100% захвата лица' },
-      'avatar': { title: '🖼️ Аватар (Profile)', tag: 'Social Avatar', desc: 'Квадратный медиа-аватар для соцсетей и карточек' },
-      'studio': { title: '💃 Студия (Dance Stage)', tag: 'Studio Light', desc: 'Хореографическая поза в студийном зеркальном освещении' },
-      'room': { title: '🛋️ Комната (Interior)', tag: 'Room View', desc: 'Персональная локация инфлюенсера с элементами интерьера' },
-      'fullbody': { title: '🧍 В полный рост (Full)', tag: '2K Full Body', desc: 'Полный ростовой кадр с детализацией обуви и наряда' }
+      'face': { title: '👩 Лицо (Face-Lock)', tag: 'Face-Lock 100%', desc: 'Фронтальный эталонный кадр для 100% фиксации черт лица' },
+      'avatar': { title: '🖼️ Аватар (Profile)', tag: 'Social Avatar', desc: 'Квадратный медиа-аватар для соцсетей и карточек профиля' },
+      'studio': { title: '💃 Студия (Dance Stage)', tag: 'Studio Stage', desc: 'Хореографическая поза в зеркальном студийном зале' },
+      'room': { title: '🛋️ Комната (Interior)', tag: 'Room Interior', desc: 'Персональная жилая локация с элементами интерьера' },
+      'fullbody': { title: '🧍 В полный рост (Full)', tag: '2K Full Body', desc: 'Полный ростовой кадр с прорисовкой наряда и обуви' }
     };
 
     function getHfModelAngleSrc(m, angle) {
@@ -2521,50 +2464,41 @@
       return `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}`;
     }
 
+    // Switch Angle of Master Shots: Updates photo UNDER the buttons (скр 3)
+    // NOTE: Avatar in card (скр 2) is FIXED for each influencer and never changed here!
     function switchHfPreviewAngle(angle) {
       currentHfAngle = angle;
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
       const src = getHfModelAngleSrc(m, angle);
       const meta = HF_ANGLE_META[angle] || HF_ANGLE_META['face'];
 
-      // 1. Update Sector 1 Main Avatar
-      const img = document.getElementById('hf-char-avatar');
-      if (img) img.src = src;
-
-      // 2. Update 5 Angle Buttons Active State & Thumbnails
+      // 1. Highlight Active Button (3 + 2 layout)
       ['face', 'avatar', 'studio', 'room', 'fullbody'].forEach(a => {
         const btn = document.getElementById('btn-angle-' + a);
-        const thumb = document.getElementById('hf-angle-thumb-' + a);
-        if (thumb) {
-          thumb.src = getHfModelAngleSrc(m, a);
-          thumb.onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
-        }
         if (btn) {
-          const titleSpan = btn.querySelector('.hf-angle-btn-title');
+          const isColSpan = (a === 'fullbody');
           if (a === angle) {
-            btn.className = 'hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border transition-all text-center bg-white/20 scale-105 shadow-lg';
+            btn.className = 'glass-btn-accent py-2.5 px-2 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-1.5 transition-all ' + (isColSpan ? 'col-span-2' : '');
             btn.style.borderColor = m.color;
             btn.style.boxShadow = `0 0 16px ${m.color}66`;
-            if (titleSpan) titleSpan.style.color = '#FFFFFF';
           } else {
-            btn.className = 'hf-angle-btn flex-1 flex flex-col items-center p-1.5 rounded-xl border border-white/10 bg-white/5 hover:border-white/30 transition-all text-center opacity-75 hover:opacity-100';
+            btn.className = 'glass-btn py-2.5 px-2 rounded-xl font-bold text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all ' + (isColSpan ? 'col-span-2' : '');
             btn.style.borderColor = '';
             btn.style.boxShadow = '';
-            if (titleSpan) titleSpan.style.color = '#94A3B8';
           }
         }
       });
 
-      // 3. Update the Under-Button Active Preview Card
-      const prevBox = document.getElementById('hf-selected-angle-preview');
-      if (prevBox) {
-        prevBox.style.borderColor = `${m.color}66`;
-        prevBox.style.boxShadow = `0 8px 24px -6px ${m.color}35`;
+      // 2. Update the Photo Under the Buttons
+      const card = document.getElementById('hf-angle-photo-card');
+      if (card) {
+        card.style.borderColor = `${m.color}77`;
+        card.style.boxShadow = `0 16px 36px -10px ${m.color}40`;
       }
       const prevImg = document.getElementById('hf-selected-angle-img');
       if (prevImg) {
         prevImg.src = src;
-        prevImg.onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
+        prevImg.onerror = function() { this.src = m.avatar || 'plitty_avatar.jpg?v=4'; };
       }
       const prevTitle = document.getElementById('hf-selected-angle-title');
       if (prevTitle) prevTitle.textContent = meta.title;
@@ -2574,7 +2508,7 @@
         prevTag.textContent = meta.tag;
         prevTag.style.backgroundColor = `${m.color}25`;
         prevTag.style.color = m.color;
-        prevTag.style.borderColor = `${m.color}50`;
+        prevTag.style.borderColor = `${m.color}60`;
       }
       const prevDesc = document.getElementById('hf-selected-angle-desc');
       if (prevDesc) prevDesc.textContent = meta.desc;
@@ -2589,7 +2523,8 @@
       openModalWithSrc(src, `${m.name} — ${meta.title}`);
     }
 
-    function selectHfAngle(btn, angle) {
+
+        function selectHfAngle(btn, angle) {
       currentHfAngle = angle;
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
       document.querySelectorAll('.hf-angle-btn').forEach(b => {
@@ -2765,7 +2700,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderAllGrids();
       populateHfModelSelect();
-      renderHfQuickPillStrip();
       switchHiggsfieldModel('inf_00_plitty');
       renderHfRecentTray();
       renderStandGrid('all');
