@@ -2246,8 +2246,8 @@
         flag: "🌸",
         color: "#E588A6",
         niche: "AI Assistant & Orchestrator",
-        avatar: "plitty_avatar.jpg?v=4",
-        photo: "plitty_avatar.jpg?v=4",
+        avatar: "dance_models/00_plitty/photos/master/avatar.jpg?v=6",
+        photo: "dance_models/00_plitty/photos/master/official_face_lock.jpg?v=6",
         tags: ["AI Core #0", "Cyber Support", "Mastermind", "Kyoto 2D"],
         face_prompt: "masterpiece, 2d anime catgirl, messy pastel pink hair, ahoge cowlick, amber eyes, black teacher glasses, white blouse, leather harness, confident smirk",
         room_desc: "Неоновый серверный зал Plitty: пульты мониторинга, голографические экраны и мягкая розовая подсветка PLITTY CORE"
@@ -2265,8 +2265,8 @@
         flag: "✨",
         color: "#F43F5E",
         niche: "VIP Ambassador & Motion Lead",
-        avatar: "dance_models/001_keira/photos/master/avatar.jpg",
-        photo: "dance_models/001_keira/photos/master/official_face_lock.jpg",
+        avatar: "dance_models/001_keira/photos/master/avatar.jpg?v=6",
+        photo: "dance_models/001_keira/photos/master/official_face_lock.jpg?v=6",
         tags: ["VIP Master #0.1", "Face-Lock 100%", "Motion Lead", "Choreo 2K"],
         face_prompt: "gorgeous 20-year-old girl, striking hazel eyes, smooth porcelain skin, signature wavy brown bob hair, warm confident smile",
         room_desc: "Минималистичный танцевальный зал: светлое дерево, зеркальная стена, мягкий студийный свет KEIRA PRIME"
@@ -2288,8 +2288,8 @@
         flag: d.country_flag,
         color: d.color,
         niche: d.niche,
-        avatar: `dance_models/${d.id}/photos/master/avatar.jpg`,
-        photo: `dance_models/${d.id}/photos/master/official_face_lock.jpg`,
+        avatar: `dance_models/${d.id}/photos/master/avatar.jpg?v=6`,
+        photo: `dance_models/${d.id}/photos/master/official_face_lock.jpg?v=6`,
         tags: [d.neon_text, d.archetype, "Face-Lock 100%", "2K Qwen"],
         face_prompt: d.face_prompt,
         room_desc: d.room_desc
@@ -2301,10 +2301,10 @@
     let currentHfStyle = "cyberpunk";
     let isHfRendering = false;
     let hfRecentGenerations = [
-      { id: "1", model: "Aimi Sato", img: "dance_models/01_Aimi_Sato/photos/master/official_face_lock.jpg", time: "5 мин назад" },
-      { id: "2", model: "Keira Stove", img: "dance_models/001_keira/photos/master/official_face_lock.jpg", time: "12 мин назад" },
-      { id: "3", model: "Kiko Ito", img: "dance_models/02_Kiko_Ito/photos/master/official_face_lock.jpg", time: "24 мин назад" },
-      { id: "4", model: "Plitty Cyber", img: "plitty_avatar.jpg?v=4", time: "1 час назад" }
+      { id: "1", model: "Aimi Sato", img: "dance_models/01_Aimi_Sato/photos/master/official_face_lock.jpg?v=6", time: "5 мин назад" },
+      { id: "2", model: "Keira Stove", img: "dance_models/001_keira/photos/master/official_face_lock.jpg?v=6", time: "12 мин назад" },
+      { id: "3", model: "Kiko Ito", img: "dance_models/02_Kiko_Ito/photos/master/official_face_lock.jpg?v=6", time: "24 мин назад" },
+      { id: "4", model: "Plitty Cyber", img: "dance_models/00_plitty/photos/master/avatar.jpg?v=6", time: "1 час назад" }
     ];
 
     // Dynamically populate Select Options
@@ -2351,7 +2351,7 @@
       // 4. Sector 1 Active Card Details
       const avatarImg = document.getElementById('hf-char-avatar');
       if (avatarImg) {
-        avatarImg.src = m.photo;
+        avatarImg.src = m.avatar || m.photo;
         avatarImg.onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
       }
       const avatarWrap = document.getElementById('hf-char-avatar-wrap');
@@ -2440,26 +2440,26 @@
     };
 
     function getHfModelAngleSrc(m, angle) {
-      if (!m) return 'plitty_avatar.jpg?v=5';
+      if (!m) return 'plitty_avatar.jpg?v=6';
       if (m.id === 'inf_00_plitty') {
         const plittyMap = {
-          'face': 'dance_models/00_plitty/photos/master/official_face_lock.jpg?v=5',
-          'avatar': 'dance_models/00_plitty/photos/master/avatar.jpg?v=5',
-          'studio': 'dance_models/00_plitty/photos/master/studio.jpg?v=5',
-          'room': 'dance_models/00_plitty/photos/master/room.jpg?v=5',
-          'fullbody': 'dance_models/00_plitty/photos/master/fullbody.jpg?v=5'
+          'face': 'dance_models/00_plitty/photos/master/official_face_lock.jpg?v=6',
+          'avatar': 'dance_models/00_plitty/photos/master/avatar.jpg?v=6',
+          'studio': 'dance_models/00_plitty/photos/master/studio.jpg?v=6',
+          'room': 'dance_models/00_plitty/photos/master/room.jpg?v=6',
+          'fullbody': 'dance_models/00_plitty/photos/master/fullbody.jpg?v=6'
         };
-        return plittyMap[angle] || 'plitty_avatar.jpg?v=5';
+        return plittyMap[angle] || 'plitty_avatar.jpg?v=6';
       }
       if (m.id === 'inf_001_keira' || m.folder === '001_keira') {
         const keiraMap = {
-          'face': 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=5',
-          'avatar': 'dance_models/001_keira/photos/master/avatar.jpg?v=5',
-          'studio': 'dance_models/001_keira/photos/master/studio.jpg?v=5',
-          'room': 'dance_models/001_keira/photos/master/room.jpg?v=5',
-          'fullbody': 'dance_models/001_keira/photos/master/fullbody.jpg?v=5'
+          'face': 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=6',
+          'avatar': 'dance_models/001_keira/photos/master/avatar.jpg?v=6',
+          'studio': 'dance_models/001_keira/photos/master/studio.jpg?v=6',
+          'room': 'dance_models/001_keira/photos/master/room.jpg?v=6',
+          'fullbody': 'dance_models/001_keira/photos/master/fullbody.jpg?v=6'
         };
-        return keiraMap[angle] || 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=5';
+        return keiraMap[angle] || 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=6';
       }
       const folder = m.folder || m.id;
       const map = {
@@ -2469,7 +2469,7 @@
         'room': 'room.jpg',
         'fullbody': 'body_frontal_full.jpg'
       };
-      return `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}?v=5`;
+      return `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}?v=6`;
     }
 
     // Switch Angle of Master Shots: Updates photo UNDER the buttons (скр 3)
