@@ -17,7 +17,6 @@
   </script>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -99,59 +98,53 @@
       padding: 7px 16px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 700;
+      justify-content: center;
+      gap: 6px;
       font-size: 12px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-weight: 600;
+      transition: all 0.2s;
       cursor: pointer;
     }
     .pill-btn-rose:hover {
       background: rgba(229, 136, 166, 0.28);
       border-color: var(--plitty-rose-light);
-      box-shadow: 0 0 20px rgba(229, 136, 166, 0.3);
-      transform: translateY(-1px);
+      color: #FFFFFF;
+      box-shadow: 0 0 16px rgba(229, 136, 166, 0.3);
     }
 
     .pill-btn-dark {
-      background: rgba(18, 22, 33, 0.85);
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #CBD5E1;
+      color: var(--text-body);
       border-radius: 9999px;
       padding: 7px 16px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 600;
+      justify-content: center;
+      gap: 6px;
       font-size: 12px;
-      transition: all 0.2s ease;
+      font-weight: 600;
+      transition: all 0.2s;
       cursor: pointer;
     }
     .pill-btn-dark:hover {
-      background: rgba(26, 32, 48, 0.95);
+      background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.25);
       color: #FFFFFF;
     }
 
-    /* Floating Chat Widget */
-    .plitty-float-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 999;
-      background: linear-gradient(135deg, #1E1B29 0%, #0F121C 100%);
-      border: 2px solid var(--plitty-rose);
-      box-shadow: 0 10px 30px rgba(229, 136, 166, 0.35), 0 0 25px rgba(229, 136, 166, 0.2);
-      border-radius: 9999px;
-      padding: 8px 18px 8px 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Screen Views */
+    .screen-view {
+      display: none;
     }
-    .plitty-float-btn:hover {
-      transform: scale(1.05) translateY(-3px);
-      box-shadow: 0 16px 40px rgba(229, 136, 166, 0.5), 0 0 35px rgba(229, 136, 166, 0.3);
+    .screen-view.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Custom Scrollbar */
@@ -160,27 +153,14 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(10, 13, 19, 0.6);
+      background: #06070B;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(229, 136, 166, 0.3);
-      border-radius: 3px;
+      background: rgba(229, 136, 166, 0.25);
+      border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: var(--plitty-rose);
-    }
-
-    .screen-view {
-      display: none;
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-    .screen-view.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+      background: rgba(229, 136, 166, 0.5);
     }
   </style>
 </head>
@@ -203,7 +183,7 @@
           <div class="text-left">
             <div class="flex items-center gap-2">
               <span class="text-base font-extrabold tracking-tight text-white group-hover:text-[#F3A6BF] transition-colors">Plitty AI Studio</span>
-              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.18)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)]">v3.0 Ultra</span>
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgba(229,136,166,0.18)] text-[#F3A6BF] border border-[rgba(229,136,166,0.3)]">v3.1 Ultra</span>
             </div>
             <div class="text-[10px] text-slate-400 font-medium">Центральный командный шлюз медиа-империи</div>
           </div>
@@ -253,80 +233,68 @@
     
     <!-- Hero Welcoming Box with Plitty -->
     <div class="cyber-card p-6 lg:p-10 relative overflow-hidden border-[rgba(229,136,166,0.35)]">
-      <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-[radial-gradient(circle,rgba(229,136,166,0.18)_0%,transparent_70%)] pointer-events-none"></div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-        <!-- Plitty Master Character Avatar -->
-        <div class="lg:col-span-4 flex flex-col items-center text-center">
-          <div class="relative w-44 h-44 rounded-3xl p-1 bg-gradient-to-tr from-[#E588A6] via-[#2DD4BF] to-purple-500 shadow-2xl shadow-[#E588A6]/20">
-            <div class="w-full h-full rounded-[22px] overflow-hidden bg-[#0F121C]">
-              <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
-            </div>
-            <div class="absolute -bottom-3 px-3 py-0.5 rounded-full bg-[#1A1120] border border-[#E588A6] text-[10px] font-bold text-[#F3A6BF] shadow-lg">
-              ✨ Твой ИИ-Ассистент
-            </div>
+      <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+        
+        <!-- Plitty Avatar -->
+        <div class="relative shrink-0">
+          <div class="w-28 h-28 lg:w-36 lg:h-36 rounded-3xl overflow-hidden border-2 border-[var(--plitty-rose)] shadow-[0_0_35px_rgba(229,136,166,0.4)] bg-slate-900">
+            <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
           </div>
-          <h3 class="mt-5 text-lg font-extrabold text-white">Плитти (Plitty)</h3>
-          <p class="text-xs text-slate-400 font-medium">Главный маскот & Оператор фермы</p>
+          <div class="absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> ONLINE
+          </div>
         </div>
 
-        <!-- Speech & Ecosystem State -->
-        <div class="lg:col-span-8 space-y-4">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(45,212,191,0.12)] border border-[#2DD4BF]/30 text-[#2DD4BF] text-xs font-semibold">
-            <span class="w-2 h-2 rounded-full bg-[#2DD4BF] animate-ping"></span>
-            <span>Все модули и фермы синхронизированы 100%</span>
+        <!-- Welcoming Text -->
+        <div class="flex-1 text-center md:text-left space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(229,136,166,0.12)] border border-[rgba(229,136,166,0.25)] text-xs text-[#F3A6BF] font-medium">
+            <span>✨ Главный ИИ-Ассистент студии готов к работе</span>
           </div>
-
-          <h1 class="text-2xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-            Привет, создатель! С какого сектора начнем управление сегодня?
+          <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tight">
+            Привет! Я <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F3A6BF] via-[#E588A6] to-[#C95F81]">Плитти</span>.
           </h1>
-
-          <p class="text-sm text-slate-300 leading-relaxed max-w-2xl">
-            Я полностью готова к работе: держу под контролем <b class="text-white">20 телефонов Мини-фермы</b> с нашими 10 девушками-инфлюенсерами и <b class="text-white">50 телефонов Стенда</b> на 3 ярусах. Все ADB-порты открыты, скрипты наготове.
+          <p class="text-sm lg:text-base text-slate-300 max-w-2xl leading-relaxed">
+            Вся инфраструктура фермы под моим полным контролем: <b>Мини-ферма на 20 телефонов</b> (10 персональных слотов девочек + 10 служебных функций), аппаратный <b>Стенд на 50 телефонов</b> и единый <b>Мастер-Пульт</b>. Выбери модуль для работы:
           </p>
-
-          <!-- Quick Stat Badges -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">ИНФЛЮЕНСЕРОВ</div>
-              <div class="text-xl font-extrabold text-white mt-0.5">10 девушек</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">МИНИ-ФЕРМА</div>
-              <div class="text-xl font-extrabold text-[#F3A6BF] mt-0.5">20 телефонов</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">СТЕНД A26</div>
-              <div class="text-xl font-extrabold text-[#2DD4BF] mt-0.5">50 телефонов</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">ОШИБКИ СЕТИ</div>
-              <div class="text-xl font-extrabold text-emerald-400 mt-0.5">0 сбоев</div>
-            </div>
+          
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+            <button onclick="navToView('minifarm')" class="pill-btn-rose text-xs py-2 px-4 shadow-lg">
+              📱 Мини-ферма (20)
+            </button>
+            <button onclick="navToView('stand')" class="pill-btn-dark text-xs py-2 px-4 border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF]">
+              🏢 Стенд (50)
+            </button>
+            <button onclick="navToView('pult')" class="pill-btn-dark text-xs py-2 px-4 border-amber-500/40 text-amber-300 hover:border-amber-400">
+              🎮 Мастер-Пульт
+            </button>
+            <button onclick="togglePlittyAssistant()" class="pill-btn-dark text-xs py-2 px-4">
+              💬 Открыть диалог
+            </button>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- 3 Core Navigation Gateway Cards -->
+    <!-- 3 Big Main Navigation Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Card 1: Mini-farm -->
+      <!-- Card 1: Minifarm -->
       <div onclick="navToView('minifarm')" class="cyber-card p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
         <div class="space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.35)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          <div class="w-14 h-14 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             📱
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">10 ПЕРСОНАЖЕЙ • 20 ТЕЛЕФОНОВ</span>
-            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">10 ИНФЛЮЕНСЕРОВ • 10 СЛУЖЕБНЫХ</span>
+            <h2 class="text-2xl font-black text-white mt-1 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма (20 тел)</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Управление топовыми инфлюенсерами (Keira, Мия, Рин, Мира, Рада и др.). Личные комнаты, Face-Lock, генерация танцевальных видео, привязка боевых и прогревочных телефонов.
+            10 слотов под героинь студии (Кира, Айми, Кико, Рин, Мира...) + 10 служебных телефонов (прогрев TT, автолайкер сторис, сидер контактов VCF, прокси-монитор).
           </p>
         </div>
-        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#E588A6]">
-          <span>Войти в Мини-ферму</span>
+        <div class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
+          <span>Открыть Мини-ферму</span>
           <span class="group-hover:translate-x-1 transition-transform text-lg">&rarr;</span>
         </div>
       </div>
@@ -375,7 +343,7 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 2: MINIFARM VIEW (20 телефонов / 10 инфлюенсеров)          -->
+  <!-- SCREEN 2: MINIFARM VIEW (20 телефонов)                             -->
   <!-- ================================================================= -->
   <main id="view-minifarm" class="screen-view max-w-[1800px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
     
@@ -383,25 +351,63 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-[#E588A6]">КОНТЕНТ-ХАБ & ПРОФИЛИ</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#E588A6]">МИНИ-ФЕРМА 20 СМАРТФОНОВ</span>
           <span class="text-xs text-slate-500">&bull;</span>
-          <span class="text-xs text-teal-400 font-mono">10 Девушек • 20 Смартфонов</span>
+          <span class="text-xs text-teal-400 font-mono">10 Инфлюенсеров + 10 Спец-функций</span>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мини-ферма Инфлюенсеров</h1>
+        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мини-ферма: Слоты 1–20</h1>
       </div>
 
-      <div class="flex items-center gap-3">
-        <input type="text" id="minifarm-search" oninput="filterMinifarm()" placeholder="Поиск персонажа или соцсети..." class="bg-white/5 border border-white/10 rounded-2xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-64">
-        <button onclick="navToView('pult', 'minifarm')" class="pill-btn-rose text-xs">
-          🎮 Открыть Пульт для Мини-фермы
+      <!-- Scope Filters & Action -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="inline-flex p-1 rounded-2xl bg-white/5 border border-white/10 text-xs">
+          <button id="minifarm-tab-all" onclick="filterMinifarmScope('all')" class="px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all">
+            Все (20)
+          </button>
+          <button id="minifarm-tab-girls" onclick="filterMinifarmScope('girls')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all">
+            🌟 Инфлюенсеры (10)
+          </button>
+          <button id="minifarm-tab-service" onclick="filterMinifarmScope('service')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all">
+            ⚙️ Служебные (10)
+          </button>
+        </div>
+
+        <input type="text" id="minifarm-search" oninput="applyMinifarmFilter()" placeholder="Поиск по слоту, имени, роли..." class="bg-white/5 border border-white/10 rounded-2xl px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6] w-56">
+        
+        <button onclick="navToView('pult', 'minifarm')" class="pill-btn-rose text-xs py-1.5">
+          🎮 Пульт Мини-фермы
         </button>
       </div>
     </div>
 
-    <!-- 10 Influencer Cards Grid -->
-    <div id="minifarm-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <!-- Generated via JS -->
+    <!-- SECTION 1: INFLUENCERS GRID (10 Girls / Slots 1-10) -->
+    <div id="minifarm-girls-section" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#E588A6]"></span>
+          <h2 class="text-lg font-bold text-white tracking-tight">Персональные слоты инфлюенсеров (Слоты 1–10)</h2>
+          <span class="text-xs text-slate-400 font-mono">1 слот = 1 инфлюенсер</span>
+        </div>
+      </div>
+      <div id="minifarm-girls-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <!-- Generated via JS -->
+      </div>
     </div>
+
+    <!-- SECTION 2: SERVICE PHONES GRID (10 Phones / Slots 11-20) -->
+    <div id="minifarm-service-section" class="space-y-4 pt-6 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#2DD4BF]"></span>
+          <h2 class="text-lg font-bold text-white tracking-tight">Служебные функции & Автоматизация (Слоты 11–20)</h2>
+          <span class="text-xs text-slate-400 font-mono">Прогрев, Сторис, Сидер контактов, Прокси</span>
+        </div>
+      </div>
+      <div id="minifarm-service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <!-- Generated via JS -->
+      </div>
+    </div>
+
   </main>
 
   <!-- ================================================================= -->
@@ -415,324 +421,307 @@
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">АППАРАТНАЯ СТОЙКА</span>
           <span class="text-xs text-slate-500">&bull;</span>
-          <span class="text-xs text-slate-300 font-mono">Samsung Galaxy A26 (SM-A266B) • TCP:2222</span>
+          <span class="text-xs text-teal-300 font-mono">Samsung Galaxy A26 • ADB Port 2222</span>
         </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Стенд (50 Телефонов)</h1>
+        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Стенд: 50 Смартфонов</h1>
       </div>
 
-      <!-- Shelf Filter Buttons -->
+      <!-- Shelf Selection Pills -->
       <div class="flex flex-wrap items-center gap-2">
-        <button onclick="filterShelf('all')" id="btn-shelf-all" class="pill-btn-dark bg-[#2DD4BF]/20 border-[#2DD4BF]/50 text-white font-bold">
-          Все 50 телефонов
+        <button id="btn-shelf-all" onclick="filterShelf('all')" class="pill-btn-dark bg-[#2DD4BF]/20 border-[#2DD4BF]/50 text-white font-bold">
+          Вся стойка (50)
         </button>
-        <button onclick="filterShelf(1)" id="btn-shelf-1" class="pill-btn-dark">
-          Полка 1 (№51–60 • 10 шт)
+        <button id="btn-shelf-1" onclick="filterShelf(1)" class="pill-btn-dark text-slate-400">
+          Полка 1 (Тел 51–60)
         </button>
-        <button onclick="filterShelf(2)" id="btn-shelf-2" class="pill-btn-dark">
-          Полка 2 (№61–80 • 20 шт)
+        <button id="btn-shelf-2" onclick="filterShelf(2)" class="pill-btn-dark text-slate-400">
+          Полка 2 (Тел 61–80)
         </button>
-        <button onclick="filterShelf(3)" id="btn-shelf-3" class="pill-btn-dark">
-          Полка 3 (№81–100 • 20 шт)
+        <button id="btn-shelf-3" onclick="filterShelf(3)" class="pill-btn-dark text-slate-400">
+          Полка 3 (Тел 81–100)
+        </button>
+        
+        <button onclick="navToView('pult', 'stand')" class="pill-btn-rose text-xs ml-2">
+          🎮 Пульт для Стенда
         </button>
       </div>
     </div>
 
-    <!-- Shelf Metrics Quick Stats -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <div class="cyber-card p-4 text-center">
-        <div class="text-[10px] uppercase font-bold text-slate-400">АКТИВНЫ ПО ADB</div>
-        <div class="text-2xl font-black text-emerald-400 font-mono mt-1">50 / 50</div>
-        <div class="text-[10px] text-slate-500 mt-1">Подсеть 10.25.201.X</div>
-      </div>
-      <div class="cyber-card p-4 text-center">
-        <div class="text-[10px] uppercase font-bold text-slate-400">ПАНОРАМА ЭКРАНОВ</div>
-        <div class="text-2xl font-black text-teal-300 font-mono mt-1">Морской горизонт</div>
-        <div class="text-[10px] text-slate-500 mt-1">Граффити-нумерация 51-100</div>
-      </div>
-      <div class="cyber-card p-4 text-center">
-        <div class="text-[10px] uppercase font-bold text-slate-400">СРЕДНИЙ ЗАРЯД</div>
-        <div class="text-2xl font-black text-amber-300 font-mono mt-1">94% 🔋</div>
-        <div class="text-[10px] text-slate-500 mt-1">Питание стабильно</div>
-      </div>
-      <div class="cyber-card p-4 text-center">
-        <div class="text-[10px] uppercase font-bold text-slate-400">СРЕДНЯЯ ТЕМПЕРАТУРА</div>
-        <div class="text-2xl font-black text-slate-200 font-mono mt-1">29.4 °C</div>
-        <div class="text-[10px] text-emerald-400 mt-1">Норма (охлаждение ок)</div>
-      </div>
-    </div>
-
-    <!-- Stand Matrix Grid -->
-    <div id="stand-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-10 gap-3">
+    <!-- 50 Phones Grid (Slots 51..100) -->
+    <div id="stand-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-3">
       <!-- Generated via JS -->
     </div>
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCREEN 4: MASTER PULT VIEW (Единый мульти-таргет пульт)           -->
+  <!-- SCREEN 4: MASTER PULT VIEW (Единый пульт управления)              -->
   <!-- ================================================================= -->
-  <main id="view-pult" class="screen-view max-w-[1600px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
+  <main id="view-pult" class="screen-view max-w-[1500px] mx-auto px-4 lg:px-8 pt-8 space-y-8">
     
-    <div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-amber-400">ОРКЕСТРАТОР СЦЕНАРИЕВ</span>
-        <span class="text-xs text-slate-500">&bull;</span>
-        <span class="text-xs text-slate-300">Синхронное и выборочное управление</span>
-      </div>
-      <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мастер-Пульт Фермы</h1>
-    </div>
-
-    <!-- 1. TARGET SCOPE SELECTOR (КЛЮЧЕВОЙ МОДУЛЬ) -->
-    <div class="cyber-card p-6 space-y-4 border-amber-500/30">
-      <div class="flex items-center justify-between">
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">ЦЕЛЕВАЯ ГРУППА ДЛЯ КОМАНД</span>
-          <h3 class="text-lg font-bold text-white">Куда отдавать приказы?</h3>
+    <!-- Pult Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">КОМАНДНЫЙ ЦЕНТР</span>
+          <span class="text-xs text-slate-500">&bull;</span>
+          <span class="text-xs text-slate-300 font-mono">ADB Master Trigger</span>
         </div>
-        <span id="target-summary-badge" class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono font-bold">
+        <h1 class="text-3xl font-black text-white tracking-tight mt-1">Мастер-Пульт Фермы</h1>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-mono text-slate-400">Активная цель:</span>
+        <span id="target-summary-badge" class="px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold font-mono">
           Вся ферма: 70 телефонов
         </span>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <button onclick="setPultTarget('all')" id="target-btn-all" class="p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all">
-          <div class="text-lg font-black text-white">🔘 ВСЕ УСТРОЙСТВА</div>
-          <div class="text-xs text-amber-200 mt-1 font-mono">70 телефонов (Мини + Стенд)</div>
-        </button>
-
-        <button onclick="setPultTarget('minifarm')" id="target-btn-minifarm" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#E588A6] text-left transition-all">
-          <div class="text-lg font-black text-white">📱 ТОЛЬКО МИНИ-ФЕРМА</div>
-          <div class="text-xs text-slate-400 mt-1 font-mono">20 телефонов (10 инфлов)</div>
-        </button>
-
-        <button onclick="setPultTarget('stand')" id="target-btn-stand" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#2DD4BF] text-left transition-all">
-          <div class="text-lg font-black text-white">🏢 ТОЛЬКО СТЕНД</div>
-          <div class="text-xs text-slate-400 mt-1 font-mono">50 телефонов (Слоты 51–100)</div>
-        </button>
-      </div>
     </div>
 
-    <!-- 2. QUICK HARDWARE POWER BUTTONS -->
-    <div class="cyber-card p-6 space-y-4">
-      <h3 class="text-base font-bold text-white">⚡ Быстрые аппаратные действия на выбранной группе</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <button onclick="sendPultCommand('wake')" class="pill-btn-dark justify-center text-emerald-300 border-emerald-500/30 hover:bg-emerald-950/30">
-          🔆 Разбудить
-        </button>
-        <button onclick="sendPultCommand('sleep')" class="pill-btn-dark justify-center text-slate-300">
-          💤 Погасить экраны
-        </button>
-        <button onclick="sendPultCommand('home')" class="pill-btn-dark justify-center text-teal-300 border-teal-500/30">
-          🏠 Домой (Home)
-        </button>
-        <button onclick="sendPultCommand('clear_apps')" class="pill-btn-dark justify-center text-amber-300 border-amber-500/30">
-          🧹 Закрыть всё
-        </button>
-        <button onclick="sendPultCommand('reboot_adb')" class="pill-btn-dark justify-center text-rose-300 border-rose-500/30">
-          🔄 Рестарт ADB
-        </button>
-        <button onclick="sendPultCommand('check_proxy')" class="pill-btn-dark justify-center text-purple-300 border-purple-500/30">
-          🌐 Проверить DNS
-        </button>
-      </div>
-    </div>
-
-    <!-- 3. AUTOMATION SCENARIOS & TERMINAL CONSOLE -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <!-- Scenarios List -->
-      <div class="lg:col-span-6 space-y-4">
-        <h3 class="text-base font-bold text-white">🚀 Сценарии автоматизации</h3>
+    <!-- TARGET SELECTOR TABS -->
+    <div class="cyber-card p-6 space-y-4 border-amber-500/30">
+      <div class="text-xs font-bold uppercase tracking-wider text-slate-300">1. Выберите целевую группу (Target Scope):</div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
-        <div class="cyber-card p-4 flex items-center justify-between gap-4">
-          <div>
-            <div class="text-sm font-bold text-white">🔥 TikTok: Прогрев новичка</div>
-            <div class="text-xs text-slate-400 mt-0.5">15–25 минут, умный скроллинг, паузы 8–15 сек, лайки 10%</div>
+        <button id="target-btn-all" onclick="setPultTarget('all')" class="p-4 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-left transition-all">
+          <div class="text-lg font-black text-white flex items-center justify-between">
+            <span>🔘 ВСЕ ТЕЛЕФОНЫ</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">70 шт</span>
           </div>
-          <button onclick="runScenario('tt_warmup')" class="pill-btn-rose shrink-0">
-            Запустить &rarr;
-          </button>
-        </div>
+          <div class="text-xs text-slate-300 mt-1">Мини-ферма (20) + Стенд (50). Массовые синхронные команды.</div>
+        </button>
 
-        <div class="cyber-card p-4 flex items-center justify-between gap-4">
-          <div>
-            <div class="text-sm font-bold text-white">📱 TikTok: Массовый скроллинг ленты</div>
-            <div class="text-xs text-slate-400 mt-0.5">Удержание онлайна аккаунтов, рандомные взаимодействия</div>
+        <button id="target-btn-minifarm" onclick="setPultTarget('minifarm')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
+          <div class="text-lg font-black text-white flex items-center justify-between">
+            <span>📱 ТОЛЬКО МИНИ-ФЕРМА</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-rose-400 text-slate-950 font-mono font-black">20 шт</span>
           </div>
-          <button onclick="runScenario('tt_scroll')" class="pill-btn-dark shrink-0 hover:border-[#2DD4BF]">
-            Запустить &rarr;
-          </button>
-        </div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 1–20 (10 инфлюенсеров + 10 служебных сервисов).</div>
+        </button>
 
-        <div class="cyber-card p-4 flex items-center justify-between gap-4">
-          <div>
-            <div class="text-sm font-bold text-white">💬 Авто-ответы на комментарии (AI)</div>
-            <div class="text-xs text-slate-400 mt-0.5">Генерация остроумных ответов голосом персонажа через Gemini</div>
+        <button id="target-btn-stand" onclick="setPultTarget('stand')" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 text-left transition-all">
+          <div class="text-lg font-black text-white flex items-center justify-between">
+            <span>🏢 ТОЛЬКО СТЕНД</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-teal-400 text-slate-950 font-mono font-black">50 шт</span>
           </div>
-          <button onclick="runScenario('ai_comments')" class="pill-btn-dark shrink-0 hover:border-purple-400">
-            Запустить &rarr;
-          </button>
-        </div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 51–100 (Samsung Galaxy A26, стойка порт 2222).</div>
+        </button>
 
-        <div class="cyber-card p-4 flex items-center justify-between gap-4">
-          <div>
-            <div class="text-sm font-bold text-white">🚀 Синхронный пуш видео из очереди</div>
-            <div class="text-xs text-slate-400 mt-0.5">Доставка готовых танцев по ADB в галерею нужных телефонов</div>
-          </div>
-          <button onclick="runScenario('push_videos')" class="pill-btn-dark shrink-0 hover:border-emerald-400">
-            Запустить &rarr;
+      </div>
+    </div>
+
+    <!-- COMMAND SECTIONS -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Box 1: Hardware ADB Actions -->
+      <div class="cyber-card p-6 space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <span>⚡ Аппаратные триггеры ADB</span>
+          <span class="text-[10px] text-slate-400 font-mono">(Выполняется параллельно)</span>
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+          <button onclick="sendPultCommand('wake')" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-slate-200 hover:text-emerald-300 font-semibold transition-all text-left">
+            ☀️ Разбудить экраны
+          </button>
+          <button onclick="sendPultCommand('sleep')" class="p-3 rounded-xl bg-white/5 hover:bg-slate-500/20 border border-white/10 hover:border-slate-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+            🌙 Погасить экраны
+          </button>
+          <button onclick="sendPultCommand('home')" class="p-3 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 hover:text-teal-300 font-semibold transition-all text-left">
+            🏠 Выйти на Главный
+          </button>
+          <button onclick="sendPultCommand('clear_apps')" class="p-3 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-200 hover:text-rose-300 font-semibold transition-all text-left">
+            🧹 Сбросить приложения
+          </button>
+          <button onclick="sendPultCommand('reboot_adb')" class="p-3 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 hover:text-amber-300 font-semibold transition-all text-left">
+            🔄 Мягкий рестарт ADB
+          </button>
+          <button onclick="sendPultCommand('check_proxy')" class="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 hover:text-purple-300 font-semibold transition-all text-left">
+            🌐 Проверить DNS/Сеть
           </button>
         </div>
       </div>
 
-      <!-- Live Terminal Console -->
-      <div class="lg:col-span-6 cyber-card p-4 flex flex-col h-[380px] font-mono text-xs">
-        <div class="flex items-center justify-between pb-3 border-b border-white/10">
-          <span class="text-slate-400 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            LIVE Аппаратный лог консоли
-          </span>
-          <button onclick="clearConsoleLog()" class="text-[10px] text-slate-500 hover:text-white">Очистить</button>
-        </div>
-        <div id="pult-console-log" class="flex-1 overflow-y-auto py-3 space-y-1.5 text-slate-300">
-          <div class="text-slate-500">[12:45:00] Шлюз Plitty AI Studio инициализирован.</div>
-          <div class="text-teal-400">[12:45:01] 70 устройств подключены к центральной шине.</div>
-          <div class="text-emerald-400">[12:45:02] Стенд (50 тел): ADB over TCP :2222 активен.</div>
-          <div class="text-[#F3A6BF]">[12:45:03] Мини-ферма (20 тел): 10 профилей инфлюенсеров смонтированы.</div>
+      <!-- Box 2: Automation Scenarios -->
+      <div class="cyber-card p-6 space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🚀 Сценарии автоматизации</span>
+          <span class="text-[10px] text-slate-400 font-mono">(TikTok / Охваты)</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <button onclick="runScenario('tt_warmup')" class="p-3.5 rounded-xl bg-white/5 hover:bg-[#E588A6]/20 border border-white/10 hover:border-[#E588A6]/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+            <div class="font-bold text-[#F3A6BF]">🔥 TikTok: Прогрев новичка</div>
+            <div class="text-[10px] text-slate-400 mt-1">18 минут органического скролла и визитов</div>
+          </button>
+          <button onclick="runScenario('tt_scroll')" class="p-3.5 rounded-xl bg-white/5 hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+            <div class="font-bold text-teal-300">📱 TikTok: Скроллинг ленты</div>
+            <div class="text-[10px] text-slate-400 mt-1">Массовый серфинг FYP с паузами 5–35 сек</div>
+          </button>
+          <button onclick="runScenario('ai_comments')" class="p-3.5 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+            <div class="font-bold text-purple-300">💬 Авто-ответы AI</div>
+            <div class="text-[10px] text-slate-400 mt-1">Генерация ответов в тональности девушек</div>
+          </button>
+          <button onclick="runScenario('push_videos')" class="p-3.5 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-slate-200 hover:text-white font-semibold transition-all text-left">
+            <div class="font-bold text-amber-300">🚀 Пуш готовых видео</div>
+            <div class="text-[10px] text-slate-400 mt-1">Рассылка отрендеренных танцев с RTX 4060</div>
+          </button>
         </div>
       </div>
 
     </div>
+
+    <!-- PULT LIVE TERMINAL CONSOLE -->
+    <div class="cyber-card p-6 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-bold text-white font-mono">Журнал команд и ответов ADB (Live Terminal)</span>
+        </div>
+        <button onclick="clearConsoleLog()" class="text-[10px] font-mono text-slate-400 hover:text-white underline">
+          Очистить консоль
+        </button>
+      </div>
+
+      <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-48 overflow-y-auto space-y-1">
+        <div class="text-slate-500">[System] Plitty Master Pult v3.1 инициализирован. Все 70 устройств на связи.</div>
+        <div class="text-teal-400">[Stand] 50 телефонов Samsung Galaxy A26 подключены на порту TCP 2222.</div>
+        <div class="text-rose-400">[Minifarm] 10 инфлюенсеров (Слоты 1–10) + 10 служебных сервисов (Слоты 11–20) готовы к работе.</div>
+      </div>
+    </div>
+
   </main>
 
   <!-- ================================================================= -->
-  <!-- FLOATING PLITTY CHAT WIDGET (Dual-Brain: Gemini + IDE Bridge)     -->
+  <!-- FLOATING PLITTY ASSISTANT MODAL (Dual-Brain: Gemini / IDE Bridge) -->
   <!-- ================================================================= -->
-  <div id="plitty-chat-container" class="hidden fixed bottom-24 right-6 w-[380px] sm:w-[440px] max-w-[92vw] h-[580px] max-h-[82vh] z-50 cyber-card flex flex-col shadow-2xl border-2 border-[#E588A6]">
+  <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] cyber-card p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)] hidden">
     
-    <!-- Chat Header with Mode Switcher -->
-    <div class="p-3.5 border-b border-white/10 flex items-center justify-between bg-black/40 rounded-t-[22px]">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-full overflow-hidden border border-[#E588A6]">
+    <!-- Chat Header -->
+    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+      <div class="flex items-center gap-3">
+        <div class="relative w-9 h-9 rounded-xl overflow-hidden border border-[var(--plitty-rose)] shrink-0">
           <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
         </div>
         <div>
-          <div class="text-xs font-bold text-white flex items-center gap-1.5">
-            Плитти Ассистент
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          </div>
-          <div id="plitty-mode-label" class="text-[9px] text-[#F3A6BF] font-mono">Режим: Gemini 3.6 Brain</div>
+          <h4 class="text-sm font-extrabold text-white">Плитти AI</h4>
+          <div id="plitty-mode-label" class="text-[9px] text-[#F3A6BF] font-mono">Режим: Gemini 3.6 Brain (ИИ-Ассистент)</div>
         </div>
       </div>
 
-      <!-- Mode Toggle Switch -->
-      <div class="flex items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10 text-[10px]">
-        <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900">
-          🌸 ИИ
-        </button>
-        <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white">
-          🛠️ IDE
-        </button>
-        <button onclick="togglePlittyAssistant()" class="px-2 text-slate-400 hover:text-white">✕</button>
+      <!-- Mode Switcher & Close -->
+      <div class="flex items-center gap-1.5">
+        <div class="p-0.5 rounded-xl bg-white/5 border border-white/10 text-[9px]">
+          <button id="btn-mode-ai" onclick="switchPlittyMode('ai')" class="px-2 py-1 rounded-lg font-bold bg-[#E588A6] text-slate-900 transition-all">
+            ИИ
+          </button>
+          <button id="btn-mode-ide" onclick="switchPlittyMode('ide')" class="px-2 py-1 rounded-lg font-semibold text-slate-400 hover:text-white transition-all">
+            IDE Мост
+          </button>
+        </div>
+        <button onclick="togglePlittyAssistant()" class="p-1 text-slate-400 hover:text-white">✕</button>
       </div>
     </div>
 
-    <!-- Chat Messages Scroll Area -->
-    <div id="plitty-messages" class="flex-1 overflow-y-auto p-4 space-y-3 text-xs leading-relaxed">
+    <!-- Chat Messages Window -->
+    <div id="plitty-messages" class="h-64 overflow-y-auto space-y-3 p-2 text-xs">
       <div class="flex gap-2.5">
         <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-[#E588A6]/50">
           <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" class="w-full h-full object-cover">
         </div>
         <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-200 space-y-1 max-w-[85%]">
-          <p>Привет! Я на связи 24/7. Чем займемся? Могу проверить статус стенда, запустить прогрев или принять тикет в разработку!</p>
+          <div class="text-[9px] font-bold text-[#F3A6BF]">Плитти</div>
+          <p>Привет! Чем помочь? Могу подсказать статус фермы, сгенерировать идеи для танцев или отправить команду в Пульт.</p>
         </div>
       </div>
     </div>
 
-    <!-- Quick Prompt Chips -->
-    <div class="px-3 py-1.5 border-t border-white/5 flex gap-1.5 overflow-x-auto text-[10px] shrink-0">
-      <button onclick="sendQuickPrompt('Статус фермы')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[#F3A6BF] whitespace-nowrap">
+    <!-- Quick Prompt Pills -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
+      <button onclick="sendQuickPrompt('Статус фермы')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 whitespace-nowrap">
         📊 Статус фермы
       </button>
-      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-teal-300 whitespace-nowrap">
-        🔥 Прогрев полки 2
+      <button onclick="sendQuickPrompt('Идея для танца Киры')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[#F3A6BF] whitespace-nowrap">
+        💡 Идея танца
       </button>
-      <button onclick="sendQuickPrompt('Идея для рилса Киры')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-amber-300 whitespace-nowrap">
-        💡 Идея для рилса
+      <button onclick="sendQuickPrompt('Прогрев полки 2')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-teal-300 whitespace-nowrap">
+        🔥 Прогрев полки
       </button>
     </div>
 
     <!-- Chat Input Box -->
-    <div class="p-3 border-t border-white/10 bg-black/30 rounded-b-[22px] flex items-center gap-2">
-      <input type="text" id="plitty-input" onkeydown="handleChatKeyDown(event)" placeholder="Напиши Плитти или задачу в IDE..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6]">
-      <button onclick="sendChatMessage()" class="w-8 h-8 rounded-xl bg-[#E588A6] text-slate-900 font-bold flex items-center justify-center hover:bg-[#F3A6BF] transition-all">
-        &uarr;
+    <div class="flex items-center gap-2 pt-1 border-t border-white/10">
+      <input type="text" id="plitty-input" onkeydown="handleChatKeyDown(event)" placeholder="Напишите Плитти вопрос или команду..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#E588A6]">
+      <button onclick="sendChatMessage()" class="pill-btn-rose px-3 py-2 text-xs">
+        ➤
       </button>
     </div>
 
   </div>
 
-  <!-- Floating Button to Open Plitty -->
-  <div onclick="togglePlittyAssistant()" class="plitty-float-btn">
-    <div class="w-8 h-8 rounded-full overflow-hidden border border-[#E588A6]">
-      <img src="catgirl_avatar.png" onerror="this.src='img/plitty/plitty_avatar_official.jpg'" alt="Plitty" class="w-full h-full object-cover">
-    </div>
-    <div class="text-left">
-      <div class="text-[11px] font-extrabold text-white leading-tight">Плитти ИИ</div>
-      <div class="text-[9px] text-[#2DD4BF] font-mono">70 телефонов онлайн</div>
+  <!-- ================================================================= -->
+  <!-- MODAL: SCRCPY LIVE STREAM SIMULATOR                               -->
+  <!-- ================================================================= -->
+  <div id="modal-scrcpy" class="fixed inset-0 z-50 backdrop-blur-md bg-black/80 flex items-center justify-center p-4 hidden">
+    <div class="cyber-card max-w-lg w-full p-6 space-y-4 border-[#2DD4BF]/50">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h3 id="scrcpy-title" class="text-base font-bold text-white font-mono">📱 Экран устройства</h3>
+        </div>
+        <button onclick="closeScrcpyModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <!-- Scrcpy Phone Display Frame -->
+      <div class="relative w-full aspect-[9/16] max-h-[460px] mx-auto bg-slate-950 rounded-3xl border-4 border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
+        <!-- Status Bar -->
+        <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+          <span>13:37</span>
+          <div class="flex items-center gap-1.5">
+            <span>5G</span>
+            <span id="scrcpy-battery">98% 🔋</span>
+          </div>
+        </div>
+
+        <!-- Simulated App Content -->
+        <div class="flex-1 flex flex-col items-center justify-center text-center p-4 space-y-3">
+          <div class="w-16 h-16 rounded-full bg-[#E588A6]/20 border border-[#E588A6] flex items-center justify-center text-3xl animate-bounce">
+            📱
+          </div>
+          <div id="scrcpy-device-info" class="text-sm font-bold text-white font-mono">Телефон Слот #1</div>
+          <div id="scrcpy-task-info" class="text-xs text-teal-300 font-mono">Статус: Скроллинг TikTok (FYP)</div>
+          <div class="text-[10px] text-slate-400">Scrcpy Web-Stream • 1080x2400 @ 60fps • 0 latency</div>
+        </div>
+
+        <!-- Android Bottom Nav Bar -->
+        <div class="flex items-center justify-around pt-2 border-t border-white/10 text-slate-500 text-sm">
+          <button onclick="logAction('Scrcpy: Нажата кнопка Назад')" class="hover:text-white">◀</button>
+          <button onclick="logAction('Scrcpy: Нажата кнопка Домой')" class="hover:text-white">●</button>
+          <button onclick="logAction('Scrcpy: Нажата кнопка Приложения')" class="hover:text-white">■</button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs pt-2">
+        <button onclick="logAction('Scrcpy: Скриншот сохранен')" class="pill-btn-dark py-1.5 px-3">
+          📸 Скриншот
+        </button>
+        <button onclick="closeScrcpyModal()" class="pill-btn-rose py-1.5 px-4">
+          Закрыть
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- ================================================================= -->
-  <!-- SCRCPY WEB VIEWER MODAL                                           -->
-  <!-- ================================================================= -->
-  <div id="modal-scrcpy" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-    <div class="cyber-card p-6 max-w-md w-full space-y-4 border-teal-500/40">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span id="scrcpy-title" class="font-bold text-white text-sm">📱 Экран: Слот #51</span>
-        </div>
-        <button onclick="closeScrcpyModal()" class="text-slate-400 hover:text-white">✕</button>
-      </div>
-
-      <!-- Smartphone Frame Simulator -->
-      <div class="relative w-full aspect-[9/16] bg-slate-950 rounded-3xl border-4 border-slate-700 overflow-hidden flex flex-col justify-between p-3 shadow-2xl">
-        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
-          <span>12:45</span>
-          <span id="scrcpy-battery">98% 🔋</span>
-        </div>
-
-        <div class="text-center space-y-2 my-auto">
-          <div class="text-4xl animate-bounce">📱</div>
-          <div id="scrcpy-device-info" class="text-xs font-bold text-teal-300">Samsung Galaxy A26</div>
-          <div id="scrcpy-task-info" class="text-[11px] text-slate-400">Скроллинг TikTok...</div>
-        </div>
-
-        <!-- Phone Navigation Buttons -->
-        <div class="flex justify-around py-1 border-t border-white/10 text-slate-500 text-xs">
-          <button class="hover:text-white">◀</button>
-          <button class="hover:text-white">●</button>
-          <button class="hover:text-white">■</button>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center text-xs">
-        <span class="text-slate-400">Канал: TCP 2222 (Low Latency)</span>
-        <button onclick="closeScrcpyModal()" class="pill-btn-dark py-1 text-xs">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
-  <!-- JAVASCRIPT APP LOGIC                                              -->
+  <!-- JAVASCRIPT LOGIC & STATE                                          -->
   <!-- ================================================================= -->
   <script>
-    const GIRLS_DATA = [{"id": "inf_keira", "name": "Кира Стов (Keira Stove)", "alias": "Плитти / Plitty Catgirl 🌸", "avatar": "img/plitty/plitty_avatar_official.jpg", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Главный маскот студии 🌸", "archetype": "AI Companion, High-energy dancer, E46 Fan", "room": "Беленый дуб, синяя стена, постеры F1, теплый торшер", "slots": [1, 2], "phone_a": {"slot": 1, "role": "Боевой (Main)", "battery": 98, "status": "Скроллинг TT", "ip": "10.25.201.11:9999"}, "phone_b": {"slot": 2, "role": "Прогрев (Warmup)", "battery": 100, "status": "Готов к выкладке", "ip": "10.25.201.12:9999"}, "networks": {"tiktok": "@keira.stove", "instagram": "@keira.stove", "youtube": "Keira Dance", "x": "@keira_stove"}, "views": "1,420,500", "posts": 48, "ready_videos": 6}, {"id": "inf_01_aimi", "name": "Айми Сато (Aimi Sato)", "alias": "Aimi Chan 🌸", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 19, "location": "Токио, Япония 🇯🇵", "archetype": "Кавайная лолита, J-Pop & Anime OST", "room": "Пастельно-сиреневая комната, сакура, Neo-Tokyo Light", "slots": [3, 4], "phone_a": {"slot": 3, "role": "Боевой (Main)", "battery": 95, "status": "Ожидание таймера", "ip": "10.25.201.13:9999"}, "phone_b": {"slot": 4, "role": "Прогрев (Warmup)", "battery": 92, "status": "Прогрев аккаунта", "ip": "10.25.201.14:9999"}, "networks": {"tiktok": "@aimi.dance", "instagram": "@aimisato_official", "youtube": "Aimi Ch", "x": "@aimi_sato"}, "views": "980,400", "posts": 36, "ready_videos": 4}, {"id": "inf_02_kiko", "name": "Кико Ито (Kiko Ito)", "alias": "Kiko Cyber ⚡", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Осака, Япония 🇯🇵", "archetype": "Киберпанк, Street Dance, Glitch-Hop", "room": "Темный графит, фиолетовый неон, LED-зеркало", "slots": [5, 6], "phone_a": {"slot": 5, "role": "Боевой (Main)", "battery": 94, "status": "Скроллинг TT", "ip": "10.25.201.15:9999"}, "phone_b": {"slot": 6, "role": "Прогрев (Warmup)", "battery": 88, "status": "Ожидание", "ip": "10.25.201.16:9999"}, "networks": {"tiktok": "@kiko_dance", "instagram": "@kiko.ito", "youtube": "Kiko Beats", "x": "@kiko_ito"}, "views": "840,100", "posts": 32, "ready_videos": 5}, {"id": "inf_03_rin", "name": "Рин Мураakami (Rin Murakami)", "alias": "Kawaii Mask Dancer 😷", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 19, "location": "Сибуя, Токио 🇯🇵", "archetype": "Танец в кавай-маске, Aegyo Sunshine", "room": "Пастельно-мятная стена, светлая береза, неон KAWAII FLOW", "slots": [7, 8], "phone_a": {"slot": 7, "role": "Боевой (Main)", "battery": 97, "status": "Выкладка ролика", "ip": "10.25.201.17:9999"}, "phone_b": {"slot": 8, "role": "Прогрев (Warmup)", "battery": 96, "status": "Скроллинг TT", "ip": "10.25.201.18:9999"}, "networks": {"tiktok": "@rin.kawaii", "instagram": "@rin_murakami", "youtube": "Rin Dance", "x": "@rin_murakami"}, "views": "1,150,000", "posts": 44, "ready_videos": 7}, {"id": "inf_04_mira", "name": "Мира Ланская (Mira Lanskaya)", "alias": "Cosplay Idol 🎀", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 18, "location": "Славянская эстетика 🌾", "archetype": "Аниме-косплей, кукольные черты, стрелочки", "room": "Пудрово-голубая стена, неон ANIME VIBES, фигурки", "slots": [9, 10], "phone_a": {"slot": 9, "role": "Боевой (Main)", "battery": 91, "status": "Ожидание", "ip": "10.25.201.19:9999"}, "phone_b": {"slot": 10, "role": "Прогрев (Warmup)", "battery": 90, "status": "Прогрев ленты", "ip": "10.25.201.20:9999"}, "networks": {"tiktok": "@mira.cosplay", "instagram": "@mira_lanskaya", "youtube": "Mira Anime", "x": "@mira_lanskaya"}, "views": "760,300", "posts": 28, "ready_videos": 3}, {"id": "inf_05_rada", "name": "Рада Заречная (Rada Zarechnaya)", "alias": "Sunshine Flow 🌾", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Славянский солнечный мотив 🌾", "archetype": "Cottagecore Glam, Afrobeat Bounce, Медовые кудри", "room": "Теплая терракота, золотистый дуб, неон SUNSHINE FLOW", "slots": [11, 12], "phone_a": {"slot": 11, "role": "Боевой (Main)", "battery": 96, "status": "Скроллинг TT", "ip": "10.25.201.21:9999"}, "phone_b": {"slot": 12, "role": "Прогрев (Warmup)", "battery": 94, "status": "Ожидание", "ip": "10.25.201.22:9999"}, "networks": {"tiktok": "@rada_flow", "instagram": "@rada.zarechnaya", "youtube": "Rada Afrobeat", "x": "@rada_flow"}, "views": "890,700", "posts": 34, "ready_videos": 6}, {"id": "inf_06_hailey", "name": "Хейли Миллер (Hailey Miller)", "alias": "Miami Queen 🌴", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 21, "location": "Майами, Флорида 🇺🇸", "archetype": "Y2K Glam, Pop Twerk, Загар, Золотые украшения", "room": "Коралловый закат, неоновый розовый, пальмы за окном", "slots": [13, 14], "phone_a": {"slot": 13, "role": "Боевой (Main)", "battery": 93, "status": "Прогрев ленты", "ip": "10.25.201.23:9999"}, "phone_b": {"slot": 14, "role": "Прогрев (Warmup)", "battery": 89, "status": "Ожидание", "ip": "10.25.201.24:9999"}, "networks": {"tiktok": "@hailey.vibes", "instagram": "@haileymiller_miami", "youtube": "Hailey Miami", "x": "@hailey_miami"}, "views": "1,280,000", "posts": 46, "ready_videos": 5}, {"id": "inf_07_alexa", "name": "Алекса Кинг (Alexa King)", "alias": "Drill Shuffler 🎧", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 22, "location": "Лондон, Великобритания 🇬🇧", "archetype": "UK Drill, Drum&Bass, Shuffle, Безупречный стиль", "room": "Бетонный лофт, янтарная неоновая трубка, ростовое зеркало", "slots": [15, 16], "phone_a": {"slot": 15, "role": "Боевой (Main)", "battery": 95, "status": "Скроллинг TT", "ip": "10.25.201.25:9999"}, "phone_b": {"slot": 16, "role": "Прогрев (Warmup)", "battery": 92, "status": "Ожидание", "ip": "10.25.201.26:9999"}, "networks": {"tiktok": "@alexa.shuffle", "instagram": "@alexa_king_uk", "youtube": "Alexa Shuffle", "x": "@alexa_uk"}, "views": "910,200", "posts": 38, "ready_videos": 4}, {"id": "inf_08_amelie", "name": "Амели Дюбуа (Amelie Dubois)", "alias": "Paris Lofi Dancer 🥐", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Париж, Франция 🇫🇷", "archetype": "Французская элегантность, Lofi Hip-Hop, Мягкая грация", "room": "Кремовый стиль Османа, паркет елочкой, кованый балкон", "slots": [17, 18], "phone_a": {"slot": 17, "role": "Боевой (Main)", "battery": 97, "status": "Ожидание", "ip": "10.25.201.27:9999"}, "phone_b": {"slot": 18, "role": "Прогрев (Warmup)", "battery": 95, "status": "Прогрев ленты", "ip": "10.25.201.28:9999"}, "networks": {"tiktok": "@amelie.lofi", "instagram": "@amelie_dubois_paris", "youtube": "Amelie Paris", "x": "@amelie_paris"}, "views": "830,600", "posts": 30, "ready_videos": 5}, {"id": "inf_10_mia", "name": "Миа Вега (Mia Vega)", "alias": "Latin Sunshine ☀️", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Барселона, Испания 🇪🇸", "archetype": "Latin Pop & Reggaeton, Зажигательная пластика, Теплый взгляд", "room": "Ванильный крем, выбеленный дуб, арочный балкон", "slots": [19, 20], "phone_a": {"slot": 19, "role": "Боевой (Main)", "battery": 98, "status": "Скроллинг TT", "ip": "10.25.201.29:9999"}, "phone_b": {"slot": 20, "role": "Прогрев (Warmup)", "battery": 91, "status": "Ожидание таймера", "ip": "10.25.201.30:9999"}, "networks": {"tiktok": "@mia.vega.dance", "instagram": "@mia_vega_bcn", "youtube": "Mia Vega Flow", "x": "@mia_vega"}, "views": "1,340,000", "posts": 50, "ready_videos": 8}];
+    // Injected Data
+    const INFLUENCERS_DATA = [{"id": "inf_01_keira", "slot": 1, "name": "Кира Стов (Keira Stove)", "alias": "Плитти / Plitty Catgirl 🌸", "avatar": "img/plitty/plitty_avatar_official.jpg", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Главный маскот студии 🌸", "archetype": "AI Companion, High-energy dancer, E46 Fan", "room": "Беленый дуб, синяя стена, постеры F1, теплый торшер", "battery": 98, "status": "Скроллинг TT", "ip": "10.25.201.11:9999", "serial": "R5GL220ZZDT", "networks": {"tiktok": "@keira.stove", "instagram": "@keira.stove", "youtube": "Keira Dance", "x": "@keira_stove"}, "views": "1,420,500", "posts": 48, "ready_videos": 6}, {"id": "inf_02_aimi", "slot": 2, "name": "Айми Сато (Aimi Sato)", "alias": "Aimi Chan 🌸", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 19, "location": "Токио, Япония 🇯🇵", "archetype": "Кавайная лолита, J-Pop & Anime OST", "room": "Пастельно-сиреневая комната, сакура, Neo-Tokyo Light", "battery": 95, "status": "Ожидание таймера", "ip": "10.25.201.12:9999", "serial": "R5GL2217RTF", "networks": {"tiktok": "@aimi.dance", "instagram": "@aimisato_official", "youtube": "Aimi Ch", "x": "@aimi_sato"}, "views": "980,400", "posts": 36, "ready_videos": 4}, {"id": "inf_03_kiko", "slot": 3, "name": "Кико Ито (Kiko Ito)", "alias": "Kiko Cyber ⚡", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Осака, Япония 🇯🇵", "archetype": "Киберпанк, Street Dance, Glitch-Hop", "room": "Темный графит, фиолетовый неон, LED-зеркало", "battery": 94, "status": "Скроллинг TT", "ip": "10.25.201.13:9999", "serial": "R5GL2217SBF", "networks": {"tiktok": "@kiko_dance", "instagram": "@kiko.ito", "youtube": "Kiko Beats", "x": "@kiko_ito"}, "views": "840,100", "posts": 32, "ready_videos": 5}, {"id": "inf_04_rin", "slot": 4, "name": "Рин Мураками (Rin Murakami)", "alias": "Kawaii Mask Dancer 😷", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 19, "location": "Сибуя, Токио 🇯🇵", "archetype": "Танец в кавай-маске, Aegyo Sunshine", "room": "Пастельно-мятная стена, светлая береза, неон KAWAII FLOW", "battery": 97, "status": "Выкладка ролика", "ip": "10.25.201.14:9999", "serial": "R5GL2217XHM", "networks": {"tiktok": "@rin.kawaii", "instagram": "@rin_murakami", "youtube": "Rin Dance", "x": "@rin_murakami"}, "views": "1,150,000", "posts": 44, "ready_videos": 7}, {"id": "inf_05_mira", "slot": 5, "name": "Мира Ланская (Mira Lanskaya)", "alias": "Cosplay Idol 🎀", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 18, "location": "Славянская эстетика 🌾", "archetype": "Аниме-косплей, кукольные черты, стрелочки", "room": "Пудрово-голубая стена, неон ANIME VIBES, фигурки", "battery": 91, "status": "Ожидание", "ip": "10.25.201.15:9999", "serial": "R5GL2217YQP", "networks": {"tiktok": "@mira.cosplay", "instagram": "@mira_lanskaya", "youtube": "Mira Anime", "x": "@mira_lanskaya"}, "views": "760,300", "posts": 28, "ready_videos": 3}, {"id": "inf_06_rada", "slot": 6, "name": "Рада Заречная (Rada Zarechnaya)", "alias": "Sunshine Flow 🌾", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Славянский солнечный мотив 🌾", "archetype": "Cottagecore Glam, Afrobeat Bounce, Медовые кудри", "room": "Теплая терракота, золотистый дуб, неон SUNSHINE FLOW", "battery": 96, "status": "Скроллинг TT", "ip": "10.25.201.16:9999", "serial": "R5GL2218AZA", "networks": {"tiktok": "@rada.flow", "instagram": "@rada_zarechnaya", "youtube": "Rada Sunshine", "x": "@rada_zarechnaya"}, "views": "1,020,800", "posts": 41, "ready_videos": 6}, {"id": "inf_07_hailey", "slot": 7, "name": "Хейли Роуз (Hailey Rose)", "alias": "LA Vibes 🌴", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 21, "location": "Лос-Анджелес, США 🇺🇸", "archetype": "West Coast Golden, Street Pop & Shuffle", "room": "Белый лофт, кирпич, пальма, закатный оранжевый свет", "battery": 93, "status": "Ожидание таймера", "ip": "10.25.201.17:9999", "serial": "R5GYB0705MH", "networks": {"tiktok": "@hailey.dance", "instagram": "@hailey_rose_la", "youtube": "Hailey Rose Dance", "x": "@hailey_rose"}, "views": "1,290,000", "posts": 52, "ready_videos": 8}, {"id": "inf_08_alexa", "slot": 8, "name": "Алекса Фокс (Alexa Fox)", "alias": "Cyber Vogue 🦊", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 22, "location": "Лондон / Берлин 🇬🇧", "archetype": "High Fashion Vogue, Тек-хаус, Платиновое каре", "room": "Темный бетон, хромированные рейлы, холодный синий свет", "battery": 92, "status": "Скроллинг TT", "ip": "10.25.201.18:9999", "serial": "R5GYB0706GV", "networks": {"tiktok": "@alexa.fox.ai", "instagram": "@alexa_fox_vogue", "youtube": "Alexa Fox Flow", "x": "@alexa_fox"}, "views": "1,110,400", "posts": 39, "ready_videos": 5}, {"id": "inf_09_amelie", "slot": 9, "name": "Амели Дюбуа (Amelie Dubois)", "alias": "Paris Lofi ☕", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 20, "location": "Париж, Франция 🇫🇷", "archetype": "Французская элегантность, Lofi Hip-Hop, Мягкая грация", "room": "Кремовый стиль Османа, паркет елочкой, кованый балкон", "battery": 97, "status": "Ожидание", "ip": "10.25.201.19:9999", "serial": "R5GYB0707CF", "networks": {"tiktok": "@amelie.lofi", "instagram": "@amelie_dubois_paris", "youtube": "Amelie Paris", "x": "@amelie_paris"}, "views": "830,600", "posts": 30, "ready_videos": 5}, {"id": "inf_10_marta", "slot": 10, "name": "Марта Шнайдер (Marta Schneider)", "alias": "Berlin Techno 🖤", "avatar": "catgirl_avatar.png", "fallback_avatar": "catgirl_avatar.png", "age": 21, "location": "Берлин, Германия 🇩🇪", "archetype": "Industrial Hard-Techno, Dark Aesthetic, Острый взгляд", "room": "Индустриальный темный лофт, стробоскоп, металлические балки", "battery": 95, "status": "Скроллинг TT", "ip": "10.25.201.20:9999", "serial": "R5GYB0707GN", "networks": {"tiktok": "@marta.techno", "instagram": "@marta_schneider_bln", "youtube": "Marta Industrial", "x": "@marta_schneider"}, "views": "920,300", "posts": 35, "ready_videos": 4}];
+    const SERVICE_DATA = [{"slot": 11, "name": "Прогрев ленты TikTok #1", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "🔥", "color": "#10B981", "task": "Скроллинг рекомендаций FYP", "status": "Активен • Цикл 18 мин", "battery": 96, "ip": "10.25.201.21:9999", "serial": "R5GL220ZZDT", "script_id": "tt_warmup", "description": "Имитация органических просмотров видео (5–35 сек), случайные свайпы, защита от спам-фильтров."}, {"slot": 12, "name": "Прогрев профилей TikTok #2", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "📱", "color": "#10B981", "task": "Обход целевых профилей", "status": "Активен • Визит 4/6", "battery": 92, "ip": "10.25.201.22:9999", "serial": "R5GL2217RTF", "script_id": "tt_warmup", "description": "Переходы в профили авторов, просмотр первых видео, прогрев поискового алгоритмического следа."}, {"slot": 13, "name": "Автолайкер Сторис Instagram", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "❤️", "color": "#EC4899", "task": "Эмуляция story_seen", "status": "Активен • Пауза 40 сек", "battery": 97, "ip": "10.25.201.23:9999", "serial": "R5GL2217SBF", "script_id": "story_autoliker", "description": "Обход подписчиков конкурентов, эмуляция просмотра сторис, соблюдение жестких антифрод-лимитов 24/7."}, {"slot": 14, "name": "Smart AI-Комментирование", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "💬", "color": "#EC4899", "task": "Генерация реакций Gemini", "status": "Ожидание комментариев", "battery": 89, "ip": "10.25.201.24:9999", "serial": "R5GL2217XHM", "script_id": "ai_comments", "description": "Генерация контекстных ответов на входящие комментарии аудитории в тональности каждого персонажа."}, {"slot": 15, "name": "Сидер Контактов #1 (VCF Trust)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "👥", "color": "#3B82F6", "task": "Импорт базы contacts_1.vcf", "status": "150 контактов импортировано", "battery": 99, "ip": "10.25.201.25:9999", "serial": "R5GL2217YQP", "script_id": "deploy_contacts", "description": "Внедрение телефонной книги в Android для повышения траст-фактора и обхода спам-фильтров TT/IG."}, {"slot": 16, "name": "Сидер Контактов #2 (Social Graph)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "📇", "color": "#3B82F6", "task": "Ротация базы contacts_2.vcf", "status": "База контактов готова", "battery": 94, "ip": "10.25.201.26:9999", "serial": "R5GL2218AZA", "script_id": "deploy_contacts", "description": "Ротация телефонных номеров в памяти смартфона через ADB shell am start перед сменой учетных записей."}, {"slot": 17, "name": "Мобильный Прокси & Ротация IP", "category": "network", "category_title": "🌐 Сеть & Шлюз", "icon": "🌐", "color": "#2DD4BF", "task": "Мониторинг прокси-шлюза", "status": "Шлюз в норме • Ping 38ms", "battery": 98, "ip": "10.25.201.27:9999", "serial": "R5GYB0705MH", "script_id": "check_proxy", "description": "Контроль резидентных прокси, проверка DNS/WebRTC, смена мобильного IP через передергивание авиарежима."}, {"slot": 18, "name": "Контент-Дроппер & Стейджинг", "category": "content", "category_title": "🚀 Медиа-Стейджинг", "icon": "🚀", "color": "#F59E0B", "task": "Прием видео с RTX 4060", "status": "8 роликов в /sdcard/DCIM", "battery": 93, "ip": "10.25.201.28:9999", "serial": "R5GYB0706GV", "script_id": "push_videos", "description": "Синхронный прием видеофайлов через ADB push, индексация в системной галерее Android перед публикацией."}, {"slot": 19, "name": "Sandbox / Тест-Стенд Скриптов", "category": "dev", "category_title": "🧪 Отладка & Sandbox", "icon": "🧪", "color": "#A855F7", "task": "Калибровка touch x=0.16 y=0.60", "status": "Отладка координат ADB", "battery": 91, "ip": "10.25.201.29:9999", "serial": "R5GYB0707CF", "script_id": "run_test", "description": "Изолированное устройство для безопасного тестирования новых версий TikTok, APK-файлов и ADB-кликеров."}, {"slot": 20, "name": "Горячий Резерв (Failover Standby)", "category": "standby", "category_title": "🛡️ Запасной Аппарат", "icon": "🛡️", "color": "#94A3B8", "task": "Режим готовности к подмене", "status": "100% готов к замене любого слота", "battery": 100, "ip": "10.25.201.30:9999", "serial": "R5GYB0707GN", "script_id": "standby", "description": "Чистый отказоустойчивый смартфон для оперативной горячей замены любого аппарата фермы при сбое."}];
     const STAND_DATA = [{"slot": 51, "shelf": 1, "serial": "R5GL52C6QDB", "ip": "10.25.201.93:2222", "email": "phone51@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 52, "shelf": 1, "serial": "R5GL52C0JJM", "ip": "10.25.201.94:2222", "email": "phone52@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 53, "shelf": 1, "serial": "R5GL52C1SJZ", "ip": "10.25.201.97:2222", "email": "phone53@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 54, "shelf": 1, "serial": "R5GL522XNYR", "ip": "10.25.201.98:2222", "email": "phone54@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 55, "shelf": 1, "serial": "R5GL522Y1HA", "ip": "10.25.201.99:2222", "email": "phone55@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 56, "shelf": 1, "serial": "R5GL52C3ERF", "ip": "10.25.201.100:2222", "email": "phone56@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 57, "shelf": 1, "serial": "R5GL43WF6QL", "ip": "10.25.201.101:2222", "email": "phone57@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 58, "shelf": 1, "serial": "R5GL43WF2SR", "ip": "10.25.201.102:2222", "email": "phone58@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 59, "shelf": 1, "serial": "R5GL52C6WGK", "ip": "10.25.201.2:2222", "email": "phone59@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 60, "shelf": 1, "serial": "R5GL52C1QCZ", "ip": "10.25.201.104:2222", "email": "phone60@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 61, "shelf": 2, "serial": "R5GL447ZDBZ", "ip": "10.25.201.109:2222", "email": "phone61@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 62, "shelf": 2, "serial": "R5GL52C53YH", "ip": "10.25.201.105:2222", "email": "phone62@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 63, "shelf": 2, "serial": "R5GL50AGWKX", "ip": "10.25.201.106:2222", "email": "phone63@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 64, "shelf": 2, "serial": "R5GL52C1RBW", "ip": "10.25.201.107:2222", "email": "phone64@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 65, "shelf": 2, "serial": "R5GL447YDCY", "ip": "10.25.201.108:2222", "email": "phone65@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 66, "shelf": 2, "serial": "R5GL43WEJZD", "ip": "10.25.201.110:2222", "email": "phone66@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 67, "shelf": 2, "serial": "R5GL447YCQZ", "ip": "10.25.201.111:2222", "email": "phone67@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 68, "shelf": 2, "serial": "R5GL447ZTGX", "ip": "10.25.201.114:2222", "email": "phone68@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 69, "shelf": 2, "serial": "R5GL52C6W7V", "ip": "10.25.201.112:2222", "email": "phone69@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 70, "shelf": 2, "serial": "R5GL43WF2QK", "ip": "10.25.201.113:2222", "email": "phone70@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}, {"slot": 71, "shelf": 2, "serial": "R5GL447ZPEB", "ip": "10.25.201.135:2222", "email": "phone71@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 91, "temp": 33}, {"slot": 72, "shelf": 2, "serial": "R5GL447WRXB", "ip": "10.25.201.136:2222", "email": "phone72@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 92, "temp": 28}, {"slot": 73, "shelf": 2, "serial": "R5GL43WEKAM", "ip": "10.25.201.139:2222", "email": "phone73@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 93, "temp": 29}, {"slot": 74, "shelf": 2, "serial": "R5GL43WDG8X", "ip": "10.25.201.137:2222", "email": "phone74@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 94, "temp": 30}, {"slot": 75, "shelf": 2, "serial": "R5GL447WXJL", "ip": "10.25.201.138:2222", "email": "phone75@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 95, "temp": 31}, {"slot": 76, "shelf": 2, "serial": "R5GL447XX1H", "ip": "10.25.201.140:2222", "email": "phone76@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 96, "temp": 32}, {"slot": 77, "shelf": 2, "serial": "R5GL447WXDR", "ip": "10.25.201.141:2222", "email": "phone77@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 97, "temp": 33}, {"slot": 78, "shelf": 2, "serial": "R5GL13V9KST", "ip": "10.25.201.142:2222", "email": "phone78@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 98, "temp": 28}, {"slot": 79, "shelf": 2, "serial": "R5GL13V953T", "ip": "10.25.201.143:2222", "email": "phone79@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 99, "temp": 29}, {"slot": 80, "shelf": 2, "serial": "R5GL13V9Z0N", "ip": "10.25.201.145:2222", "email": "phone80@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 90, "temp": 30}, {"slot": 81, "shelf": 3, "serial": "R5GL447XPXW", "ip": "10.25.201.144:2222", "email": "phone81@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 82, "shelf": 3, "serial": "R5GL43WEERH", "ip": "10.25.201.150:2222", "email": "phone82@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 83, "shelf": 3, "serial": "R5GL44GS9GA", "ip": "10.25.201.146:2222", "email": "phone83@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 84, "shelf": 3, "serial": "R5GL51RXV0B", "ip": "10.25.201.152:2222", "email": "phone84@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 85, "shelf": 3, "serial": "R5GL43WEDLZ", "ip": "10.25.201.147:2222", "email": "phone85@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 86, "shelf": 3, "serial": "R5GL13V915X", "ip": "10.25.201.148:2222", "email": "phone86@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 87, "shelf": 3, "serial": "R5GL447ZLGL", "ip": "10.25.201.149:2222", "email": "phone87@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 88, "shelf": 3, "serial": "R5GL447Z02B", "ip": "10.25.201.151:2222", "email": "phone88@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 89, "shelf": 3, "serial": "R5GL43WEHCV", "ip": "10.25.201.154:2222", "email": "phone89@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 90, "shelf": 3, "serial": "R5GL43WEMND", "ip": "10.25.201.153:2222", "email": "phone90@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 91, "shelf": 3, "serial": "R5GL13V9AGD", "ip": "10.25.201.165:2222", "email": "phone91@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 92, "shelf": 3, "serial": "R5GL44GS9QD", "ip": "10.25.201.166:2222", "email": "phone92@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 93, "shelf": 3, "serial": "R5GL44GS2BN", "ip": "10.25.201.167:2222", "email": "phone93@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 94, "shelf": 3, "serial": "R5GL13V9RRT", "ip": "10.25.201.168:2222", "email": "phone94@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 95, "shelf": 3, "serial": "R5GL447WTWY", "ip": "10.25.201.169:2222", "email": "phone95@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 96, "shelf": 3, "serial": "R5GL447XSGM", "ip": "10.25.201.170:2222", "email": "phone96@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 97, "shelf": 3, "serial": "R5GL13V8YBW", "ip": "10.25.201.171:2222", "email": "phone97@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 98, "shelf": 3, "serial": "R5GL447WWYZ", "ip": "10.25.201.174:2222", "email": "phone98@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 99, "shelf": 3, "serial": "R5GL13VA6BR", "ip": "10.25.201.172:2222", "email": "phone99@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 100, "shelf": 3, "serial": "R5GL447WT7X", "ip": "10.25.201.173:2222", "email": "phone100@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}];
 
     let currentView = 'gateway';
     let pultTarget = 'all';
     let plittyMode = 'ai'; // 'ai' or 'ide'
+    let currentMinifarmScope = 'all';
 
     // --- NAVIGATION ROUTING ---
     function navToView(viewName, targetParam = null) {
@@ -760,22 +749,32 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- RENDER MINIFARM CARDS (10 Girls) ---
-    function renderMinifarmGrid(items = GIRLS_DATA) {
-      const grid = document.getElementById('minifarm-grid');
+    // --- RENDER MINIFARM CARDS (10 Girls + 10 Service Phones) ---
+    function renderMinifarmGrids() {
+      renderInfluencersGrid(INFLUENCERS_DATA);
+      renderServiceGrid(SERVICE_DATA);
+    }
+
+    function renderInfluencersGrid(items) {
+      const grid = document.getElementById('minifarm-girls-grid');
       if (!grid) return;
 
       grid.innerHTML = items.map(g => `
         <div class="cyber-card p-6 space-y-4 hover:border-[#E588A6] transition-all flex flex-col justify-between">
           <div class="space-y-3.5">
-            <!-- Header with Avatar -->
+            <!-- Header with Avatar & Slot Badge -->
             <div class="flex items-center gap-3.5">
               <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[rgba(229,136,166,0.4)] shadow-md shrink-0 bg-slate-900">
                 <img src="${g.avatar}" onerror="this.src='${g.fallback_avatar}'" alt="${g.name}" class="w-full h-full object-cover">
               </div>
               <div class="min-w-0 flex-1">
-                <div class="text-[10px] font-bold text-[#F3A6BF] uppercase tracking-wider truncate">${g.alias}</div>
-                <h3 class="text-base font-extrabold text-white truncate">${g.name}</h3>
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold text-[#F3A6BF] uppercase tracking-wider truncate">${g.alias}</span>
+                  <span class="text-[10px] font-mono font-black text-slate-950 bg-[#F3A6BF] px-2 py-0.5 rounded-full">
+                    СЛОТ #${g.slot}
+                  </span>
+                </div>
+                <h3 class="text-base font-extrabold text-white truncate mt-0.5">${g.name}</h3>
                 <div class="text-[11px] text-slate-400 truncate">${g.location} • ${g.age} лет</div>
               </div>
             </div>
@@ -783,27 +782,23 @@
             <!-- Archetype & Room -->
             <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
               <div><b class="text-slate-300">Архетип:</b> <span class="text-slate-400">${g.archetype}</span></div>
-              <div><b class="text-slate-300">Комната:</b> <span class="text-slate-400">${g.room}</span></div>
+              <div><b class="text-slate-300">Dance Room:</b> <span class="text-slate-400">${g.room}</span></div>
             </div>
 
-            <!-- Attached 2 Phones -->
-            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/10 space-y-1">
-                <div class="text-[10px] text-teal-300 font-bold flex justify-between">
-                  <span>📱 Слот #${g.phone_a.slot}</span>
-                  <span>${g.phone_a.battery}% 🔋</span>
+            <!-- Single Dedicated Phone Box -->
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-2 font-mono">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-1.5 font-bold text-teal-300">
+                  <span>📱 Телефон инфлюенсера</span>
                 </div>
-                <div class="text-[10px] text-slate-400 truncate">${g.phone_a.role}</div>
-                <div class="text-[9px] text-emerald-400 truncate">● ${g.phone_a.status}</div>
+                <span class="text-emerald-400 font-bold">${g.battery}% 🔋</span>
               </div>
-
-              <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/10 space-y-1">
-                <div class="text-[10px] text-[#F3A6BF] font-bold flex justify-between">
-                  <span>📱 Слот #${g.phone_b.slot}</span>
-                  <span>${g.phone_b.battery}% 🔋</span>
-                </div>
-                <div class="text-[10px] text-slate-400 truncate">${g.phone_b.role}</div>
-                <div class="text-[9px] text-amber-300 truncate">● ${g.phone_b.status}</div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>IP: ${g.ip}</span>
+                <span class="text-[10px] text-slate-500">${g.serial}</span>
+              </div>
+              <div class="text-[10px] text-emerald-400 truncate pt-1 border-t border-white/5">
+                ● ${g.status}
               </div>
             </div>
 
@@ -817,8 +812,8 @@
 
           <!-- Bottom Actions -->
           <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-            <button onclick="openScrcpyModal(${g.phone_a.slot}, '${g.name} (Main)', '${g.phone_a.status}', ${g.phone_a.battery})" class="pill-btn-dark text-[11px] py-1.5 px-3">
-              👁️ Экран #${g.phone_a.slot}
+            <button onclick="openScrcpyModal(${g.slot}, '${g.name}', '${g.status}', ${g.battery})" class="pill-btn-dark text-[11px] py-1.5 px-3">
+              👁️ Экран #${g.slot}
             </button>
             <button onclick="logAction('Запуск видеогенератора для ' + '${g.name}')" class="pill-btn-rose text-[11px] py-1.5 px-3">
               🎬 Создать танец
@@ -828,14 +823,111 @@
       `).join('');
     }
 
-    function filterMinifarm() {
+    function renderServiceGrid(items) {
+      const grid = document.getElementById('minifarm-service-grid');
+      if (!grid) return;
+
+      grid.innerHTML = items.map(s => `
+        <div class="cyber-card p-6 space-y-4 hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
+          <div class="space-y-3.5">
+            <!-- Header with Icon & Slot Badge -->
+            <div class="flex items-center gap-3.5">
+              <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shrink-0">
+                ${s.icon}
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">${s.category_title}</span>
+                  <span class="text-[10px] font-mono font-black text-slate-950 bg-teal-400 px-2 py-0.5 rounded-full">
+                    СЛОТ #${s.slot}
+                  </span>
+                </div>
+                <h3 class="text-base font-extrabold text-white truncate mt-0.5">${s.name}</h3>
+                <div class="text-[11px] text-slate-400 truncate">IP: ${s.ip} • ${s.serial}</div>
+              </div>
+            </div>
+
+            <!-- Description & Algorithm -->
+            <div class="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] space-y-1">
+              <div class="text-slate-300 leading-relaxed">${s.description}</div>
+            </div>
+
+            <!-- Current Task Status Box -->
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/10 space-y-1.5 font-mono">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-400 text-[10px]">Текущая задача:</span>
+                <span class="text-emerald-400 font-bold">${s.battery}% 🔋</span>
+              </div>
+              <div class="text-xs font-bold text-teal-300 truncate">${s.task}</div>
+              <div class="text-[10px] text-amber-300 truncate">● ${s.status}</div>
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+            <button onclick="openScrcpyModal(${s.slot}, '${s.name}', '${s.status}', ${s.battery})" class="pill-btn-dark text-[11px] py-1.5 px-3">
+              👁️ Экран #${s.slot}
+            </button>
+            <button onclick="runScenario('${s.script_id}')" class="pill-btn-dark bg-teal-500/15 border-teal-500/30 text-teal-300 hover:text-white text-[11px] py-1.5 px-3">
+              ▶️ Запустить
+            </button>
+            <button onclick="restartAdbDevice(${s.slot})" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-300 text-xs transition-all" title="Рестарт ADB">
+              🔄
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterMinifarmScope(scope) {
+      currentMinifarmScope = scope;
+      
+      const btnAll = document.getElementById('minifarm-tab-all');
+      const btnGirls = document.getElementById('minifarm-tab-girls');
+      const btnService = document.getElementById('minifarm-tab-service');
+      
+      const secGirls = document.getElementById('minifarm-girls-section');
+      const secService = document.getElementById('minifarm-service-section');
+
+      // Reset styles
+      [btnAll, btnGirls, btnService].forEach(b => {
+        if (b) b.className = 'px-3 py-1.5 rounded-xl font-semibold text-slate-400 hover:text-white transition-all';
+      });
+
+      if (scope === 'all') {
+        btnAll.className = 'px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all';
+        secGirls.style.display = 'block';
+        secService.style.display = 'block';
+      } else if (scope === 'girls') {
+        btnGirls.className = 'px-3 py-1.5 rounded-xl font-bold bg-[#E588A6] text-slate-900 transition-all';
+        secGirls.style.display = 'block';
+        secService.style.display = 'none';
+      } else if (scope === 'service') {
+        btnService.className = 'px-3 py-1.5 rounded-xl font-bold bg-teal-400 text-slate-900 transition-all';
+        secGirls.style.display = 'none';
+        secService.style.display = 'block';
+      }
+    }
+
+    function applyMinifarmFilter() {
       const query = (document.getElementById('minifarm-search')?.value || '').toLowerCase();
-      const filtered = GIRLS_DATA.filter(g => 
+      
+      const filteredGirls = INFLUENCERS_DATA.filter(g => 
         g.name.toLowerCase().includes(query) ||
         g.alias.toLowerCase().includes(query) ||
-        g.location.toLowerCase().includes(query)
+        g.location.toLowerCase().includes(query) ||
+        String(g.slot).includes(query)
       );
-      renderMinifarmGrid(filtered);
+
+      const filteredService = SERVICE_DATA.filter(s => 
+        s.name.toLowerCase().includes(query) ||
+        s.category_title.toLowerCase().includes(query) ||
+        s.task.toLowerCase().includes(query) ||
+        String(s.slot).includes(query)
+      );
+
+      renderInfluencersGrid(filteredGirls);
+      renderServiceGrid(filteredService);
     }
 
     // --- RENDER STAND PHONES GRID (50 Phones) ---
@@ -938,10 +1030,12 @@
         'tt_warmup': '🔥 TikTok: Прогрев новичка',
         'tt_scroll': '📱 TikTok: Массовый скроллинг',
         'ai_comments': '💬 Авто-ответы AI',
-        'push_videos': '🚀 Синхронный пуш видео'
+        'push_videos': '🚀 Синхронный пуш видео',
+        'story_autoliker': '❤️ Автолайкер сторис Instagram',
+        'deploy_contacts': '👥 Импорт базы контактов VCF'
       };
-      appendConsoleLog(`[Сценарий] Запущен: ${names[sc]} на целевой группе [${pultTarget.toUpperCase()}]`);
-      showToast(`🚀 Запущен ${names[sc]}`);
+      appendConsoleLog(`[Сценарий] Запущен: ${names[sc] || sc} на целевой группе [${pultTarget.toUpperCase()}]`);
+      showToast(`🚀 Запущен ${names[sc] || sc}`);
     }
 
     function appendConsoleLog(msg) {
@@ -972,7 +1066,7 @@
     // --- SCRCPY MODAL SIMULATOR ---
     function openScrcpyModal(slot, title, task, battery) {
       document.getElementById('scrcpy-title').textContent = `📱 Экран: ${title}`;
-      document.getElementById('scrcpy-device-info').textContent = `Samsung A26 (Слот #${slot})`;
+      document.getElementById('scrcpy-device-info').textContent = `Слот #${slot}`;
       document.getElementById('scrcpy-task-info').textContent = `Статус: ${task}`;
       document.getElementById('scrcpy-battery').textContent = `${battery}% 🔋`;
       document.getElementById('modal-scrcpy').classList.remove('hidden');
@@ -1068,7 +1162,7 @@
       let reply = 'Принято в обработку!';
 
       if (lower.includes('статус') || lower.includes('ферм')) {
-        reply = '📊 **Сводка фермы на сейчас:**<br>• Мини-ферма: 20/20 онлайн (10 инфлюенсеров)<br>• Стенд: 50/50 на порту 2222<br>• Батареи: в норме (94% в среднем)<br>• Ошибок нет!';
+        reply = '📊 **Сводка фермы:**<br>• Мини-ферма: 20 телефонов (Слоты 1–10 — инфлюенсеры, Слоты 11–20 — служебные функции)<br>• Стенд: 50 телефонов Samsung A26 на порту 2222<br>• Батареи: в норме (95% в среднем)<br>• Ошибок нет!';
       } else if (lower.includes('прогрев') || lower.includes('полк')) {
         reply = '🔥 Запустила прогрев аккаунтов на указанных устройствах через Мастер-Пульт. Скроллинг активен!';
         sendPultCommand('wake');
@@ -1097,7 +1191,7 @@
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-      renderMinifarmGrid();
+      renderMinifarmGrids();
       renderStandGrid('all');
       setPultTarget('all');
     });
