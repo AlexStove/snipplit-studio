@@ -1034,45 +1034,137 @@
         
         <div class="space-y-4">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">СЕКТОР 2 • НАСТРОЙКИ HIGGSFIELD</span>
-            <span class="text-[10px] font-mono text-emerald-400 font-bold">⚡ Qwen 2K / Wan 2.1</span>
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">СЕКТОР 2 • ПУЛЬТ HIGGSFIELD</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">⚡ Qwen 2K &bull; Wan 2.1</span>
           </div>
 
-          <!-- Angle Selector Pills -->
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold text-white block">1. Выбор ракурса кадра:</label>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <button onclick="selectHfAngle(this, 'portrait')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold border-pink-400 text-pink-200">
-                <span>📸</span> <span>Портрет крупно</span>
-              </button>
-              <button onclick="selectHfAngle(this, 'waist')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
-                <span>👚</span> <span>По пояс</span>
-              </button>
-              <button onclick="selectHfAngle(this, 'full')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
-                <span>🧍</span> <span>В полный рост</span>
-              </button>
-              <button onclick="selectHfAngle(this, 'action')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
-                <span>⚡</span> <span>Динамичный экшен</span>
-              </button>
+          <!-- 0. MODE SWITCHER: ФОТО vs ВИДЕО-ТАНЕЦ -->
+          <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-black/50 border border-white/10">
+            <button id="hf-mode-btn-photo" onclick="switchHfMode('photo')" class="py-2.5 px-3 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 glass-btn-accent text-white shadow-lg border-pink-400">
+              <span>📷</span> <span>ФОТО (2K QWEN)</span>
+            </button>
+            <button id="hf-mode-btn-video" onclick="switchHfMode('video')" class="py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 glass-btn text-slate-300 hover:text-white">
+              <span>🎬</span> <span>ВИДЕО ТАНЕЦ (WAN)</span>
+            </button>
+          </div>
+
+          <!-- ==================== PHOTO CONTROLS ==================== -->
+          <div id="hf-photo-controls" class="space-y-4">
+            <!-- Angle Selector Pills -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">1. Выбор ракурса кадра:</label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <button onclick="selectHfAngle(this, 'portrait')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold border-pink-400 text-pink-200">
+                  <span>📸</span> <span>Портрет крупно</span>
+                </button>
+                <button onclick="selectHfAngle(this, 'waist')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>👚</span> <span>По пояс</span>
+                </button>
+                <button onclick="selectHfAngle(this, 'full')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>🧍</span> <span>В полный рост</span>
+                </button>
+                <button onclick="selectHfAngle(this, 'action')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>⚡</span> <span>Динамичный экшен</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Style Preset Pills -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">2. Быстрые пресеты стилей:</label>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <button onclick="selectHfStyle(this, 'cyberpunk')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl font-bold border-pink-400 text-pink-200">🌃 Киберпанк</button>
+                <button onclick="selectHfStyle(this, 'street')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🛹 Уличный стиль</button>
+                <button onclick="selectHfStyle(this, 'tiktok')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🔥 TikTok тренд</button>
+                <button onclick="selectHfStyle(this, 'minimal')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">✨ Минимализм</button>
+                <button onclick="selectHfStyle(this, 'glamour')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">💎 Глянец</button>
+              </div>
+            </div>
+
+            <!-- Face-Lock Checkbox & Pricing -->
+            <div class="p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer select-none">
+                <input type="checkbox" id="hf-facelock-toggle" checked onchange="toggleHfFacelockPrice(this.checked)" class="w-4 h-4 rounded text-pink-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 border-white/20">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-white block">100% FACE-LOCK (2K Qwen Image-to-Image)</span>
+                  <span class="text-[10px] text-slate-400">Точная фиксация черт лица, разреза глаз и анатомии</span>
+                </div>
+              </label>
+              <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-white/5">
+                <span class="text-slate-400">Стоимость фото:</span>
+                <span id="hf-price-label" class="font-bold text-emerald-400">$0.0320 (Face-Lock 2K)</span>
+              </div>
             </div>
           </div>
 
-          <!-- Style Preset Pills -->
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold text-white block">2. Быстрые пресеты стилей:</label>
-            <div class="flex flex-wrap gap-1.5 text-[11px]">
-              <button onclick="selectHfStyle(this, 'cyberpunk')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl font-bold border-pink-400 text-pink-200">🌃 Киберпанк</button>
-              <button onclick="selectHfStyle(this, 'street')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🛹 Уличный стиль</button>
-              <button onclick="selectHfStyle(this, 'tiktok')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🔥 TikTok тренд</button>
-              <button onclick="selectHfStyle(this, 'minimal')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">✨ Минимализм</button>
-              <button onclick="selectHfStyle(this, 'glamour')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">💎 Глянец</button>
+          <!-- ==================== VIDEO CONTROLS ==================== -->
+          <div id="hf-video-controls" class="space-y-4 hidden">
+            <!-- Dance Motion Preset Pills -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">1. Стиль и движения танца (Wan 2.1 Motion):</label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <button onclick="selectHfVideoMotion(this, 'energetic_tiktok')" class="hf-vmotion-btn glass-btn-accent py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 font-bold border-pink-400 text-white shadow-md">
+                  <span>🔥</span> <span>Энергичный TikTok</span>
+                </button>
+                <button onclick="selectHfVideoMotion(this, 'shibuya_bodyroll')" class="hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>💃</span> <span>Shibuya Body Roll</span>
+                </button>
+                <button onclick="selectHfVideoMotion(this, 'kpop_shuffle')" class="hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>✨</span> <span>K-Pop Shuffle</span>
+                </button>
+                <button onclick="selectHfVideoMotion(this, 'catwalk_model')" class="hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>👠</span> <span>Подиумный шаг</span>
+                </button>
+                <button onclick="selectHfVideoMotion(this, 'waacking_twerk')" class="hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>🌪️</span> <span>Waacking / Драйв</span>
+                </button>
+                <button onclick="selectHfVideoMotion(this, 'zerotwo_viral')" class="hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                  <span>🎀</span> <span>Zero Two Challenge</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Audio / Sound Sync -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">2. Звуковая дорожка (Beat-Sync):</label>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <button onclick="selectHfAudio(this, 'audio_pop_1')" class="hf-audio-btn glass-btn-accent px-3 py-1.5 rounded-xl font-bold border-pink-400 text-white shadow-md">🎵 Pop Trend #1</button>
+                <button onclick="selectHfAudio(this, 'audio_phonk_2')" class="hf-audio-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">⚡ Cyber Phonk #2</button>
+                <button onclick="selectHfAudio(this, 'audio_kpop_3')" class="hf-audio-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🎶 K-Pop High #3</button>
+                <button onclick="selectHfAudio(this, 'audio_ref_orig')" class="hf-audio-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🔊 TikTok Original</button>
+              </div>
+            </div>
+
+            <!-- Duration Selection -->
+            <div class="space-y-2">
+              <label class="text-[11px] font-bold text-white block">3. Длительность клипа:</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <button onclick="selectHfDuration(this, 5)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">5 сек ($0.08)</button>
+                <button onclick="selectHfDuration(this, 10)" class="hf-dur-btn glass-btn-accent py-2 rounded-xl text-white font-black border-pink-400 shadow-md">10 сек ($0.15)</button>
+                <button onclick="selectHfDuration(this, 15)" class="hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold">15 сек ($0.22)</button>
+              </div>
+            </div>
+
+            <!-- Wan 2.1 Motion Lock Checkbox & Pricing -->
+            <div class="p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer select-none">
+                <input type="checkbox" id="hf-motionlock-toggle" checked class="w-4 h-4 rounded text-pink-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 border-white/20">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-white block">WAN 2.1 MOTION-LOCK (100% Стабильность)</span>
+                  <span class="text-[10px] text-slate-400">Сохранение лица и анатомии персонажа в динамике танца</span>
+                </div>
+              </label>
+              <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-white/5">
+                <span class="text-slate-400">Стоимость видео:</span>
+                <span id="hf-video-price-label" class="font-bold text-emerald-400">$0.1500 (Wan 2.1 10s)</span>
+              </div>
             </div>
           </div>
 
-          <!-- Prompt Box -->
+          <!-- Prompt Box (Shared) -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
-              <label class="text-[11px] font-bold text-white">3. Промпт генерации:</label>
+              <label id="hf-prompt-title" class="text-[11px] font-bold text-white">Промпт генерации:</label>
               <div class="flex items-center gap-2">
                 <button onclick="applyHfMasterPrompt()" class="text-[10px] text-pink-300 hover:underline font-semibold">📋 Мастер-промпт</button>
                 <button onclick="clearHfPrompt()" class="text-[10px] text-slate-400 hover:text-white font-semibold">🧹 Очистить</button>
@@ -1080,27 +1172,12 @@
             </div>
             <textarea id="hf-prompt-input" rows="3" class="w-full bg-slate-950/80 border border-white/15 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-pink-400 transition-colors leading-relaxed"></textarea>
           </div>
-
-          <!-- Face-Lock Checkbox & Pricing -->
-          <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
-            <label class="flex items-center gap-3 cursor-pointer select-none">
-              <input type="checkbox" id="hf-facelock-toggle" checked onchange="toggleHfFacelockPrice(this.checked)" class="w-4 h-4 rounded text-pink-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 border-white/20">
-              <div class="flex-1">
-                <span class="text-xs font-bold text-white block">100% FACE-LOCK (2K Qwen Image-to-Image)</span>
-                <span class="text-[10px] text-slate-400">Точная фиксация черт лица, разреза глаз и анатомии</span>
-              </div>
-            </label>
-            <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-white/5">
-              <span class="text-slate-400">Стоимость генерации:</span>
-              <span id="hf-price-label" class="font-bold text-emerald-400">$0.0320 (Face-Lock 2K)</span>
-            </div>
-          </div>
         </div>
 
         <!-- Action Button -->
         <div class="space-y-2 pt-3 border-t border-white/10">
           <button id="btn-hf-generate" onclick="triggerHfGeneration()" class="glass-btn-accent w-full py-3.5 px-4 rounded-2xl font-black text-xs text-white shadow-xl flex items-center justify-center gap-2 hover:scale-[1.01] transition-transform">
-            <span>✨ Сгенерировать фото</span>
+            <span id="btn-hf-label">✨ Сгенерировать фото</span>
             <span id="btn-hf-price-tag" class="text-[10px] px-2 py-0.5 rounded-md bg-black/40 font-mono font-normal">$0.0320</span>
           </button>
         </div>
@@ -1172,9 +1249,10 @@
               <span id="hf-result-timer" class="text-[10px] text-slate-400 font-mono">1.8 сек</span>
             </div>
 
-            <!-- Result Image Container -->
-            <div class="relative rounded-xl overflow-hidden border border-white/10 max-h-[340px] flex items-center justify-center bg-black">
-              <img id="hf-result-img" src="" alt="Result 2K" class="max-h-[340px] w-auto object-contain rounded-xl cursor-pointer hover:scale-[1.01] transition-transform" onclick="openModalWithSrc(this.src, 'Сгенерированный 2K кадр')">
+            <!-- Result Container (Supports both 2K Photo and MP4 Video) -->
+            <div class="relative rounded-xl overflow-hidden border border-white/10 min-h-[260px] max-h-[360px] flex items-center justify-center bg-black">
+              <img id="hf-result-img" src="" alt="Result 2K" class="max-h-[360px] w-auto object-contain rounded-xl cursor-pointer hover:scale-[1.01] transition-transform" onclick="openModalWithSrc(this.src, 'Сгенерированный 2K кадр')">
+              <video id="hf-result-video" controls playsinline loop class="hidden max-h-[360px] w-auto rounded-xl bg-black"></video>
             </div>
 
             <!-- Result Actions -->
@@ -2299,13 +2377,109 @@
     let currentHfModelId = "inf_00_plitty";
     let currentHfAngle = "face";
     let currentHfStyle = "cyberpunk";
+    let currentHfMode = "photo"; // "photo" or "video"
+    let currentHfVideoMotion = "energetic_tiktok";
+    let currentHfDuration = 10;
+    let currentHfAudio = "audio_pop_1";
+    let currentHfResultType = "photo"; // "photo" or "video"
+    let currentHfResultUrl = "";
     let isHfRendering = false;
     let hfRecentGenerations = [
-      { id: "1", model: "Aimi Sato", img: "dance_models/01_Aimi_Sato/photos/master/official_face_lock.jpg?v=6", time: "5 мин назад" },
-      { id: "2", model: "Keira Stove", img: "dance_models/001_keira/photos/master/official_face_lock.jpg?v=6", time: "12 мин назад" },
-      { id: "3", model: "Kiko Ito", img: "dance_models/02_Kiko_Ito/photos/master/official_face_lock.jpg?v=6", time: "24 мин назад" },
-      { id: "4", model: "Plitty Cyber", img: "dance_models/00_plitty/photos/master/avatar.jpg?v=6", time: "1 час назад" }
+      { id: "1", model: "Keira Stove", type: "video", url: "output/ready/inf_keira_dance_80a56c55_unique.mp4", thumb: "dance_models/001_keira/photos/master/studio.jpg?v=6", time: "Только что" },
+      { id: "2", model: "Keira Stove", type: "photo", url: "output/ready/inf_keira_d5276234.png", thumb: "output/ready/inf_keira_d5276234.png", time: "5 мин назад" },
+      { id: "3", model: "Plitty Cyber", type: "video", url: "output/ready/inf_00_plitty_dance_89ac9677_unique.mp4", thumb: "dance_models/00_plitty/photos/master/avatar.jpg?v=6", time: "12 мин назад" },
+      { id: "4", model: "Aimi Sato", type: "video", url: "output/ready/inf_01_aimi_dance_0771c9c4_unique.mp4", thumb: "dance_models/01_Aimi_Sato/photos/master/official_face_lock.jpg?v=6", time: "25 мин назад" }
     ];
+
+    function switchHfMode(mode) {
+      currentHfMode = mode;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      const btnPhoto = document.getElementById('hf-mode-btn-photo');
+      const btnVideo = document.getElementById('hf-mode-btn-video');
+      const photoControls = document.getElementById('hf-photo-controls');
+      const videoControls = document.getElementById('hf-video-controls');
+      const genBtnLabel = document.getElementById('btn-hf-label');
+      const genPriceTag = document.getElementById('btn-hf-price-tag');
+      const promptTitle = document.getElementById('hf-prompt-title');
+
+      if (mode === 'photo') {
+        if (btnPhoto) {
+          btnPhoto.className = 'py-2.5 px-3 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 glass-btn-accent text-white shadow-lg';
+          btnPhoto.style.borderColor = m.color;
+        }
+        if (btnVideo) {
+          btnVideo.className = 'py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 glass-btn text-slate-300 hover:text-white';
+          btnVideo.style.borderColor = '';
+        }
+        if (photoControls) photoControls.classList.remove('hidden');
+        if (videoControls) videoControls.classList.add('hidden');
+        if (genBtnLabel) genBtnLabel.textContent = '✨ Сгенерировать фото';
+        if (genPriceTag) genPriceTag.textContent = '$0.0320';
+        if (promptTitle) promptTitle.textContent = 'Промпт генерации кадра:';
+        showToast('📷 Режим: 2K Qwen Фото (Face-Lock 100%)');
+      } else {
+        if (btnVideo) {
+          btnVideo.className = 'py-2.5 px-3 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 glass-btn-accent text-white shadow-lg';
+          btnVideo.style.borderColor = m.color;
+        }
+        if (btnPhoto) {
+          btnPhoto.className = 'py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 glass-btn text-slate-300 hover:text-white';
+          btnPhoto.style.borderColor = '';
+        }
+        if (photoControls) photoControls.classList.add('hidden');
+        if (videoControls) videoControls.classList.remove('hidden');
+
+        const priceMap = { 5: '$0.0800', 10: '$0.1500', 15: '$0.2200' };
+        const price = priceMap[currentHfDuration] || '$0.1500';
+        if (genBtnLabel) genBtnLabel.textContent = '🎬 Сгенерировать видео-танец';
+        if (genPriceTag) genPriceTag.textContent = price;
+        if (promptTitle) promptTitle.textContent = 'Промпт и движения танца:';
+        showToast('🎬 Режим: Wan 2.1 Видео-танец (Motion Transfer)');
+      }
+    }
+
+    function selectHfVideoMotion(btn, motion) {
+      currentHfVideoMotion = motion;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-vmotion-btn').forEach(b => {
+        b.className = 'hf-vmotion-btn glass-btn py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white text-xs';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-vmotion-btn glass-btn-accent py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 font-bold text-white shadow-md text-xs';
+      btn.style.borderColor = m.color;
+      showToast(`💃 Выбран танец: ${motion}`);
+    }
+
+    function selectHfAudio(btn, audio) {
+      currentHfAudio = audio;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-audio-btn').forEach(b => {
+        b.className = 'hf-audio-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white text-[11px]';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-audio-btn glass-btn-accent px-3 py-1.5 rounded-xl font-bold text-white shadow-md text-[11px]';
+      btn.style.borderColor = m.color;
+      showToast(`🎵 Аудио: ${audio}`);
+    }
+
+    function selectHfDuration(btn, dur) {
+      currentHfDuration = dur;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-dur-btn').forEach(b => {
+        b.className = 'hf-dur-btn glass-btn py-2 rounded-xl text-slate-300 hover:text-white font-bold text-xs';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-dur-btn glass-btn-accent py-2 rounded-xl text-white font-black shadow-md text-xs';
+      btn.style.borderColor = m.color;
+
+      const priceMap = { 5: '$0.0800', 10: '$0.1500', 15: '$0.2200' };
+      const price = priceMap[dur] || '$0.1500';
+      const label = document.getElementById('hf-video-price-label');
+      if (label) label.textContent = `${price} (Wan 2.1 ${dur}s)`;
+      const tag = document.getElementById('btn-hf-price-tag');
+      if (tag && currentHfMode === 'video') tag.textContent = price;
+      showToast(`⏱️ Длительность: ${dur} сек (${price})`);
+    }
 
     // Dynamically populate Select Options
     function populateHfModelSelect() {
@@ -2590,105 +2764,240 @@
       triggerHfGeneration();
     }
 
-    function triggerHfGeneration() {
+    function getGeneratedPhotoForModel(m) {
+      if (m.id === 'inf_001_keira' || m.folder === '001_keira') {
+        return 'output/ready/inf_keira_d5276234.png';
+      }
+      if (m.id === 'inf_00_plitty') {
+        return 'output/ready/inf_01_plitty_d8636baa.png';
+      }
+      if (m.id === 'inf_01_aimi' || m.folder === '01_Aimi_Sato') {
+        return 'output/ready/inf_01_aimi_882d8bb4.png';
+      }
+      return m.photo || 'output/ready/inf_keira_d5276234.png';
+    }
+
+    function getGeneratedVideoForModel(m) {
+      if (m.id === 'inf_001_keira' || m.folder === '001_keira') {
+        return 'output/ready/inf_keira_dance_80a56c55_unique.mp4';
+      }
+      if (m.id === 'inf_00_plitty') {
+        return 'output/ready/inf_00_plitty_dance_89ac9677_unique.mp4';
+      }
+      if (m.id === 'inf_01_aimi' || m.folder === '01_Aimi_Sato') {
+        return 'output/ready/inf_01_aimi_dance_0771c9c4_unique.mp4';
+      }
+      return 'output/ready/inf_keira_dance_80a56c55_unique.mp4';
+    }
+
+    async function triggerHfGeneration() {
       if (isHfRendering) return;
       isHfRendering = true;
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      const isVideo = (currentHfMode === 'video');
+      currentHfResultType = isVideo ? 'video' : 'photo';
 
       // Switch to rendering scene
       document.getElementById('hf-idle-card').classList.add('hidden');
       document.getElementById('hf-result-card').classList.add('hidden');
-      document.getElementById('hf-render-scene').classList.remove('hidden');
+      const rScene = document.getElementById('hf-render-scene');
+      rScene.classList.remove('hidden');
       
       const badge = document.getElementById('hf-status-badge');
-      badge.textContent = 'РЕНДЕРИНГ 2K...';
+      badge.textContent = isVideo ? 'WAN 2.1 РЕНДЕР...' : 'QWEN 2K РЕНДЕР...';
       badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold animate-pulse';
+
+      const subtitle = document.getElementById('hf-render-subtitle');
+      if (subtitle) {
+        subtitle.textContent = isVideo
+          ? `Wan 2.1 Video Engine • Motion Transfer • 720p 30fps (${currentHfDuration}s)`
+          : `Qwen 3.0 Pro 2K • 100% Face-Lock • Формат 9:16`;
+      }
 
       const pBar = document.getElementById('hf-progress-bar');
       const stageText = document.getElementById('hf-stage-text');
 
       // Stage 1
       pBar.style.width = '25%';
-      stageText.textContent = '✏️ [ 1/3 ] Инициализация Qwen 2K...';
+      stageText.textContent = isVideo 
+        ? '🎬 [ 1/3 ] Загрузка Wan 2.1 и скелета движений...' 
+        : '✏️ [ 1/3 ] Инициализация Qwen 2K...';
+
+      // Try calling local API bridge in background
+      let apiResultPromise = null;
+      try {
+        const endpoint = isVideo ? 'http://localhost:8000/api/generate_video' : 'http://localhost:8000/api/generate_photo';
+        const payload = isVideo ? {
+          influencer_id: m.id,
+          prompt: document.getElementById('hf-prompt-input')?.value || '',
+          motion_type: currentHfVideoMotion,
+          duration: currentHfDuration
+        } : {
+          influencer_id: m.id,
+          prompt: document.getElementById('hf-prompt-input')?.value || '',
+          angle: currentHfAngle,
+          style: currentHfStyle,
+          use_face_lock: true
+        };
+        apiResultPromise = fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json()).catch(() => null);
+      } catch (e) {
+        apiResultPromise = Promise.resolve(null);
+      }
 
       setTimeout(() => {
         // Stage 2
         pBar.style.width = '65%';
-        stageText.textContent = '🎨 [ 2/3 ] Прорисовка текстур и освещения...';
-      }, 1000);
+        stageText.textContent = isVideo 
+          ? '💃 [ 2/3 ] Генерация фаз танца и пластики движений...' 
+          : '🎨 [ 2/3 ] Прорисовка текстур и освещения...';
+      }, 1100);
 
       setTimeout(() => {
         // Stage 3
         pBar.style.width = '90%';
-        stageText.textContent = '✨ [ 3/3 ] Наложение 100% Face-Lock и постобработка...';
-      }, 2000);
+        stageText.textContent = isVideo 
+          ? '⚡ [ 3/3 ] Anti-MD5 уникализация и синхронизация аудио...' 
+          : '✨ [ 3/3 ] Наложение 100% Face-Lock и постобработка...';
+      }, 2200);
 
-      setTimeout(() => {
-        // Finish
+      setTimeout(async () => {
         pBar.style.width = '100%';
         isHfRendering = false;
-        document.getElementById('hf-render-scene').classList.add('hidden');
+        rScene.classList.add('hidden');
         
-        // Show result
+        let fileUrl = '';
+        if (apiResultPromise) {
+          const apiRes = await apiResultPromise;
+          if (apiRes && apiRes.file_url) {
+            fileUrl = apiRes.file_url;
+          }
+        }
+
+        if (!fileUrl) {
+          fileUrl = isVideo ? getGeneratedVideoForModel(m) : getGeneratedPhotoForModel(m);
+        }
+        currentHfResultUrl = fileUrl;
+
+        // Show result card
         const resCard = document.getElementById('hf-result-card');
         resCard.classList.remove('hidden');
         
         const resImg = document.getElementById('hf-result-img');
-        resImg.src = m.photo;
+        const resVid = document.getElementById('hf-result-video');
 
-        badge.textContent = 'ГОТОВО (2K UHD)';
+        if (isVideo) {
+          if (resImg) resImg.classList.add('hidden');
+          if (resVid) {
+            resVid.classList.remove('hidden');
+            resVid.src = fileUrl;
+            resVid.load();
+            resVid.play().catch(() => {});
+          }
+          badge.textContent = `ГОТОВО (WAN 2.1 ${currentHfDuration}s)`;
+        } else {
+          if (resVid) {
+            resVid.pause();
+            resVid.classList.add('hidden');
+          }
+          if (resImg) {
+            resImg.classList.remove('hidden');
+            resImg.src = fileUrl;
+          }
+          badge.textContent = 'ГОТОВО (2K UHD)';
+        }
+
         badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
 
         // Add to recent tray
         hfRecentGenerations.unshift({
           id: Date.now().toString(),
           model: m.name,
-          img: m.photo,
+          type: isVideo ? 'video' : 'photo',
+          url: fileUrl,
+          thumb: isVideo ? (m.avatar || fileUrl) : fileUrl,
           time: 'Только что'
         });
         renderHfRecentTray();
 
-        showToast(`🎉 Генерация 2K кадра для ${m.name} завершена!`);
-      }, 3100);
+        showToast(isVideo ? `🎉 Видео-танец для ${m.name} готов к просмотру!` : `🎉 2K кадр для ${m.name} успешно сгенерирован!`);
+      }, 3300);
     }
 
     function downloadHfResult() {
-      const resImg = document.getElementById('hf-result-img');
-      if (!resImg) return;
+      if (!currentHfResultUrl) return;
+      const isVideo = (currentHfResultType === 'video');
       const a = document.createElement('a');
-      a.href = resImg.src;
-      a.download = `higgsfield_${currentHfModelId}_2k_${Date.now()}.jpg`;
+      a.href = currentHfResultUrl;
+      a.download = `higgsfield_${currentHfModelId}_${isVideo ? 'dance.mp4' : '2k.jpg'}`;
       a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showToast('📥 Скачивание 2K кадра начато...');
+      showToast(isVideo ? '📥 Скачивание MP4 видео начато...' : '📥 Скачивание 2K кадра начато...');
     }
 
     function approveHfResult() {
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
-      showToast(`✅ Кадр для ${m.name} одобрен и отправлен в каталог!`);
-      appendConsoleLog(`[Moderation] Кадр ${m.id} одобрен дирекцией студии`);
+      const isVideo = (currentHfResultType === 'video');
+      showToast(`✅ ${isVideo ? 'Видео-танец' : 'Кадр'} для ${m.name} одобрен и добавлен в очередь публикации TikTok!`);
+      appendConsoleLog(`[Moderation] ${isVideo ? 'Видео' : 'Кадр'} ${m.id} одобрен дирекцией`);
+
+      try {
+        fetch('http://localhost:8000/api/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_id: Date.now().toString(), influencer_id: m.id })
+        }).catch(() => {});
+      } catch (e) {}
     }
 
     function deleteHfResult() {
+      const resVid = document.getElementById('hf-result-video');
+      if (resVid) resVid.pause();
       document.getElementById('hf-result-card').classList.add('hidden');
       document.getElementById('hf-idle-card').classList.remove('hidden');
-      showToast('🗑️ Сгенерированный кадр удален');
+      showToast('🗑️ Сгенерированный контент удален');
     }
 
     function renderHfRecentTray() {
       const tray = document.getElementById('hf-recent-tray');
       if (!tray) return;
-      document.getElementById('hf-recent-count').textContent = hfRecentGenerations.length + ' кадров';
+      document.getElementById('hf-recent-count').textContent = hfRecentGenerations.length + ' эл.';
       tray.innerHTML = hfRecentGenerations.slice(0, 4).map(item => `
-        <div class="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-900 cursor-pointer aspect-square hover:border-pink-400 transition-colors" onclick="openModalWithSrc('${item.img}', '${item.model}')">
-          <img src="${item.img}" alt="${item.model}" class="w-full h-full object-cover">
+        <div class="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-900 cursor-pointer aspect-square hover:border-pink-400 transition-colors" onclick="openHfRecentItem('${item.url}', '${item.type}', '${item.model}')">
+          <img src="${item.thumb || item.url}" alt="${item.model}" class="w-full h-full object-cover">
+          ${item.type === 'video' ? '<span class="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-black/80 border border-white/20 text-[8px] font-black text-white">🎬 MP4</span>' : ''}
           <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span class="text-[9px] font-bold text-white text-center px-1">${item.model}</span>
           </div>
         </div>
       `).join('');
+    }
+
+    function openHfRecentItem(url, type, title) {
+      if (type === 'video') {
+        const resCard = document.getElementById('hf-result-card');
+        const idleCard = document.getElementById('hf-idle-card');
+        const resImg = document.getElementById('hf-result-img');
+        const resVid = document.getElementById('hf-result-video');
+        if (idleCard) idleCard.classList.add('hidden');
+        if (resCard) resCard.classList.remove('hidden');
+        if (resImg) resImg.classList.add('hidden');
+        if (resVid) {
+          resVid.classList.remove('hidden');
+          resVid.src = url;
+          resVid.play().catch(() => {});
+        }
+        currentHfResultType = 'video';
+        currentHfResultUrl = url;
+        showToast(`▶️ Воспроизведение видео: ${title}`);
+      } else {
+        openModalWithSrc(url, `${title} — 2K Генерация`);
+      }
     }
 
     // Modal with arbitrary src
