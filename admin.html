@@ -922,10 +922,21 @@
               <option value="inf_05_rada">#5 — Rada Zarechnaya (Рада Заречная, Amber Sunset)</option>
               <option value="inf_06_hailey">#6 — Hailey Miller (Хейли Миллер, Miami Rose)</option>
               <option value="inf_07_alexa">#7 — Alexa King (Алекса Кинг, Electric Violet)</option>
-              <option value="inf_08_amelie">#8 — Amelie Dubois (Амели Дюбуа, French Rose)</option>
+              <option value="inf_08_amelie">#8 — Amélie Dubois (Амели Дюбуа, French Rose)</option>
               <option value="inf_09_marta">#9 — Marta Bergman (Марта Бергман, Nordic Mint)</option>
               <option value="inf_10_mia">#10 — Mia Vega (Миа Вега, Latin Ruby)</option>
             </select>
+
+            <!-- Quick-Picker Horizontal Avatar Strip (12 models) -->
+            <div class="mt-2.5">
+              <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                <span>БЫСТРЫЙ ВЫБОР (ТАП ПО АВАТАРКЕ):</span>
+                <span class="text-pink-400 text-[9px] font-mono">12 АКТИВНЫХ</span>
+              </div>
+              <div id="hf-avatar-strip" class="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5" style="scrollbar-width: thin;">
+                <!-- Populated by renderHfQuickPillStrip() -->
+              </div>
+            </div>
           </div>
 
           <!-- Active Influencer Detailed Card -->
@@ -1398,6 +1409,8 @@
         btnAll.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
         viewAll.classList.remove('hidden');
         renderAllGrids();
+      populateHfModelSelect();
+      renderHfQuickPillStrip();
       switchHiggsfieldModel('inf_00_plitty');
       renderHfRecentTray();
         resetAmbientBackdrop();
@@ -2184,6 +2197,8 @@
     const HIGGSFIELD_MODELS = [
       {
         id: "inf_00_plitty",
+        code: "inf_00_plitty",
+        folder: null,
         slot: "0",
         slot_label: "#0 — Plitty Cyber",
         name: "Plitty Cyber",
@@ -2201,6 +2216,8 @@
       },
       {
         id: "inf_001_keira",
+        code: "inf_001_keira",
+        folder: "001_keira",
         slot: "0.1",
         slot_label: "#0.1 — Keira Stove",
         name: "Keira Stove",
@@ -2218,10 +2235,12 @@
       }
     ];
 
-    // Populate dancers into HIGGSFIELD_MODELS
+    // Populate dancers into HIGGSFIELD_MODELS with full compatibility
     DANCERS_DATA.forEach(d => {
       HIGGSFIELD_MODELS.push({
-        id: d.id,
+        id: d.code || ("inf_" + d.slot),
+        code: d.code || ("inf_" + d.slot),
+        folder: d.id,
         slot: String(d.slot),
         slot_label: `#${d.slot} — ${d.name_en}`,
         name: d.name_en,
@@ -2250,46 +2269,139 @@
       { id: "4", model: "Plitty Cyber", img: "plitty_avatar.jpg?v=4", time: "1 час назад" }
     ];
 
-    function switchHiggsfieldModel(modelId) {
-      currentHfModelId = modelId;
-      const m = HIGGSFIELD_MODELS.find(x => x.id === modelId) || HIGGSFIELD_MODELS[0];
-
-      // Update Sector 1 UI
+    // Dynamically populate Select Options
+    function populateHfModelSelect() {
       const selectEl = document.getElementById('hf-model-select');
-      if (selectEl && selectEl.value !== modelId) selectEl.value = modelId;
+      if (!selectEl) return;
+      selectEl.innerHTML = HIGGSFIELD_MODELS.map(m => `
+        <option value="${m.id}" ${m.id === currentHfModelId ? 'selected' : ''}>
+          ${m.slot_label} (${m.name_ru} • ${m.city})
+        </option>
+      `).join('');
+    }
 
-      document.getElementById('hf-top-active-name').textContent = m.slot_label;
-      document.getElementById('hf-top-active-name').style.color = m.color;
+    // Render Visual Quick-Picker Avatar Strip
+    function renderHfQuickPillStrip() {
+      const strip = document.getElementById('hf-avatar-strip');
+      if (!strip) return;
+      strip.innerHTML = HIGGSFIELD_MODELS.map(m => {
+        const isAct = m.id === currentHfModelId;
+        return `
+          <button onclick="switchHiggsfieldModel('${m.id}')"
+                  data-hf-pill="${m.id}"
+                  title="${m.slot_label} (${m.name_ru})"
+                  class="hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left ${isAct ? 'bg-white/20 shadow-md scale-105' : 'bg-slate-900/80 border-white/10 opacity-70 hover:opacity-100 hover:border-white/30'}"
+                  style="${isAct ? `border-color: ${m.color}; box-shadow: 0 0 14px ${m.color}66;` : ''}">
+            <img src="${m.avatar}" onerror="this.src='plitty_avatar.jpg?v=4'" class="w-5 h-5 rounded-full object-cover border" style="border-color: ${m.color};">
+            <span class="text-[11px] font-bold font-mono text-white">#${m.slot}</span>
+            <span class="text-[11px] font-medium text-slate-300 hidden xl:inline">${m.name.split(' ')[0]}</span>
+          </button>
+        `;
+      }).join('');
+    }
 
-      document.getElementById('hf-char-avatar').src = m.photo;
-      document.getElementById('hf-char-avatar').onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
-      document.getElementById('hf-char-avatar-wrap').style.borderColor = m.color;
-      document.getElementById('hf-char-avatar-wrap').style.boxShadow = `0 0 25px ${m.color}55`;
+    // Comprehensive model switch handler
+    function switchHiggsfieldModel(modelId) {
+      if (!modelId) return;
+
+      // Find by id, code, folder, or slot
+      const m = HIGGSFIELD_MODELS.find(x => 
+        x.id === modelId || 
+        x.code === modelId || 
+        x.folder === modelId || 
+        x.slot === String(modelId) ||
+        String(x.slot) === String(modelId).replace('inf_', '').replace('_', '')
+      ) || HIGGSFIELD_MODELS[0];
+
+      currentHfModelId = m.id;
+
+      // 1. Synchronize Select Element
+      const selectEl = document.getElementById('hf-model-select');
+      if (selectEl && selectEl.value !== m.id) {
+        selectEl.value = m.id;
+      }
+
+      // 2. Synchronize Quick-Pill Strip
+      document.querySelectorAll('.hf-model-pill').forEach(pill => {
+        const pId = pill.getAttribute('data-hf-pill');
+        if (pId === m.id) {
+          pill.className = 'hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left bg-white/20 shadow-md scale-105';
+          pill.style.borderColor = m.color;
+          pill.style.boxShadow = `0 0 15px ${m.color}66`;
+        } else {
+          pill.className = 'hf-model-pill shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-left bg-slate-900/80 border-white/10 opacity-70 hover:opacity-100 hover:border-white/30';
+          pill.style.borderColor = '';
+          pill.style.boxShadow = '';
+        }
+      });
+
+      // 3. Top Header Active Name
+      const topName = document.getElementById('hf-top-active-name');
+      if (topName) {
+        topName.textContent = m.slot_label;
+        topName.style.color = m.color;
+      }
+
+      // 4. Sector 1 Active Card Details
+      const avatarImg = document.getElementById('hf-char-avatar');
+      if (avatarImg) {
+        avatarImg.src = m.photo;
+        avatarImg.onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
+      }
+      const avatarWrap = document.getElementById('hf-char-avatar-wrap');
+      if (avatarWrap) {
+        avatarWrap.style.borderColor = m.color;
+        avatarWrap.style.boxShadow = `0 0 25px ${m.color}55`;
+      }
       
       const badge = document.getElementById('hf-char-badge');
-      badge.textContent = '#' + m.slot;
-      badge.style.backgroundColor = m.color;
+      if (badge) {
+        badge.textContent = '#' + m.slot;
+        badge.style.backgroundColor = m.color;
+      }
 
-      document.getElementById('hf-char-flag').textContent = m.flag;
-      document.getElementById('hf-char-name').textContent = m.name;
-      document.getElementById('hf-char-role').textContent = m.role;
-      document.getElementById('hf-char-role').style.color = m.color;
-      document.getElementById('hf-char-city').textContent = m.city;
-      document.getElementById('hf-char-niche').textContent = m.niche;
-      document.getElementById('hf-char-desc').textContent = m.room_desc || m.face_prompt;
+      const flagEl = document.getElementById('hf-char-flag');
+      if (flagEl) flagEl.textContent = m.flag;
+
+      const nameEl = document.getElementById('hf-char-name');
+      if (nameEl) nameEl.textContent = m.name;
+
+      const roleEl = document.getElementById('hf-char-role');
+      if (roleEl) {
+        roleEl.textContent = m.role;
+        roleEl.style.color = m.color;
+      }
+
+      const cityEl = document.getElementById('hf-char-city');
+      if (cityEl) cityEl.textContent = m.city;
+
+      const nicheEl = document.getElementById('hf-char-niche');
+      if (nicheEl) nicheEl.textContent = m.niche;
+
+      const descEl = document.getElementById('hf-char-desc');
+      if (descEl) descEl.textContent = m.room_desc || m.face_prompt;
 
       const tagsWrap = document.getElementById('hf-char-tags');
-      tagsWrap.innerHTML = m.tags.map(t => 
-        `<span class="px-2.5 py-1 rounded-lg font-semibold border" style="background: ${m.color}22; color: ${m.color}; border-color: ${m.color}44;">${t}</span>`
-      ).join('');
+      if (tagsWrap) {
+        tagsWrap.innerHTML = (m.tags || []).map(t => 
+          `<span class="px-2.5 py-1 rounded-lg font-semibold border" style="background: ${m.color}22; color: ${m.color}; border-color: ${m.color}44;">${t}</span>`
+        ).join('');
+      }
 
-      document.getElementById('hf-idle-char-name').textContent = m.name;
-      document.getElementById('hf-idle-char-name').style.color = m.color;
+      // 5. Sector 3 Idle card details
+      const idleName = document.getElementById('hf-idle-char-name');
+      if (idleName) {
+        idleName.textContent = m.name;
+        idleName.style.color = m.color;
+      }
 
-      // Update Sector 2 prompt
-      document.getElementById('hf-prompt-input').value = m.face_prompt;
+      // 6. Sector 2 Prompt update
+      const promptInput = document.getElementById('hf-prompt-input');
+      if (promptInput) {
+        promptInput.value = m.face_prompt;
+      }
 
-      // Apply dynamic styling across Sector 1, 2, 3
+      // 7. Dynamic Styling for Sectors 1, 2, 3
       ['hf-sector-1', 'hf-sector-2', 'hf-sector-3'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -2298,7 +2410,7 @@
         }
       });
 
-      // Update button & progress accents
+      // 8. Dynamic Accent for Buttons & Progress
       const btnGen = document.getElementById('btn-hf-generate');
       if (btnGen) {
         btnGen.style.borderColor = m.color;
@@ -2308,6 +2420,8 @@
       if (pBar) {
         pBar.style.background = `linear-gradient(90deg, ${m.color} 0%, #FFFFFF 50%, ${m.color} 100%)`;
       }
+
+      showToast(`✨ Выбран инфлюенсер: ${m.name}`);
     }
 
     function switchHfPreviewAngle(angle) {
@@ -2318,8 +2432,16 @@
       if (m.id === 'inf_00_plitty') {
         img.src = 'plitty_avatar.jpg?v=4';
       } else if (m.id === 'inf_001_keira') {
-        img.src = 'dance_models/001_keira/photos/master/official_face_lock.jpg';
+        const keiraMap = {
+          'face': 'official_face_lock.jpg',
+          'avatar': 'avatar.jpg',
+          'studio': 'studio.jpg',
+          'room': 'room.jpg',
+          'fullbody': 'fullbody.jpg'
+        };
+        img.src = `dance_models/001_keira/photos/master/${keiraMap[angle] || 'official_face_lock.jpg'}`;
       } else {
+        const folder = m.folder || m.id;
         const map = {
           'face': 'official_face_lock.jpg',
           'avatar': 'avatar.jpg',
@@ -2327,7 +2449,7 @@
           'room': 'room.jpg',
           'fullbody': 'body_frontal_full.jpg'
         };
-        img.src = `dance_models/${m.id}/photos/master/${map[angle] || 'official_face_lock.jpg'}`;
+        img.src = `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}`;
       }
       showToast(`📸 Ракурс переключен: ${angle}`);
     }
@@ -2339,27 +2461,32 @@
         b.className = 'hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white';
         b.style.borderColor = '';
       });
-      btn.className = 'hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold';
+      btn.className = 'hf-angle-btn glass-btn-accent py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-white shadow-lg';
       btn.style.borderColor = m.color;
-      btn.style.color = m.color;
+      showToast(`📐 Выбран угол съемки: ${angle}`);
     }
 
-    function selectHfStyle(btn, style) {
-      currentHfStyle = style;
+    function selectHfStyle(btn, styleName) {
+      currentHfStyle = styleName;
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
       document.querySelectorAll('.hf-style-btn').forEach(b => {
-        b.className = 'hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white';
+        b.className = 'hf-style-btn glass-btn py-2 px-3 rounded-xl text-xs text-slate-300 hover:text-white';
         b.style.borderColor = '';
       });
-      btn.className = 'hf-style-btn glass-btn px-3 py-1.5 rounded-xl font-bold';
+      btn.className = 'hf-style-btn glass-btn-accent py-2 px-3 rounded-xl text-xs text-white shadow-lg';
       btn.style.borderColor = m.color;
-      btn.style.color = m.color;
+
+      const input = document.getElementById('hf-prompt-input');
+      if (input) {
+        input.value = `${m.face_prompt}, style: ${styleName}, dramatic studio neon lighting, ultra-realistic 8k`;
+      }
+      showToast(`🎨 Стиль: ${styleName}`);
     }
 
-    function applyHfMasterPrompt() {
+    function resetHfPrompt() {
       const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
       document.getElementById('hf-prompt-input').value = m.face_prompt;
-      showToast('📋 Мастер-промпт персонажа вставлен!');
+      showToast('🔄 Промпт сброшен к мастер-шаблону');
     }
 
     function clearHfPrompt() {
@@ -2367,18 +2494,22 @@
       showToast('🧹 Поле промпта очищено');
     }
 
-    function toggleHfFacelockPrice(checked) {
-      const priceLabel = document.getElementById('hf-price-label');
-      const tag = document.getElementById('btn-hf-price-tag');
+    function toggleFaceLock(checked) {
+      const tag = document.getElementById('hf-price-tag');
+      const btn = document.getElementById('btn-hf-generate');
       if (checked) {
-        priceLabel.textContent = '$0.0320 (Face-Lock 2K)';
-        priceLabel.className = 'font-bold text-emerald-400';
-        tag.textContent = '$0.0320';
+        if (tag) tag.textContent = '$0.0320';
+        if (btn) btn.innerHTML = '<span>✨ Сгенерировать фото</span><span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">$0.0320</span>';
+        showToast('🔒 100% Face-Lock ВКЛЮЧЕН (2K Qwen Image-to-Image)');
       } else {
-        priceLabel.textContent = '$0.0025 (Text-to-Image)';
-        priceLabel.className = 'font-bold text-teal-300';
-        tag.textContent = '$0.0025';
+        if (tag) tag.textContent = '$0.0025';
+        if (btn) btn.innerHTML = '<span>✨ Сгенерировать фото</span><span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">$0.0025</span>';
+        showToast('🔓 Обычный режим (Text-to-Image без Face-Lock)');
       }
+    }
+
+    function triggerHfTestAnimation() {
+      triggerHfGeneration();
     }
 
     function triggerHfGeneration() {
@@ -2428,33 +2559,32 @@
         resImg.src = m.photo;
 
         badge.textContent = 'ГОТОВО (2K UHD)';
-        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold';
-
-        showToast(`🎉 2K кадр для ${m.name} успешно отрендерен!`);
-        appendConsoleLog(`[Higgsfield Engine] Генерация 2K завершена для ${m.id} (${m.name}) • Face-Lock: 100%`);
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
 
         // Add to recent tray
         hfRecentGenerations.unshift({
-          id: String(Date.now()),
+          id: Date.now().toString(),
           model: m.name,
           img: m.photo,
           time: 'Только что'
         });
         renderHfRecentTray();
-      }, 3000);
-    }
 
-    function triggerHfTestAnimation() {
-      triggerHfGeneration();
+        showToast(`🎉 Генерация 2K кадра для ${m.name} завершена!`);
+      }, 3100);
     }
 
     function downloadHfResult() {
       const resImg = document.getElementById('hf-result-img');
+      if (!resImg) return;
       const a = document.createElement('a');
       a.href = resImg.src;
-      a.download = `higgsfield_${currentHfModelId}_2k.jpg`;
+      a.download = `higgsfield_${currentHfModelId}_2k_${Date.now()}.jpg`;
+      a.target = '_blank';
+      document.body.appendChild(a);
       a.click();
-      showToast('💾 Скачивание 2K кадра началось...');
+      document.body.removeChild(a);
+      showToast('📥 Скачивание 2K кадра начато...');
     }
 
     function approveHfResult() {
@@ -2499,6 +2629,8 @@
     // --- URL QUERY PARAMS & INIT ---
     document.addEventListener('DOMContentLoaded', () => {
       renderAllGrids();
+      populateHfModelSelect();
+      renderHfQuickPillStrip();
       switchHiggsfieldModel('inf_00_plitty');
       renderHfRecentTray();
       renderStandGrid('all');
