@@ -2440,21 +2440,26 @@
     };
 
     function getHfModelAngleSrc(m, angle) {
-      if (!m) return 'plitty_avatar.jpg?v=4';
+      if (!m) return 'plitty_avatar.jpg?v=5';
       if (m.id === 'inf_00_plitty') {
-        if (angle === 'avatar') return 'catgirl_avatar.png?v=4';
-        if (angle === 'studio' || angle === 'room' || angle === 'fullbody') return 'plitty_bg.jpg?v=4';
-        return 'plitty_avatar.jpg?v=4';
+        const plittyMap = {
+          'face': 'dance_models/00_plitty/photos/master/official_face_lock.jpg?v=5',
+          'avatar': 'dance_models/00_plitty/photos/master/avatar.jpg?v=5',
+          'studio': 'dance_models/00_plitty/photos/master/studio.jpg?v=5',
+          'room': 'dance_models/00_plitty/photos/master/room.jpg?v=5',
+          'fullbody': 'dance_models/00_plitty/photos/master/fullbody.jpg?v=5'
+        };
+        return plittyMap[angle] || 'plitty_avatar.jpg?v=5';
       }
       if (m.id === 'inf_001_keira' || m.folder === '001_keira') {
         const keiraMap = {
-          'face': 'official_face_lock.jpg',
-          'avatar': 'avatar.jpg',
-          'studio': 'studio.jpg',
-          'room': 'room.jpg',
-          'fullbody': 'fullbody.jpg'
+          'face': 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=5',
+          'avatar': 'dance_models/001_keira/photos/master/avatar.jpg?v=5',
+          'studio': 'dance_models/001_keira/photos/master/studio.jpg?v=5',
+          'room': 'dance_models/001_keira/photos/master/room.jpg?v=5',
+          'fullbody': 'dance_models/001_keira/photos/master/fullbody.jpg?v=5'
         };
-        return `dance_models/001_keira/photos/master/${keiraMap[angle] || 'official_face_lock.jpg'}`;
+        return keiraMap[angle] || 'dance_models/001_keira/photos/master/official_face_lock.jpg?v=5';
       }
       const folder = m.folder || m.id;
       const map = {
@@ -2464,7 +2469,7 @@
         'room': 'room.jpg',
         'fullbody': 'body_frontal_full.jpg'
       };
-      return `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}`;
+      return `dance_models/${folder}/photos/master/${map[angle] || 'official_face_lock.jpg'}?v=5`;
     }
 
     // Switch Angle of Master Shots: Updates photo UNDER the buttons (скр 3)
