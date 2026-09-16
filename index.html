@@ -191,17 +191,17 @@
           </p>
           
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <button onclick="navToView('minifarm', 'dancers')" class="px-4 py-2 rounded-full font-bold bg-[#E588A6] text-slate-950 text-xs shadow-lg hover:brightness-110 transition">
-              💃 ТАНЦУЛЬКИ (10 моделей)
+            <button onclick="navToView('minifarm', 'all')" class="px-4 py-2 rounded-full font-bold bg-[#E588A6] text-slate-950 text-xs shadow-lg hover:brightness-110 transition flex items-center gap-1.5">
+              <span>📱 Мини-ферма (20)</span>
             </button>
-            <button onclick="navToView('minifarm', 'all')" class="px-4 py-2 rounded-full font-semibold bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs transition">
-              📱 Мини-ферма (Все 20)
+            <button onclick="navToView('stand')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF] text-xs transition flex items-center gap-1.5">
+              <span>🏢 Стенд (50)</span>
             </button>
-            <button onclick="navToView('stand')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-[#2DD4BF]/40 text-[#2DD4BF] hover:border-[#2DD4BF] text-xs transition">
-              🏢 Стенд (50)
+            <button onclick="navToView('pult')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-amber-500/40 text-amber-300 hover:border-amber-400 text-xs transition flex items-center gap-1.5">
+              <span>🎮 Мастер-Пульт</span>
             </button>
-            <button onclick="navToView('pult')" class="px-4 py-2 rounded-full font-semibold bg-white/5 border border-amber-500/40 text-amber-300 hover:border-amber-400 text-xs transition">
-              🎮 Мастер-Пульт
+            <button onclick="navToView('creativestudio')" class="px-4 py-2 rounded-full font-semibold bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs transition flex items-center gap-1.5">
+              <span>🎬 Студия</span>
             </button>
           </div>
         </div>
@@ -210,47 +210,27 @@
 
     <!-- 4 Main Route Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-      <!-- Card 1: Dancers -->
-      <div onclick="navToView('minifarm', 'dancers')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
+      <!-- Card 1: Minifarm (20 phones: 10 Dancers + 10 Service) -->
+      <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between">
         <div class="space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-[rgba(229,136,166,0.15)] border border-[rgba(229,136,166,0.3)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-            💃
-          </div>
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">10 МОДЕЛЕЙ • 50 ФОТО</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#F3A6BF] transition-colors">Танцульки</h2>
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            3-колоночный центр управления: Face-Lock, паспорта ДНК, 5 ракурсов с зумом, учетки и запуск видеогенерации.
-          </p>
-        </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
-          <span>Открыть Танцульки</span>
-          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
-        </div>
-      </div>
-
-      <!-- Card 2: Minifarm Overview -->
-      <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-emerald-400 transition-all flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
             📱
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">СЛОТЫ 1–20</span>
-            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-emerald-300 transition-colors">Мини-ферма</h2>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#F3A6BF]">СЛОТЫ 1–20 • 20 ТЕЛЕФОНОВ</span>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-[#F3A6BF] transition-colors">Мини-ферма</h2>
           </div>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Сетка всех 20 смартфонов: 10 персональных слотов танцовщиц + 10 служебных сервисов (прогрев, сторис, сидер VCF).
+            10 персональных слотов танцовщиц (ДНК, 5 ракурсов фото, промпты) + 10 служебных сервисов фермы (прогрев, сторис, сидер VCF).
           </p>
         </div>
-        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-emerald-400">
-          <span>Обзор всех 20</span>
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#F3A6BF]">
+          <span>Открыть Мини-ферму</span>
           <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </div>
 
-      <!-- Card 3: Stand -->
+      <!-- Card 2: Stand (50 phones: Slots 51-100) -->
       <div onclick="navToView('stand')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-[#2DD4BF] transition-all flex flex-col justify-between">
         <div class="space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-[rgba(45,212,191,0.15)] border border-[#2DD4BF]/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
@@ -270,7 +250,7 @@
         </div>
       </div>
 
-      <!-- Card 4: Pult -->
+      <!-- Card 3: Pult (Master ADB Control for 70 Devices) -->
       <div onclick="navToView('pult')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between">
         <div class="space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
@@ -286,6 +266,26 @@
         </div>
         <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
           <span>Запустить Пульт</span>
+          <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Creative Studio (Higgsfield & RTX 4060) -->
+      <div onclick="navToView('creativestudio')" class="glass rounded-3xl p-6 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            🎬
+          </div>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300">HIGGSFIELD & GPU</span>
+            <h2 class="text-xl font-black text-white mt-0.5 group-hover:text-purple-300 transition-colors">Студия</h2>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Генерация 8K фотосетов (Flux / Qwen) и видео-танцев (Wan 2.1 / Kling / Omni) с ускорением на RTX 4060 GPU.
+          </p>
+        </div>
+        <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-purple-300">
+          <span>Открыть Студию</span>
           <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </div>
