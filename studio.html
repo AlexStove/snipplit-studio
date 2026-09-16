@@ -1644,9 +1644,6 @@
         btnAll.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
         viewAll.classList.remove('hidden');
         renderAllGrids();
-      populateHfModelSelect();
-      switchHiggsfieldModel('inf_00_plitty');
-      renderHfRecentTray();
         resetAmbientBackdrop();
       } else if (scope === 'dancers') {
         const m = DANCERS_DATA[currentModelIndex] || DANCERS_DATA[0];
@@ -3300,6 +3297,24 @@
       }
     }
 
+    
+    function getResultFilename(p) {
+      if (!p) return '';
+      const slash = String.fromCharCode(92);
+      const parts = p.split(slash);
+      const tail = parts[parts.length - 1];
+      return tail.split('/').pop();
+    }
+
+    function viewQueueResult(idx) {
+      const t = (window.lastRenderQueue || [])[idx];
+      if (!t || !t.result_path) return;
+      const slash = String.fromCharCode(92);
+      const parts = (t.result_path || '').split(slash);
+      const fName = parts[parts.length - 1].split('/').pop();
+      openModalWithSrc('output/ready/' + fName, t.influencer_id || 'Рендер');
+    }
+
     async function loadRenderQueue() {
       const tbody = document.getElementById('queue-table-body');
       const countEl = document.getElementById('queue-live-count');
@@ -3312,6 +3327,7 @@
         const r = await fetch('http://localhost:8000/api/render_queue');
         if (r.ok) {
           const tasks = await r.json();
+          window.lastRenderQueue = tasks;
           if (countEl) countEl.textContent = `${tasks.length} задач`;
           if (badgeCount) badgeCount.textContent = tasks.length;
 
@@ -3320,7 +3336,7 @@
             return;
           }
 
-          tbody.innerHTML = tasks.slice(0, 20).map(t => {
+          tbody.innerHTML = tasks.slice(0, 20).map((t, idx) => {
             const isDone = t.status === 'completed';
             const isFail = t.status === 'failed';
             const statusBadge = isDone 
@@ -3329,7 +3345,7 @@
             
             const shortPrompt = (t.prompt || '').substring(0, 45) + '...';
             const resPreview = t.result_path 
-              ? `<button onclick="openModalWithSrc('output/ready/${t.result_path.split('\').pop()}', '${t.influencer_id}')" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold text-pink-300 hover:text-white">👁️ Просмотр</button>`
+              ? `<button onclick="viewQueueResult(${idx})" class="glass-btn px-2.5 py-1 rounded-lg text-[10px] font-bold text-pink-300 hover:text-white">👁️ Просмотр</button>`
               : '<span class="text-slate-500">—</span>';
 
             return `
