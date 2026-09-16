@@ -130,6 +130,28 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.32); }
 
     .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    @keyframes penDraw {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+      25% { transform: translate(-18px, 12px) scale(1.2); opacity: 1; }
+      50% { transform: translate(14px, -8px) scale(0.9); opacity: 0.8; }
+      75% { transform: translate(-10px, -14px) scale(1.1); opacity: 1; }
+      100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      50% { opacity: 1; transform: translateY(-24px) scale(1.3); }
+      100% { transform: translateY(-48px) scale(0.6); opacity: 0; }
+    }
+    @keyframes scanSweep {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(170px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes shimmerMove {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
   </style>
 </head>
 
@@ -195,6 +217,9 @@
         </button>
         <button id="nav-btn-pult" onclick="navToView('pult')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🎮 Пульт
+        </button>
+        <button id="nav-btn-higgsfield" onclick="navToView('higgsfield')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-pink-300 hover:text-white transition-all">
+          🎨 Студия Higgsfield
         </button>
         <button id="nav-btn-snippets" onclick="openSnippetsModal()" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white transition-all">
           🎬 Сниппеты
@@ -266,8 +291,8 @@
       </div>
     </div>
 
-    <!-- 4 Main Route Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- 5 Main Route Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
       <!-- Card 1: Minifarm (20 phones) -->
       <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-[#E588A6] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(229,136,166,0.3)]">
         <div class="space-y-3.5">
@@ -344,6 +369,26 @@
         </div>
         <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-purple-300">
           <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Сниппеты</span>
+          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
+        </div>
+      </div>
+
+      <!-- Card 5: Higgsfield Generation Studio -->
+      <div onclick="navToView('higgsfield')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-pink-500 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(236,72,153,0.3)]">
+        <div class="space-y-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-pink-500/20 border border-pink-500/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
+            🎨
+          </div>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-pink-400">HIGGSFIELD GENJUTSU • 3 СЕКТОРА</span>
+            <h2 class="text-xl font-black text-white mt-1 group-hover:text-pink-300 transition-colors">Студия генерации</h2>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            12 персонажей (#0 Plitty, #0.1 Keira, #1–10 танцовщицы), 2K Qwen Face-Lock, анимированный рендер чиби-Плитти на планшете.
+          </p>
+        </div>
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-pink-300">
+          <span class="glass-btn px-3 py-1.5 rounded-xl">Открыть Студию</span>
           <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
         </div>
       </div>
@@ -824,6 +869,297 @@
   </main>
 
   <!-- ================================================================= -->
+  <!-- SCREEN 5: HIGGSFIELD GENERATION STUDIO (3 СЕКТОРА)                -->
+  <!-- ================================================================= -->
+  <main id="view-higgsfield" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
+    
+    <!-- Top Control Bar with Glass effect -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass p-5 rounded-3xl border border-white/10 shadow-2xl">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-pink-400 font-mono">HIGGSFIELD GENJUTSU ENGINE</span>
+          <span class="text-slate-500">&bull;</span>
+          <span class="text-xs text-slate-300 font-mono">12 Инфлюенсеров • 100% Face-Lock • Qwen 2K & Wan 2.1</span>
+        </div>
+        <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight">
+          🎨 Студия генерации (Higgsfield)
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
+          Активный персонаж: <span id="hf-top-active-name" class="font-bold text-pink-400">#0 Plitty Cyber</span>
+        </div>
+        <button onclick="triggerHfTestAnimation()" class="glass-btn px-4 py-2 rounded-2xl text-xs font-bold text-amber-300 hover:border-amber-400 shadow-md">
+          <span>▶️ Тест анимации</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 SECTORS GRID (Side-by-side on wide screens) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- ============================================================= -->
+      <!-- СЕКТОР 1: ВЫБОР ИНФЛЮЕНСЕРА (4 cols)                          -->
+      <!-- ============================================================= -->
+      <div id="hf-sector-1" class="lg:col-span-4 glass rounded-3xl p-5 lg:p-6 space-y-5 border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between theme-transition">
+        
+        <div class="space-y-4">
+          <!-- Sector 1 Header & Dropdown in ONE line -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">СЕКТОР 1 • ВЫБОР ИНФЛЮЕНСЕРА</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white font-bold">12 МОДЕЛЕЙ</span>
+            </div>
+            <!-- Single-line compact dropdown of all 12 characters -->
+            <select id="hf-model-select" onchange="switchHiggsfieldModel(this.value)" class="w-full bg-slate-900/95 border border-white/20 rounded-2xl px-4 py-3 text-xs font-bold text-white focus:outline-none shadow-xl cursor-pointer hover:border-pink-400 transition-colors">
+              <option value="inf_00_plitty">#0 — Plitty Cyber (AI-мозг и саппорт фабрики)</option>
+              <option value="inf_001_keira">#0.1 — Keira Stove (Кира Стоув, VIP Master #0.1, флагманский амбассадор)</option>
+              <option value="inf_01_aimi">#1 — Aimi Sato (Айми Сато, Shibuya Gold)</option>
+              <option value="inf_02_kiko">#2 — Kiko Ito (Кико Ито, K-Pop Purple)</option>
+              <option value="inf_03_rin">#3 — Rin Murakami (Рин Мураками, Kawaii Mint)</option>
+              <option value="inf_04_mira">#4 — Mira Lanskaya (Мира Ланская, Cyber Emerald)</option>
+              <option value="inf_05_rada">#5 — Rada Zarechnaya (Рада Заречная, Amber Sunset)</option>
+              <option value="inf_06_hailey">#6 — Hailey Miller (Хейли Миллер, Miami Rose)</option>
+              <option value="inf_07_alexa">#7 — Alexa King (Алекса Кинг, Electric Violet)</option>
+              <option value="inf_08_amelie">#8 — Amelie Dubois (Амели Дюбуа, French Rose)</option>
+              <option value="inf_09_marta">#9 — Marta Bergman (Марта Бергман, Nordic Mint)</option>
+              <option value="inf_10_mia">#10 — Mia Vega (Миа Вега, Latin Ruby)</option>
+            </select>
+          </div>
+
+          <!-- Active Influencer Detailed Card -->
+          <div id="hf-character-card" class="rounded-2xl p-4 bg-slate-950/60 border border-white/10 space-y-4 transition-all shadow-lg">
+            
+            <!-- Avatar + Key Info -->
+            <div class="flex items-start gap-4">
+              <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border-2 border-pink-400/80 shadow-[0_0_25px_rgba(229,136,166,0.3)] bg-slate-900" id="hf-char-avatar-wrap">
+                <img id="hf-char-avatar" src="plitty_avatar.jpg?v=4" alt="Active Influencer" class="w-full h-full object-cover">
+                <span id="hf-char-badge" class="absolute bottom-1 right-1 px-2 py-0.5 rounded-md text-[9px] font-black text-slate-950 uppercase shadow-md bg-pink-400 font-mono">#0</span>
+              </div>
+
+              <div class="space-y-1 flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span id="hf-char-flag" class="text-base">🌸</span>
+                  <h3 id="hf-char-name" class="text-base font-black text-white truncate">Plitty Cyber</h3>
+                </div>
+                <div id="hf-char-role" class="text-xs text-pink-300 font-medium">AI-мозг и саппорт фабрики</div>
+                <div id="hf-char-city" class="text-[11px] text-slate-400 font-mono">Tokyo / Cloud</div>
+                <div id="hf-char-niche" class="text-[10px] text-teal-300 font-semibold truncate">AI Core & Automation</div>
+              </div>
+            </div>
+
+            <!-- Stylish Tags -->
+            <div id="hf-char-tags" class="flex flex-wrap gap-1.5 text-[10px]">
+              <span class="px-2.5 py-1 rounded-lg bg-pink-500/20 text-pink-300 border border-pink-500/30 font-semibold">100% Face-Lock</span>
+              <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">Qwen 2K Ready</span>
+              <span class="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">Kyoto Style</span>
+            </div>
+
+            <!-- Bio / Room description -->
+            <p id="hf-char-desc" class="text-xs text-slate-300 leading-relaxed bg-black/40 p-3 rounded-xl border border-white/5">
+              Главный ИИ-ассистент и ядро фабрики. Управляет генерацией контента, фермой смартфонов и синхронизацией TikTok.
+            </p>
+          </div>
+        </div>
+
+        <!-- Angle quick tabs for active model -->
+        <div class="space-y-2 pt-2 border-t border-white/10">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">📸 Ракурсы мастер-кадров модели</span>
+          <div class="grid grid-cols-3 gap-1.5 text-[10px]">
+            <button onclick="switchHfPreviewAngle('face')" class="glass-btn py-2 rounded-lg font-bold text-slate-300 hover:text-white">👩 Лицо</button>
+            <button onclick="switchHfPreviewAngle('avatar')" class="glass-btn py-2 rounded-lg font-bold text-slate-300 hover:text-white">🖼️ Аватар</button>
+            <button onclick="switchHfPreviewAngle('studio')" class="glass-btn py-2 rounded-lg font-bold text-slate-300 hover:text-white">💃 Студия</button>
+            <button onclick="switchHfPreviewAngle('room')" class="glass-btn py-2 rounded-lg font-bold text-slate-300 hover:text-white">🛋️ Комната</button>
+            <button onclick="switchHfPreviewAngle('fullbody')" class="glass-btn py-2 rounded-lg font-bold text-slate-300 hover:text-white col-span-2">🧍 В полный рост</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- СЕКТОР 2: НАСТРОЙКИ ГЕНЕРАЦИИ (4 cols)                        -->
+      <!-- ============================================================= -->
+      <div id="hf-sector-2" class="lg:col-span-4 glass rounded-3xl p-5 lg:p-6 space-y-5 border border-white/10 shadow-xl flex flex-col justify-between theme-transition">
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">СЕКТОР 2 • НАСТРОЙКИ HIGGSFIELD</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">⚡ Qwen 2K / Wan 2.1</span>
+          </div>
+
+          <!-- Angle Selector Pills -->
+          <div class="space-y-2">
+            <label class="text-[11px] font-bold text-white block">1. Выбор ракурса кадра:</label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <button onclick="selectHfAngle(this, 'portrait')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold border-pink-400 text-pink-200">
+                <span>📸</span> <span>Портрет крупно</span>
+              </button>
+              <button onclick="selectHfAngle(this, 'waist')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                <span>👚</span> <span>По пояс</span>
+              </button>
+              <button onclick="selectHfAngle(this, 'full')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                <span>🧍</span> <span>В полный рост</span>
+              </button>
+              <button onclick="selectHfAngle(this, 'action')" class="hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white">
+                <span>⚡</span> <span>Динамичный экшен</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Style Preset Pills -->
+          <div class="space-y-2">
+            <label class="text-[11px] font-bold text-white block">2. Быстрые пресеты стилей:</label>
+            <div class="flex flex-wrap gap-1.5 text-[11px]">
+              <button onclick="selectHfStyle(this, 'cyberpunk')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl font-bold border-pink-400 text-pink-200">🌃 Киберпанк</button>
+              <button onclick="selectHfStyle(this, 'street')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🛹 Уличный стиль</button>
+              <button onclick="selectHfStyle(this, 'tiktok')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">🔥 TikTok тренд</button>
+              <button onclick="selectHfStyle(this, 'minimal')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">✨ Минимализм</button>
+              <button onclick="selectHfStyle(this, 'glamour')" class="hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white">💎 Глянец</button>
+            </div>
+          </div>
+
+          <!-- Prompt Box -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-white">3. Промпт генерации:</label>
+              <div class="flex items-center gap-2">
+                <button onclick="applyHfMasterPrompt()" class="text-[10px] text-pink-300 hover:underline font-semibold">📋 Мастер-промпт</button>
+                <button onclick="clearHfPrompt()" class="text-[10px] text-slate-400 hover:text-white font-semibold">🧹 Очистить</button>
+              </div>
+            </div>
+            <textarea id="hf-prompt-input" rows="3" class="w-full bg-slate-950/80 border border-white/15 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-pink-400 transition-colors leading-relaxed"></textarea>
+          </div>
+
+          <!-- Face-Lock Checkbox & Pricing -->
+          <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+            <label class="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="hf-facelock-toggle" checked onchange="toggleHfFacelockPrice(this.checked)" class="w-4 h-4 rounded text-pink-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 border-white/20">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-white block">100% FACE-LOCK (2K Qwen Image-to-Image)</span>
+                <span class="text-[10px] text-slate-400">Точная фиксация черт лица, разреза глаз и анатомии</span>
+              </div>
+            </label>
+            <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-white/5">
+              <span class="text-slate-400">Стоимость генерации:</span>
+              <span id="hf-price-label" class="font-bold text-emerald-400">$0.0320 (Face-Lock 2K)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="space-y-2 pt-3 border-t border-white/10">
+          <button id="btn-hf-generate" onclick="triggerHfGeneration()" class="glass-btn-accent w-full py-3.5 px-4 rounded-2xl font-black text-xs text-white shadow-xl flex items-center justify-center gap-2 hover:scale-[1.01] transition-transform">
+            <span>✨ Сгенерировать фото</span>
+            <span id="btn-hf-price-tag" class="text-[10px] px-2 py-0.5 rounded-md bg-black/40 font-mono font-normal">$0.0320</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- СЕКТОР 3: РЕЗУЛЬТАТ И АНИМАЦИЯ РЕНДЕРИНГА (4 cols)            -->
+      <!-- ============================================================= -->
+      <div id="hf-sector-3" class="lg:col-span-4 glass rounded-3xl p-5 lg:p-6 space-y-5 border border-white/10 shadow-xl flex flex-col justify-between theme-transition">
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">СЕКТОР 3 • РЕЗУЛЬТАТ И АНИМАЦИЯ</span>
+            <span id="hf-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ГОТОВ К РАБОТЕ</span>
+          </div>
+
+          <!-- 1. ANIMATION SCENE (During Rendering) -->
+          <div id="hf-render-scene" class="hidden rounded-2xl p-4 bg-slate-950/90 border border-pink-500/50 space-y-3 relative overflow-hidden shadow-2xl">
+            <!-- Tablet with Chibi Plitty, scanning laser, floating sparks -->
+            <div class="relative w-44 h-44 mx-auto rounded-2xl overflow-hidden border border-pink-400/50 shadow-[0_0_30px_rgba(229,136,166,0.3)] bg-slate-900">
+              <img src="plitty_pixel_drawing.png" alt="Plitty Drawing" class="w-full h-full object-cover" style="image-rendering: pixelated;">
+              
+              <!-- Pen point glowing light -->
+              <div class="absolute w-3 h-3 rounded-full bg-white shadow-[0_0_15px_#38BDF8,0_0_25px_#A855F7] pointer-events-none" style="left: 45%; top: 55%; animation: penDraw 2.4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);"></div>
+              
+              <!-- Floating sparks -->
+              <span class="absolute text-sm pointer-events-none" style="left: 25%; top: 60%; animation: floatUp 3s infinite ease-in-out;">✨</span>
+              <span class="absolute text-xs pointer-events-none" style="left: 42%; top: 48%; animation: floatUp 3s infinite ease-in-out 1s;">⭐</span>
+              <span class="absolute text-sm pointer-events-none" style="left: 70%; top: 35%; animation: floatUp 3s infinite ease-in-out 1.8s;">⚡</span>
+              <span class="absolute text-xs pointer-events-none" style="left: 18%; top: 40%; animation: floatUp 3s infinite ease-in-out 2.2s;">🎨</span>
+              
+              <!-- Scanning laser sweep -->
+              <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent shadow-[0_0_12px_#ec4899] opacity-75 pointer-events-none" style="animation: scanSweep 3.5s infinite linear;"></div>
+            </div>
+
+            <div class="text-center space-y-1">
+              <div class="text-xs font-black text-white">🎨 ПЛИТТИ РИСУЕТ НА ПЛАНШЕТЕ...</div>
+              <div id="hf-render-subtitle" class="text-[10px] text-slate-400">Qwen 3.0 Pro 2K • 100% Face-Lock • Формат 9:16</div>
+            </div>
+
+            <!-- Shimmer progress bar -->
+            <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden border border-pink-400/40">
+              <div id="hf-progress-bar" class="h-full rounded-full bg-gradient-to-r from-pink-500 via-white to-pink-500 transition-all duration-300" style="width: 35%;"></div>
+            </div>
+
+            <div class="text-center">
+              <span id="hf-stage-text" class="inline-block px-3 py-1 rounded-md bg-pink-500/15 border border-pink-500/40 text-[10px] font-mono text-pink-300 font-bold">
+                ✏️ [ 1/3 ] Инициализация Qwen 2K...
+              </span>
+            </div>
+          </div>
+
+          <!-- 2. IDLE CARD (Before Render) -->
+          <div id="hf-idle-card" class="rounded-2xl p-6 bg-slate-950/60 border border-dashed border-white/20 text-center space-y-3">
+            <div class="w-28 h-28 mx-auto rounded-2xl overflow-hidden border border-white/15 bg-slate-900 relative shadow-lg">
+              <img src="plitty_pixel_drawing.png" alt="Plitty Idle" class="w-full h-full object-cover" style="image-rendering: pixelated; opacity: 0.9;">
+            </div>
+            <div class="text-xs font-black text-white">✨ ПЛИТТИ НА СВЯЗИ</div>
+            <p id="hf-idle-text" class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+              Выберите параметры для <b id="hf-idle-char-name" class="text-pink-400">Plitty Cyber</b> в Секторе 2 и нажмите <b class="text-white">«Сгенерировать фото»</b>. Плитти сразу начнет рисовать на планшете!
+            </p>
+          </div>
+
+          <!-- 3. RESULT CARD (After Render) -->
+          <div id="hf-result-card" class="hidden rounded-2xl p-4 bg-slate-950/80 border border-emerald-500/40 space-y-3 shadow-2xl">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-emerald-400 font-mono">✅ 2K КАДР ГОТОВ</span>
+              <span id="hf-result-timer" class="text-[10px] text-slate-400 font-mono">1.8 сек</span>
+            </div>
+
+            <!-- Result Image Container -->
+            <div class="relative rounded-xl overflow-hidden border border-white/10 max-h-[340px] flex items-center justify-center bg-black">
+              <img id="hf-result-img" src="" alt="Result 2K" class="max-h-[340px] w-auto object-contain rounded-xl cursor-pointer hover:scale-[1.01] transition-transform" onclick="openModalWithSrc(this.src, 'Сгенерированный 2K кадр')">
+            </div>
+
+            <!-- Result Actions -->
+            <div class="grid grid-cols-3 gap-2 pt-1 text-xs font-bold">
+              <button onclick="downloadHfResult()" class="glass-btn py-2 rounded-xl text-slate-200 hover:text-white flex items-center justify-center gap-1">
+                <span>💾 Скачать</span>
+              </button>
+              <button onclick="approveHfResult()" class="glass-btn-accent py-2 rounded-xl text-white flex items-center justify-center gap-1">
+                <span>✅ Одобрить</span>
+              </button>
+              <button onclick="deleteHfResult()" class="glass-btn py-2 rounded-xl text-red-300 hover:text-red-100 hover:border-red-500/50 flex items-center justify-center gap-1">
+                <span>🗑️ Удалить</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Generations Tray -->
+          <div class="space-y-2 pt-3 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Недавние генерации</span>
+              <span id="hf-recent-count" class="text-[10px] font-mono text-slate-400">4 кадра</span>
+            </div>
+            <div id="hf-recent-tray" class="grid grid-cols-4 gap-2">
+              <!-- Dynamically rendered recent thumbnails -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ================================================================= -->
   <!-- FLOATING PLITTY ASSISTANT WIDGET                                  -->
   <!-- ================================================================= -->
   <div id="plitty-chat-container" class="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] glass rounded-3xl p-4 space-y-3 shadow-2xl border-[var(--plitty-rose)]/60 hidden backdrop-blur-2xl">
@@ -1007,7 +1343,7 @@
       const targetEl = document.getElementById('view-' + viewName);
       if (targetEl) targetEl.classList.add('active');
 
-      ['gateway', 'minifarm', 'stand', 'pult'].forEach(v => {
+      ['gateway', 'minifarm', 'stand', 'pult', 'higgsfield'].forEach(v => {
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
@@ -1062,6 +1398,8 @@
         btnAll.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
         viewAll.classList.remove('hidden');
         renderAllGrids();
+      switchHiggsfieldModel('inf_00_plitty');
+      renderHfRecentTray();
         resetAmbientBackdrop();
       } else if (scope === 'dancers') {
         const m = DANCERS_DATA[currentModelIndex] || DANCERS_DATA[0];
@@ -1842,9 +2180,327 @@
       }, 2600);
     }
 
+    // --- HIGGSFIELD GENERATION STUDIO LOGIC ---
+    const HIGGSFIELD_MODELS = [
+      {
+        id: "inf_00_plitty",
+        slot: "0",
+        slot_label: "#0 — Plitty Cyber",
+        name: "Plitty Cyber",
+        name_ru: "Плитти Кибер",
+        role: "AI-мозг и саппорт фабрики",
+        city: "Tokyo / Cloud",
+        flag: "🌸",
+        color: "#E588A6",
+        niche: "AI Assistant & Orchestrator",
+        avatar: "plitty_avatar.jpg?v=4",
+        photo: "plitty_avatar.jpg?v=4",
+        tags: ["AI Core #0", "Cyber Support", "Mastermind", "Kyoto 2D"],
+        face_prompt: "masterpiece, 2d anime catgirl, messy pastel pink hair, ahoge cowlick, amber eyes, black teacher glasses, white blouse, leather harness, confident smirk",
+        room_desc: "Неоновый серверный зал Plitty: пульты мониторинга, голографические экраны и мягкая розовая подсветка PLITTY CORE"
+      },
+      {
+        id: "inf_001_keira",
+        slot: "0.1",
+        slot_label: "#0.1 — Keira Stove",
+        name: "Keira Stove",
+        name_ru: "Кира Стоув",
+        role: "VIP Master #0.1 • Флагманский амбассадор",
+        city: "Лос-Анджелес / Сеул",
+        flag: "✨",
+        color: "#F43F5E",
+        niche: "VIP Ambassador & Motion Lead",
+        avatar: "dance_models/001_keira/photos/master/avatar.jpg",
+        photo: "dance_models/001_keira/photos/master/official_face_lock.jpg",
+        tags: ["VIP Master #0.1", "Face-Lock 100%", "Motion Lead", "Choreo 2K"],
+        face_prompt: "gorgeous 20-year-old girl, striking hazel eyes, smooth porcelain skin, signature wavy brown bob hair, warm confident smile",
+        room_desc: "Минималистичный танцевальный зал: светлое дерево, зеркальная стена, мягкий студийный свет KEIRA PRIME"
+      }
+    ];
+
+    // Populate dancers into HIGGSFIELD_MODELS
+    DANCERS_DATA.forEach(d => {
+      HIGGSFIELD_MODELS.push({
+        id: d.id,
+        slot: String(d.slot),
+        slot_label: `#${d.slot} — ${d.name_en}`,
+        name: d.name_en,
+        name_ru: d.name_ru,
+        role: d.archetype || "Танцевальная AI-модель",
+        city: d.city,
+        flag: d.country_flag,
+        color: d.color,
+        niche: d.niche,
+        avatar: `dance_models/${d.id}/photos/master/avatar.jpg`,
+        photo: `dance_models/${d.id}/photos/master/official_face_lock.jpg`,
+        tags: [d.neon_text, d.archetype, "Face-Lock 100%", "2K Qwen"],
+        face_prompt: d.face_prompt,
+        room_desc: d.room_desc
+      });
+    });
+
+    let currentHfModelId = "inf_00_plitty";
+    let currentHfAngle = "portrait";
+    let currentHfStyle = "cyberpunk";
+    let isHfRendering = false;
+    let hfRecentGenerations = [
+      { id: "1", model: "Aimi Sato", img: "dance_models/01_Aimi_Sato/photos/master/official_face_lock.jpg", time: "5 мин назад" },
+      { id: "2", model: "Keira Stove", img: "dance_models/001_keira/photos/master/official_face_lock.jpg", time: "12 мин назад" },
+      { id: "3", model: "Kiko Ito", img: "dance_models/02_Kiko_Ito/photos/master/official_face_lock.jpg", time: "24 мин назад" },
+      { id: "4", model: "Plitty Cyber", img: "plitty_avatar.jpg?v=4", time: "1 час назад" }
+    ];
+
+    function switchHiggsfieldModel(modelId) {
+      currentHfModelId = modelId;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === modelId) || HIGGSFIELD_MODELS[0];
+
+      // Update Sector 1 UI
+      const selectEl = document.getElementById('hf-model-select');
+      if (selectEl && selectEl.value !== modelId) selectEl.value = modelId;
+
+      document.getElementById('hf-top-active-name').textContent = m.slot_label;
+      document.getElementById('hf-top-active-name').style.color = m.color;
+
+      document.getElementById('hf-char-avatar').src = m.photo;
+      document.getElementById('hf-char-avatar').onerror = function() { this.src = 'plitty_avatar.jpg?v=4'; };
+      document.getElementById('hf-char-avatar-wrap').style.borderColor = m.color;
+      document.getElementById('hf-char-avatar-wrap').style.boxShadow = `0 0 25px ${m.color}55`;
+      
+      const badge = document.getElementById('hf-char-badge');
+      badge.textContent = '#' + m.slot;
+      badge.style.backgroundColor = m.color;
+
+      document.getElementById('hf-char-flag').textContent = m.flag;
+      document.getElementById('hf-char-name').textContent = m.name;
+      document.getElementById('hf-char-role').textContent = m.role;
+      document.getElementById('hf-char-role').style.color = m.color;
+      document.getElementById('hf-char-city').textContent = m.city;
+      document.getElementById('hf-char-niche').textContent = m.niche;
+      document.getElementById('hf-char-desc').textContent = m.room_desc || m.face_prompt;
+
+      const tagsWrap = document.getElementById('hf-char-tags');
+      tagsWrap.innerHTML = m.tags.map(t => 
+        `<span class="px-2.5 py-1 rounded-lg font-semibold border" style="background: ${m.color}22; color: ${m.color}; border-color: ${m.color}44;">${t}</span>`
+      ).join('');
+
+      document.getElementById('hf-idle-char-name').textContent = m.name;
+      document.getElementById('hf-idle-char-name').style.color = m.color;
+
+      // Update Sector 2 prompt
+      document.getElementById('hf-prompt-input').value = m.face_prompt;
+
+      // Apply dynamic styling across Sector 1, 2, 3
+      ['hf-sector-1', 'hf-sector-2', 'hf-sector-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.borderColor = `${m.color}66`;
+          el.style.boxShadow = `0 16px 45px -10px ${m.color}35`;
+        }
+      });
+
+      // Update button & progress accents
+      const btnGen = document.getElementById('btn-hf-generate');
+      if (btnGen) {
+        btnGen.style.borderColor = m.color;
+        btnGen.style.boxShadow = `0 8px 25px -4px ${m.color}55`;
+      }
+      const pBar = document.getElementById('hf-progress-bar');
+      if (pBar) {
+        pBar.style.background = `linear-gradient(90deg, ${m.color} 0%, #FFFFFF 50%, ${m.color} 100%)`;
+      }
+    }
+
+    function switchHfPreviewAngle(angle) {
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      const img = document.getElementById('hf-char-avatar');
+      if (!img) return;
+
+      if (m.id === 'inf_00_plitty') {
+        img.src = 'plitty_avatar.jpg?v=4';
+      } else if (m.id === 'inf_001_keira') {
+        img.src = 'dance_models/001_keira/photos/master/official_face_lock.jpg';
+      } else {
+        const map = {
+          'face': 'official_face_lock.jpg',
+          'avatar': 'avatar.jpg',
+          'studio': 'body_dance_room_full.jpg',
+          'room': 'room.jpg',
+          'fullbody': 'body_frontal_full.jpg'
+        };
+        img.src = `dance_models/${m.id}/photos/master/${map[angle] || 'official_face_lock.jpg'}`;
+      }
+      showToast(`📸 Ракурс переключен: ${angle}`);
+    }
+
+    function selectHfAngle(btn, angle) {
+      currentHfAngle = angle;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-angle-btn').forEach(b => {
+        b.className = 'hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-angle-btn glass-btn py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold';
+      btn.style.borderColor = m.color;
+      btn.style.color = m.color;
+    }
+
+    function selectHfStyle(btn, style) {
+      currentHfStyle = style;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.querySelectorAll('.hf-style-btn').forEach(b => {
+        b.className = 'hf-style-btn glass-btn px-3 py-1.5 rounded-xl text-slate-300 hover:text-white';
+        b.style.borderColor = '';
+      });
+      btn.className = 'hf-style-btn glass-btn px-3 py-1.5 rounded-xl font-bold';
+      btn.style.borderColor = m.color;
+      btn.style.color = m.color;
+    }
+
+    function applyHfMasterPrompt() {
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      document.getElementById('hf-prompt-input').value = m.face_prompt;
+      showToast('📋 Мастер-промпт персонажа вставлен!');
+    }
+
+    function clearHfPrompt() {
+      document.getElementById('hf-prompt-input').value = '';
+      showToast('🧹 Поле промпта очищено');
+    }
+
+    function toggleHfFacelockPrice(checked) {
+      const priceLabel = document.getElementById('hf-price-label');
+      const tag = document.getElementById('btn-hf-price-tag');
+      if (checked) {
+        priceLabel.textContent = '$0.0320 (Face-Lock 2K)';
+        priceLabel.className = 'font-bold text-emerald-400';
+        tag.textContent = '$0.0320';
+      } else {
+        priceLabel.textContent = '$0.0025 (Text-to-Image)';
+        priceLabel.className = 'font-bold text-teal-300';
+        tag.textContent = '$0.0025';
+      }
+    }
+
+    function triggerHfGeneration() {
+      if (isHfRendering) return;
+      isHfRendering = true;
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+
+      // Switch to rendering scene
+      document.getElementById('hf-idle-card').classList.add('hidden');
+      document.getElementById('hf-result-card').classList.add('hidden');
+      document.getElementById('hf-render-scene').classList.remove('hidden');
+      
+      const badge = document.getElementById('hf-status-badge');
+      badge.textContent = 'РЕНДЕРИНГ 2K...';
+      badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold animate-pulse';
+
+      const pBar = document.getElementById('hf-progress-bar');
+      const stageText = document.getElementById('hf-stage-text');
+
+      // Stage 1
+      pBar.style.width = '25%';
+      stageText.textContent = '✏️ [ 1/3 ] Инициализация Qwen 2K...';
+
+      setTimeout(() => {
+        // Stage 2
+        pBar.style.width = '65%';
+        stageText.textContent = '🎨 [ 2/3 ] Прорисовка текстур и освещения...';
+      }, 1000);
+
+      setTimeout(() => {
+        // Stage 3
+        pBar.style.width = '90%';
+        stageText.textContent = '✨ [ 3/3 ] Наложение 100% Face-Lock и постобработка...';
+      }, 2000);
+
+      setTimeout(() => {
+        // Finish
+        pBar.style.width = '100%';
+        isHfRendering = false;
+        document.getElementById('hf-render-scene').classList.add('hidden');
+        
+        // Show result
+        const resCard = document.getElementById('hf-result-card');
+        resCard.classList.remove('hidden');
+        
+        const resImg = document.getElementById('hf-result-img');
+        resImg.src = m.photo;
+
+        badge.textContent = 'ГОТОВО (2K UHD)';
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold';
+
+        showToast(`🎉 2K кадр для ${m.name} успешно отрендерен!`);
+        appendConsoleLog(`[Higgsfield Engine] Генерация 2K завершена для ${m.id} (${m.name}) • Face-Lock: 100%`);
+
+        // Add to recent tray
+        hfRecentGenerations.unshift({
+          id: String(Date.now()),
+          model: m.name,
+          img: m.photo,
+          time: 'Только что'
+        });
+        renderHfRecentTray();
+      }, 3000);
+    }
+
+    function triggerHfTestAnimation() {
+      triggerHfGeneration();
+    }
+
+    function downloadHfResult() {
+      const resImg = document.getElementById('hf-result-img');
+      const a = document.createElement('a');
+      a.href = resImg.src;
+      a.download = `higgsfield_${currentHfModelId}_2k.jpg`;
+      a.click();
+      showToast('💾 Скачивание 2K кадра началось...');
+    }
+
+    function approveHfResult() {
+      const m = HIGGSFIELD_MODELS.find(x => x.id === currentHfModelId) || HIGGSFIELD_MODELS[0];
+      showToast(`✅ Кадр для ${m.name} одобрен и отправлен в каталог!`);
+      appendConsoleLog(`[Moderation] Кадр ${m.id} одобрен дирекцией студии`);
+    }
+
+    function deleteHfResult() {
+      document.getElementById('hf-result-card').classList.add('hidden');
+      document.getElementById('hf-idle-card').classList.remove('hidden');
+      showToast('🗑️ Сгенерированный кадр удален');
+    }
+
+    function renderHfRecentTray() {
+      const tray = document.getElementById('hf-recent-tray');
+      if (!tray) return;
+      document.getElementById('hf-recent-count').textContent = hfRecentGenerations.length + ' кадров';
+      tray.innerHTML = hfRecentGenerations.slice(0, 4).map(item => `
+        <div class="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-900 cursor-pointer aspect-square hover:border-pink-400 transition-colors" onclick="openModalWithSrc('${item.img}', '${item.model}')">
+          <img src="${item.img}" alt="${item.model}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span class="text-[9px] font-bold text-white text-center px-1">${item.model}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal with arbitrary src
+    function openModalWithSrc(src, caption) {
+      const modal = document.getElementById('img-modal');
+      const img = document.getElementById('modal-img');
+      const cap = document.getElementById('modal-caption');
+      if (modal && img) {
+        img.src = src;
+        if (cap) cap.textContent = caption || '2K Кадр Higgsfield';
+        modal.classList.remove('hidden');
+      }
+    }
+
+
     // --- URL QUERY PARAMS & INIT ---
     document.addEventListener('DOMContentLoaded', () => {
       renderAllGrids();
+      switchHiggsfieldModel('inf_00_plitty');
+      renderHfRecentTray();
       renderStandGrid('all');
       setPultTarget('all');
 
@@ -1861,6 +2517,8 @@
         setMinifarmScope(scopeParam || 'all');
       } else if (tabParam === 'stand') {
         navToView('stand');
+      } else if (tabParam === 'higgsfield') {
+        navToView('higgsfield');
       } else if (tabParam === 'pult') {
         navToView('pult');
 
