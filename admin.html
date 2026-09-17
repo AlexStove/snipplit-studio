@@ -178,12 +178,13 @@
     <span id="toast-msg">Скопировано в буфер!</span>
   </div>
 
-  <!-- FULLSCREEN IMAGE MODAL (ZOOM) -->
+  <!-- FULLSCREEN IMAGE & VIDEO MODAL (ZOOM) -->
   <div id="img-modal" class="fixed inset-0 z-50 hidden bg-black/92 backdrop-blur-xl flex items-center justify-center p-4" onclick="closeModal()">
     <div class="relative max-w-5xl max-h-[96vh] flex flex-col items-center" onclick="event.stopPropagation()">
       <img id="modal-img" src="" class="max-h-[86vh] max-w-full rounded-2xl shadow-2xl object-contain border border-slate-700">
+      <video id="modal-vid" src="" controls autoplay loop class="hidden max-h-[86vh] max-w-full rounded-2xl shadow-2xl border border-slate-700"></video>
       <div class="flex items-center justify-between w-full mt-3 px-2">
-        <span id="modal-caption" class="text-xs text-slate-300 font-medium"></span>
+        <span id="modal-caption" class="text-xs text-slate-300 font-medium truncate max-w-[80%]"></span>
         <button onclick="closeModal()" class="glass-btn px-4 py-1.5 rounded-xl text-xs font-semibold text-white">Закрыть (Esc)</button>
       </div>
     </div>
@@ -582,6 +583,10 @@
                 <button onclick="switchPhotoTab('avatar')" id="ptab-avatar" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
                   <span>🖼️ Аватар</span>
                 </button>
+                <button onclick="switchPhotoTab('gallery')" id="ptab-gallery" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-purple-300 hover:text-white flex items-center gap-1.5">
+                  <span>✨ Галерея генераций</span>
+                  <span id="ptab-gallery-badge" class="px-1.5 py-0.2 text-[10px] rounded-full bg-purple-500/25 text-purple-200 border border-purple-500/40 font-mono">0</span>
+                </button>
               </div>
 
               <div class="flex items-center gap-2">
@@ -598,6 +603,56 @@
             <div id="image-stage" class="flex-1 min-h-[620px] xl:min-h-[700px] 2xl:min-h-[760px] flex items-center justify-center p-4 rounded-2xl mt-4 relative overflow-hidden border theme-transition">
               <img id="dancer-main-preview-img" src="" alt="Preview" class="max-h-[600px] xl:max-h-[680px] 2xl:max-h-[740px] max-w-full rounded-2xl shadow-2xl object-contain cursor-pointer transition-all hover:scale-[1.01]" onclick="openModalCurrent()">
               <div id="photo-tag-pill" class="absolute bottom-5 left-5 px-4 py-1.5 rounded-xl bg-black/85 backdrop-blur-xl text-xs font-bold text-white border shadow-xl"></div>
+
+              <!-- DANCER GENERATION GALLERY CONTAINER -->
+              <div id="dancer-gallery-view" class="hidden absolute inset-0 w-full h-full bg-slate-950/95 backdrop-blur-2xl p-4 lg:p-6 overflow-y-auto flex flex-col z-20">
+                <!-- Top Gallery Header -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10 shrink-0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white text-base shadow-lg shadow-purple-500/20">✨</div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm font-black text-white">Галерея сгенерированного контента</span>
+                        <span id="gallery-inf-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-white/10 text-slate-300 border border-white/10"></span>
+                      </div>
+                      <p class="text-[11px] text-slate-400">Готовые фото (2K Qwen) и танцевальные ролики (Wan 2.1 / Kling) этой танцовщицы</p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <!-- Sub-filters: All, Photos, Videos -->
+                    <div class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
+                      <button onclick="setGalleryFilter('all')" id="gfilter-btn-all" class="px-2.5 py-1 rounded-lg font-bold bg-white/15 text-white transition text-xs shadow">Все (<span id="gfilter-count-all">0</span>)</button>
+                      <button onclick="setGalleryFilter('photo')" id="gfilter-btn-photo" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition text-xs">📷 Фото (<span id="gfilter-count-photo">0</span>)</button>
+                      <button onclick="setGalleryFilter('video')" id="gfilter-btn-video" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition text-xs">🎬 Видео (<span id="gfilter-count-video">0</span>)</button>
+                    </div>
+                    
+                    <button onclick="loadDancerGallery(true)" class="glass-btn px-2.5 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white flex items-center gap-1" title="Обновить список">
+                      <span>🔄</span>
+                    </button>
+
+                    <button onclick="openStudioForCurrentDancer()" class="glass-btn-accent px-3.5 py-1.5 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 shadow-lg">
+                      <span>✨ В Студию</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Gallery Grid Container -->
+                <div id="dancer-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 pt-4 flex-1 content-start">
+                  <!-- Injected dynamically by JavaScript -->
+                </div>
+
+                <!-- Empty State Container -->
+                <div id="dancer-gallery-empty" class="hidden flex-1 flex flex-col items-center justify-center py-16 text-center">
+                  <div class="w-16 h-16 rounded-3xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-3xl mb-3 shadow-inner">🎨</div>
+                  <h4 class="text-base font-bold text-white mb-1">Пока нет сгенерированного контента</h4>
+                  <p class="text-xs text-slate-400 max-w-md mb-5 leading-relaxed">Вся медиапродукция из Студии Генерации (2K портреты и танцевальные ролики) для этой танцовщицы автоматически сохраняется в эту папку.</p>
+                  <button onclick="openStudioForCurrentDancer()" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs font-bold text-white shadow-xl flex items-center gap-2">
+                    <span>✨ Создать первое фото или танец</span>
+                    <span>&rarr;</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1602,7 +1657,7 @@
   <script>
     const DANCERS_DATA = [{"id": "01_Aimi_Sato", "code": "inf_01_aimi", "name_ru": "Айми Сато", "name_en": "Aimi Sato", "city": "Токио, Япония", "country_flag": "🇯🇵", "age": "20 лет (14 мая 2006, Телец ♉)", "height": "178 см", "weight": "50 кг", "niche": "Streetwear Dance & Fitness Aesthetic", "archetype": "Евразийская уличная танцовщица", "color": "#E0A96D", "accent_glow": "rgba(224, 169, 109, 0.4)", "neon_text": "SHIBUYA FLOW", "email": "satoaimi319@gmail.com", "password": "123Alex123!", "bio": "Очаровательная евразийская танцовщица и фитнес-блогер из Токио. Снимает трендовые вирусные танцы и пластичные связки в оверсайз джоггерах и кроп-топах. Спокойный магнетический взгляд со стрелками, идеальная фигура и чистая уличная эстетика.", "outfit": "Бежевый нюдовый кроп-топ на тонких бретелях, черные оверсайз джоггеры, белые ретро-сникеры", "room_desc": "Лофт в стиле Сибуя: светлый дубовый паркет, темно-серый акцентный ковер, синее хаори на стене, монстера в кашпо", "face_prompt": "20-year-old attractive Eurasian girl, delicate porcelain pale milky skin, captivating hazel-brown almond eyes with signature sharp black winged cat-eye eyeliner, softly arched dark brown natural eyebrows, slender straight nose, unsmiling mauve-pink lips, long silky straight dark chocolate brown hair with middle parting", "body_prompt": "breathtaking athletic hourglass physique, very large natural rounded perky bust size 5, ultra-narrow tiny snatched wasp waist, flat smooth toned stomach with distinct vertical abdominal definition, delicate silver navel piercing barbell, shapely curvy wide hips, smooth toned legs", "room_prompt": "cozy compact modern apartment dance studio room, centered one-point perspective, textured dark charcoal grey accent rug in center on light oak wood floor, dark grey bean bag in left niche, dark blue Japanese haori robe hanging on center back wall, lush green monstera on right, warm pastel cream walls, soft natural daylight", "video_prompt": "Full length vertical 9:16 shot of Eurasian dancer Aimi Sato executing a smooth fluid hip-hop body roll and isolation choreography in her Tokyo loft. Beige tube crop top, black baggy sweatpants, natural hair movement, calm confident eye contact with the camera.", "category": "asia", "slot": 1, "serial": "R5GL220ZZDT", "ip": "10.25.201.11:9999", "battery": 94, "status": "Скроллинг TT (прогрев)"}, {"id": "02_Kiko_Ito", "code": "inf_02_kiko", "name_ru": "Кико Ито", "name_en": "Kiko Ito", "city": "Сеул / Токио", "country_flag": "🇰🇷", "age": "21 год (30 марта 2005, Овен ♈)", "height": "180 см", "weight": "45 кг", "niche": "K-Pop Visual Idol & Sharp Choreography", "archetype": "Высокая вижуал-айдол", "color": "#B388FF", "accent_glow": "rgba(179, 136, 255, 0.4)", "neon_text": "K-POP REVOLUTION", "email": "itokiko505@gmail.com", "password": "123Alex123!", "bio": "Высокая и невероятно грациозная вижуал-айдол с бесконечными ногами и кукольным лицом. Зажигает TikTok синхронными четкими движениями под треки NewJeans, LE SSERAFIM и IVE в плиссированных юбках и кроп-топах.", "outfit": "Черный минималистичный кроп-топ, плиссированная белая мини-юбка с высокой посадкой, белые носки, черно-белые ретро-сникеры", "room_desc": "Зеркальный K-pop зал для тренировок: светлый ламинат, лавандовая неоновая подсветка, зеркальная стена во весь рост", "face_prompt": "21-year-old tall Korean-Japanese visual idol dancer, porcelain skin, large expressive dark brown almond eyes with subtle aegyo-sal and neat winged eyeliner, straight slender nose, naturally pink glossy gradient lips, sleek straight jet-black hair with airy curtain bangs", "body_prompt": "tall slender idol dancer physique, height 180 cm, weight 45 kg, extremely long legs, tiny waist, flat stomach, graceful upright posture", "room_prompt": "minimalist K-pop dance rehearsal studio, full-length mirror wall, light ash wood dance floor, soft ambient lilac and cool white overhead neon lighting, clean spacious interior ready for dance rehearsal", "video_prompt": "Full length vertical 9:16 video of K-pop idol Kiko Ito performing a razor-sharp synchronized chorus dance routine. Black crop top, white pleated tennis mini skirt, long hair swaying gracefully with dynamic pirouettes and point choreography.", "category": "asia", "slot": 2, "serial": "R5GL2217RTF", "ip": "10.25.201.12:9999", "battery": 95, "status": "Готов к заливу танца"}, {"id": "03_Rin_Murakami", "code": "inf_03_rin", "name_ru": "Рин Мураками", "name_en": "Rin Murakami", "city": "Осака, Япония", "country_flag": "🇯🇵", "age": "22 года (19 января 2004, Козерог ♑)", "height": "163 см", "weight": "43 кг", "niche": "Kawaii Masked Dancer & J-Pop Bounces", "archetype": "Милая танцовщица в маске", "color": "#2DD4BF", "accent_glow": "rgba(45, 212, 191, 0.4)", "neon_text": "KAWAII FLOW", "email": "rinmurakami56@gmail.com", "password": "123Alex123!", "bio": "Таинственная звезда TikTok в фирменной черной тканевой маске и с милыми двойными пучками. Огромные сияющие аниме-глаза с эгьё-саль, миниатюрная фигурка и сверхпопулярные вирусные каваи-танцы.", "outfit": "Черная медицинская маска, черный укороченный лонгслив, мятно-пастельная плиссированная юбка, гетры, кроссовки", "room_desc": "Каваи-студия в пастельно-мятных тонах: березовый пол, сияющий мятный неон KAWAII FLOW, мягкие светлые стены", "face_prompt": "22-year-old Japanese kawaii dancer Rin Murakami, black pleated medical mask covering lower face and nose, large expressive hazel doe eyes with winged eyeliner, defined aegyo-sal, styled twin buns with loose strands, fair porcelain skin", "body_prompt": "petite slender dancer silhouette, height 163 cm, weight 43 kg, tiny waist, flat stomach, shapely legs in white leg warmers, cute upright posture", "room_prompt": "pastel mint dance rehearsal room, light birch wood floor, glowing pastel mint neon sign KAWAII FLOW on center wall, full-length mirror, soft ambient daylight", "video_prompt": "Full length vertical 9:16 clip of masked dancer Rin Murakami executing a viral cute kawaii bounce and heart-hand gestures. Twin buns bouncing, black fitted long sleeve, pleated skirt in motion, energetic cheerful tempo.", "category": "asia", "slot": 3, "serial": "R5GL2217SBF", "ip": "10.25.201.13:9999", "battery": 96, "status": "Скроллинг TT (прогрев)"}, {"id": "04_Mira_Lanskaya", "code": "inf_04_mira", "name_ru": "Мира Ланская", "name_en": "Mira Lanskaya", "city": "Санкт-Петербург, Россия", "country_flag": "🇷🇺", "age": "18 лет (7 июля 2008, Рак ♋)", "height": "168 см", "weight": "47 кг", "niche": "Slavic Anime Cosplay & J-Pop Trends", "archetype": "Живая аниме-тян с большими глазами", "color": "#38BDF8", "accent_glow": "rgba(56, 189, 248, 0.4)", "neon_text": "ANIME VIBES", "email": "lanskayamira7@gmail.com", "password": "123Alex123!", "bio": "Юная славянская косплеерша с огромными серо-голубыми аниме-глазами, золотисто-русыми волосами со шторкой и открытой улыбкой. Танцует вирусные аниме-опенинги и J-Pop тренды.", "outfit": "Кремовый кроп-топ, серо-голубая плиссированная мини-юбка, белые гольфы выше колена, белые сникеры", "room_desc": "Уютная светлая комната: канадский клен на полу, нежно-голубая акцентная стена с неоном ANIME VIBES, зеркало и окно в сад", "face_prompt": "18-year-old gorgeous Slavic anime girl Mira Lanskaya, large expressive anime-style grey-blue doe eyes with winged liner, small button nose, beaming natural smile showing teeth, honey-blonde hair with curtain bangs, fair smooth skin", "body_prompt": "slender toned petite dancer body, height 168 cm, weight 47 kg, tiny waist, flat stomach, smooth legs, cheerful youthful posture", "room_prompt": "bright anime aesthetic dance studio, powder blue feature wall with glowing cyan neon sign ANIME VIBES, light maple hardwood floor, full-length mirror, sunny afternoon daylight", "video_prompt": "Full length vertical 9:16 dance video of anime girl Mira Lanskaya dancing a high-energy J-pop choreography. Honey-blonde hair flowing, cream crop tee, pleated sky-blue skirt fluttering, warm bright smile to camera.", "category": "anime", "slot": 4, "serial": "R5GL2217XHM", "ip": "10.25.201.14:9999", "battery": 97, "status": "Готов к заливу танца"}, {"id": "05_Rada_Zarechnaya", "code": "inf_05_rada", "name_ru": "Рада Заречная", "name_en": "Rada Zarechnaya", "city": "Сочи / Киев", "country_flag": "☀️", "age": "20 лет (24 июня 2006, Рак ♋)", "height": "168 см", "weight": "51 кг", "niche": "Cottagecore Bounce & Afrobeat Grooves", "archetype": "Солнечная славянка с веснушками", "color": "#F97316", "accent_glow": "rgba(249, 115, 22, 0.4)", "neon_text": "SUNSHINE FLOW", "email": "zarechnayarada@gmail.com", "password": "123Alex123!", "bio": "Поцелованная солнцем танцовщица с изумрудными глазами, россыпью золотистых веснушек и кудрявыми медовыми волосами. Танцует жизнерадостные Afrobeat, дэнсхолл и летние связки.", "outfit": "Кремовый кроп-топ, терракотовая плиссированная мини-юбка, белые носочки, светлые кроссовки", "room_desc": "Теплая терракотовая студия: золотистый дубовый пол, неон SUNSHINE FLOW, струящиеся лучи закатного солнца", "face_prompt": "20-year-old sun-kissed Slavic beauty Rada Zarechnaya, sparkling emerald-green eyes, natural golden freckles across nose and cheeks, radiant warm smile, voluminous honey-caramel curly hair framing face", "body_prompt": "toned feminine dancer silhouette, height 168 cm, weight 51 kg, hourglass waist, shapely hips, athletic legs, vibrant warm posture", "room_prompt": "warm terracotta dance studio, golden oak hardwood floor, glowing amber-orange neon sign SUNSHINE FLOW on warm plaster wall, large window with golden hour sunset light, tall arched mirror", "video_prompt": "Full length vertical 9:16 dance video of Rada Zarechnaya grooving to an upbeat Afrobeat track. Honey curls bouncing, terracotta skirt swishing, energetic hip movements, warm glowing smile, golden light.", "category": "lifestyle", "slot": 5, "serial": "R5GL2217YQP", "ip": "10.25.201.15:9999", "battery": 98, "status": "Скроллинг TT (прогрев)"}, {"id": "06_Hailey_Miller", "code": "inf_06_hailey", "name_ru": "Хейли Миллер", "name_en": "Hailey Miller", "city": "Берлин / Лондон", "country_flag": "🇬🇧", "age": "21 год (2 августа 2005, Лев ♌)", "height": "172 см", "weight": "49 кг", "niche": "Gothic Glam & Midnight Techno Choreography", "archetype": "Готическая глэм-танцовщица", "color": "#E11D48", "accent_glow": "rgba(225, 29, 72, 0.4)", "neon_text": "MIDNIGHT FLOW", "email": "heileymiller3213@gmail.com", "password": "123Alex123!", "bio": "Ослепительная королева полуночного техно и готик-глэма. Иссиня-черные волны, пронзительные лазурные глаза, бархатный чокер с луной, черный корсет на шнуровке и высокие армейские ботинки.", "outfit": "Черный корсет на шнуровке с жесткими косточками, плиссированная черная готическая мини-юбка, черные кожаные берцы", "room_desc": "Атмосферная графитовая студия: темный эбеновый пол, винный неон MIDNIGHT FLOW, драматичные контрастные споты", "face_prompt": "21-year-old gothic glam dancer Hailey Miller, piercing vivid azure-blue eyes with dramatic winged eyeliner, jet-black wavy hair, dazzling smile, velvet choker with silver crescent moon, fair skin", "body_prompt": "tall slender dancer physique, height 172 cm, weight 49 kg, tiny waist in structured corset, long toned legs, commanding upright dance posture", "room_prompt": "moody dark dance studio, dark charcoal concrete wall with crimson red neon sign MIDNIGHT FLOW, dark ebony hardwood floor, full-length mirror, dramatic spotlighting", "video_prompt": "Full length vertical 9:16 video of gothic dancer Hailey Miller dancing to dark melodic techno. Black lace-up corset, flowing black pleated skirt, combat boots, sharp voguing and dynamic hand movements.", "category": "alt", "slot": 6, "serial": "R5GL2218AZA", "ip": "10.25.201.16:9999", "battery": 99, "status": "Готов к заливу танца"}, {"id": "07_Alexa_King", "code": "inf_07_alexa", "name_ru": "Алекса Кинг", "name_en": "Alexa King", "city": "Манчестер / Лондон", "country_flag": "🇬🇧", "age": "22 года (4 ноября 2004, Скорпион ♏)", "height": "176 см", "weight": "53 кг", "niche": "Alt Grunge Baddie & Hard Electro Dance", "archetype": "Бунтарка в цепях и рваном топе", "color": "#84CC16", "accent_glow": "rgba(132, 204, 22, 0.4)", "neon_text": "REBEL FLOW", "email": "kingalexa413@gmail.com", "password": "123Alex123!", "bio": "Дерзкая неформалка с текстурным вольф-катом и серебристыми прядями, янтарными кошачьими глазами, пирсингом носа и цепью с замком. Взрывает TikTok тяжелыми битами и резкой бэдди-хореографией.", "outfit": "Черный рваный кроп-топ, плиссированная гранж-юбка с цепями и люверсами, колготки в крупную сетку, армейские ботинки", "room_desc": "Индустриальный лофт: сырые бетонные стены, ядовито-лаймовый неон REBEL FLOW, металлическая вентиляция, зеркала", "face_prompt": "22-year-old alt grunge dancer Alexa King, edgy textured wolf-cut dark hair with silver streaks, feline amber-brown eyes, silver nostril hoop, chunky padlock chain, subtle smirk", "body_prompt": "tall athletic toned dancer frame, height 176 cm, weight 53 kg, flat stomach, long athletic legs in fishnets, bold grounded upright stance", "room_prompt": "raw industrial loft dance room, exposed concrete wall with glowing acid-lime neon sign REBEL FLOW, dark industrial wood floor, black metal pipes, full-length mirror", "video_prompt": "Full length vertical 9:16 clip of alt baddie Alexa King dancing an aggressive electro-shuffle routine. Distressed crop top, chains rattling with bass drops, combat boots tapping concrete floor, intense gaze.", "category": "alt", "slot": 7, "serial": "R5GYB0705MH", "ip": "10.25.201.17:9999", "battery": 93, "status": "Скроллинг TT (прогрев)"}, {"id": "08_Amelie_Dubois", "code": "inf_08_amelie", "name_ru": "Амели Дюбуа", "name_en": "Amélie Dubois", "city": "Париж, Франция", "country_flag": "🇫🇷", "age": "19 лет (12 октября 2006, Весы ♎)", "height": "167 см", "weight": "45 кг", "niche": "Hot Barbie Cosplayer & Pick-Me Aegyo Dances", "archetype": "Барби-косплеерша, пикми герл", "color": "#F472B6", "accent_glow": "rgba(244, 114, 182, 0.4)", "neon_text": "BARBIE DREAMS", "email": "ameliedubois2005@gmail.com", "password": "123Alex123!", "bio": "Кукольная парижанка в эстетике живой Барби. Платиновые волны с жемчужными бантиками, сияющие голубые глаза, пухлые губки бантиком и розовая мини-юбка с белыми чулками.", "outfit": "Пастельно-розовый топ с белым кружевом, розовая плиссированная мини-юбка, белые чулки выше колена, бело-розовые платформы", "room_desc": "Гламурная розовая спальня-студия: беленый дуб, розовая лепнина, неон BARBIE DREAMS, пушистый коврик и французский балкон", "face_prompt": "19-year-old gorgeous Barbie cosplayer Amélie Dubois, doll-like facial features, large sparkling blue doe eyes with aegyo-sal, small button nose, plump glossy pink lips, silky platinum hair with pearl bow clips", "body_prompt": "petite ultra-slender doll dancer body, height 167 cm, weight 45 kg, tiny snatched waist, shapely legs in white over-knee socks, graceful cute posture", "room_prompt": "glamorous Barbie bedroom studio, pastel bubblegum-pink feature wall with moulding, glowing magenta neon BARBIE DREAMS, bleached white hardwood floor, tall French window", "video_prompt": "Full length vertical 9:16 video of Barbie girl Amélie Dubois dancing a playful flirtatious aegyo dance. Pearl bows twinkling, pink pleated skirt swishing, delicate hand poses, dazzling sweet smile.", "category": "anime", "slot": 8, "serial": "R5GYB0706GV", "ip": "10.25.201.18:9999", "battery": 94, "status": "Готов к заливу танца"}, {"id": "09_Marta_Bergman", "code": "inf_09_marta", "name_ru": "Марта Бергман", "name_en": "Marta Bergman", "city": "Стокгольм / Берлин", "country_flag": "🇩🇪", "age": "22 года (5 февраля 2004, Водолей ♒)", "height": "174 см", "weight": "52 кг", "niche": "Urban Hip-Hop Queen & Street Dance Baddie", "archetype": "Хип-хоперша в карго-штанах", "color": "#3B82F6", "accent_glow": "rgba(59, 130, 246, 0.4)", "neon_text": "STREET CIPHER", "email": "bergmanmarta02@gmail.com", "password": "123Alex123!", "bio": "Дерзкая королева уличных джемов и урбан-хип-хопа. Тугие платиново-пепельные брейды в высокий хвост, ледяные серо-голубые глаза, массивные золотые серьги и цепи, свободные темные карго-штаны и сникеры.", "outfit": "Черный спортивный кроп-топ, свободные темно-серые карго-штаны с карманами и ремешками, черно-белые баскетбольные сникеры", "room_desc": "Урбан-лофт студия: темный пепельный паркет, графитовый бетон, сияющий кобальтовый неон STREET CIPHER, зеркала и ночной мегаполис", "face_prompt": "22-year-old Scandinavian urban hip-hop dancer Marta Bergman, sharp athletic facial structure, icy-blue eyes with winged eyeliner, defined cheekbones, tight platinum-ash cornrow braids into high ponytail with baby hairs, gold hoops and chains", "body_prompt": "tall athletic dancer silhouette, height 174 cm, weight 52 kg, toned flat stomach, confident grounded upright hip-hop posture", "room_prompt": "urban loft dance rehearsal room, dark slate concrete wall with electric cobalt blue neon sign STREET CIPHER, matte dark ash wood floor, loft window with twilight skyline, mirror wall", "video_prompt": "Full length vertical 9:16 capture of Marta Bergman dropping a powerful hip-hop isolation and popping routine. Gold chains flashing under spotlights, loose cargo pants, heavy bass vibrations, sharp precise footwork.", "category": "hiphop", "slot": 9, "serial": "R5GYB0707CF", "ip": "10.25.201.19:9999", "battery": 95, "status": "Скроллинг TT (прогрев)"}, {"id": "10_Mia_Vega", "code": "inf_10_mia", "name_ru": "Миа Вега", "name_en": "Mia Vega", "city": "Париж / Барселона", "country_flag": "🇪🇺", "age": "19 лет (18 августа 2007, Лев ♌)", "height": "158 см", "weight": "40 кг", "niche": "Petite Aesthetic Dance & Sundress Trends", "archetype": "Худенькая блондинка с каре в мини-сарафане", "color": "#EAB308", "accent_glow": "rgba(234, 179, 8, 0.4)", "neon_text": "HONEY GLOW", "email": "miavegamia2005@gmail.com", "password": "123Alex123!", "bio": "Ультра-утонченная, худенькая блондинка со светлым каре до подбородка и воздушной челкой. Точеные скулы, взрослый элегантный вечерний макияж, пышный кружевной мини-сарафан цвета айвори и завораживающие плавные танцы.", "outfit": "Пышный кружевной мини-сарафан цвета айвори на тонких бретелях, белые носочки с рюшами, туфли Мэри Джейн на платформе", "room_desc": "Светлые парижские апартаменты: классические молдинги на кремовых стенах, теплый неон HONEY GLOW, арочный балкон, золотистый свет и дубовый паркет", "face_prompt": "19-year-old petite blonde dancer Mia Vega, slim sharply sculpted facial structure, high defined cheekbones, narrow tapered jawline, slender neck and clavicles, straight silky chin-length blonde bob with wispy bangs, hazel-green doe eyes with winged eyeliner, satin mauve-nude lipstick", "body_prompt": "petite slender delicate dancer silhouette, height 158 cm, weight 40 kg, very skinny frame, narrow waist, visible clavicles, slender legs, graceful upright posture", "room_prompt": "chic sunlit Parisian apartment dance studio, matte bleached blonde oak floor, warm vanilla cream wall with moulding, glowing amber-gold neon cursive sign HONEY GLOW, arched balcony window with golden sunlight, arched floor mirror", "video_prompt": "Full length vertical 9:16 shot of petite blonde Mia Vega performing a graceful slow-motion twirl. Voluminous puffy ivory lace sundress flaring out, blonde bob catching golden afternoon sunlight, poised elegant gaze.", "category": "lifestyle", "slot": 10, "serial": "R5GYB0707GN", "ip": "10.25.201.20:9999", "battery": 96, "status": "Готов к заливу танца"}];
     const SERVICE_DATA = [{"slot": 11, "name": "Прогрев ленты TikTok #1", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "🔥", "color": "#10B981", "task": "Скроллинг рекомендаций FYP", "status": "Активен • Цикл 18 мин", "battery": 96, "ip": "10.25.201.21:9999", "serial": "R5GL220ZZDT", "script_id": "tt_warmup", "description": "Имитация органических просмотров видео (5–35 сек), случайные свайпы, защита от спам-фильтров."}, {"slot": 12, "name": "Прогрев профилей TikTok #2", "category": "warmup", "category_title": "🔥 Прогрев & Скроллинг", "icon": "📱", "color": "#10B981", "task": "Обход целевых профилей", "status": "Активен • Визит 4/6", "battery": 92, "ip": "10.25.201.22:9999", "serial": "R5GL2217RTF", "script_id": "tt_warmup", "description": "Переходы в профили авторов, просмотр первых видео, прогрев поискового алгоритмического следа."}, {"slot": 13, "name": "Автолайкер Сторис Instagram", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "❤️", "color": "#EC4899", "task": "Эмуляция story_seen", "status": "Активен • Пауза 40 сек", "battery": 97, "ip": "10.25.201.23:9999", "serial": "R5GL2217SBF", "script_id": "story_autoliker", "description": "Обход подписчиков конкурентов, эмуляция просмотра сторис, соблюдение жестких антифрод-лимитов 24/7."}, {"slot": 14, "name": "Smart AI-Комментирование", "category": "engagement", "category_title": "❤️ Вовлечение & Охваты", "icon": "💬", "color": "#EC4899", "task": "Генерация реакций Gemini", "status": "Ожидание комментариев", "battery": 89, "ip": "10.25.201.24:9999", "serial": "R5GL2217XHM", "script_id": "ai_comments", "description": "Генерация контекстных ответов на входящие комментарии аудитории в тональности каждого персонажа."}, {"slot": 15, "name": "Сидер Контактов #1 (VCF Trust)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "👥", "color": "#3B82F6", "task": "Импорт базы contacts_1.vcf", "status": "150 контактов импортировано", "battery": 99, "ip": "10.25.201.25:9999", "serial": "R5GL2217YQP", "script_id": "deploy_contacts", "description": "Внедрение телефонной книги в Android для повышения траст-фактора и обхода спам-фильтров TT/IG."}, {"slot": 16, "name": "Сидер Контактов #2 (Social Graph)", "category": "trust", "category_title": "👥 Траст & Антифрод", "icon": "📇", "color": "#3B82F6", "task": "Ротация базы contacts_2.vcf", "status": "База контактов готова", "battery": 94, "ip": "10.25.201.26:9999", "serial": "R5GL2218AZA", "script_id": "deploy_contacts", "description": "Ротация телефонных номеров в памяти смартфона через ADB shell am start перед сменой учетных записей."}, {"slot": 17, "name": "Мобильный Прокси & Ротация IP", "category": "network", "category_title": "🌐 Сеть & Шлюз", "icon": "🌐", "color": "#2DD4BF", "task": "Мониторинг прокси-шлюза", "status": "Шлюз в норме • Ping 38ms", "battery": 98, "ip": "10.25.201.27:9999", "serial": "R5GYB0705MH", "script_id": "check_proxy", "description": "Контроль резидентных прокси, проверка DNS/WebRTC, смена мобильного IP через передергивание авиарежима."}, {"slot": 18, "name": "Контент-Дроппер & Стейджинг", "category": "content", "category_title": "🚀 Медиа-Стейджинг", "icon": "🚀", "color": "#F59E0B", "task": "Прием видео с RTX 4060", "status": "8 роликов в /sdcard/DCIM", "battery": 93, "ip": "10.25.201.28:9999", "serial": "R5GYB0706GV", "script_id": "push_videos", "description": "Синхронный прием видеофайлов через ADB push, индексация в системной галерее Android перед публикацией."}, {"slot": 19, "name": "Sandbox / Тест-Стенд Скриптов", "category": "dev", "category_title": "🧪 Отладка & Sandbox", "icon": "🧪", "color": "#A855F7", "task": "Калибровка touch x=0.16 y=0.60", "status": "Отладка координат ADB", "battery": 91, "ip": "10.25.201.29:9999", "serial": "R5GYB0707CF", "script_id": "run_test", "description": "Изолированное устройство для безопасного тестирования новых версий TikTok, APK-файлов и ADB-кликеров."}, {"slot": 20, "name": "Горячий Резерв (Failover Standby)", "category": "standby", "category_title": "🛡️ Запасной Аппарат", "icon": "🛡️", "color": "#94A3B8", "task": "Режим готовности к подмене", "status": "100% готов к замене любого слота", "battery": 100, "ip": "10.25.201.30:9999", "serial": "R5GYB0707GN", "script_id": "standby", "description": "Чистый отказоустойчивый смартфон для оперативной горячей замены любого аппарата фермы при сбое."}];
-    const STAND_DATA = [{"slot": 51, "shelf": 1, "serial": "R5GL52C6QDB", "ip": "10.25.201.93:2222", "email": "phone51@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 52, "shelf": 1, "serial": "R5GL52C0JJM", "ip": "10.25.201.94:2222", "email": "phone52@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 53, "shelf": 1, "serial": "R5GL52C1SJZ", "ip": "10.25.201.97:2222", "email": "phone53@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 54, "shelf": 1, "serial": "R5GL522XNYR", "ip": "10.25.201.98:2222", "email": "phone54@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 55, "shelf": 1, "serial": "R5GL522Y1HA", "ip": "10.25.201.99:2222", "email": "phone55@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 56, "shelf": 1, "serial": "R5GL52C3ERF", "ip": "10.25.201.100:2222", "email": "phone56@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 57, "shelf": 1, "serial": "R5GL43WF6QL", "ip": "10.25.201.101:2222", "email": "phone57@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 58, "shelf": 1, "serial": "R5GL43WF2SR", "ip": "10.25.201.102:2222", "email": "phone58@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 59, "shelf": 1, "serial": "R5GL52C6WGK", "ip": "10.25.201.2:2222", "email": "phone59@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 60, "shelf": 1, "serial": "R5GL52C1QCZ", "ip": "10.25.201.104:2222", "email": "phone60@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 61, "shelf": 2, "serial": "R5GL447ZDBZ", "ip": "10.25.201.109:2222", "email": "phone61@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 62, "shelf": 2, "serial": "R5GL52C53YH", "ip": "10.25.201.105:2222", "email": "phone62@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 63, "shelf": 2, "serial": "R5GL50AGWKX", "ip": "10.25.201.106:2222", "email": "phone63@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 64, "shelf": 2, "serial": "R5GL52C1RBW", "ip": "10.25.201.107:2222", "email": "phone64@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 65, "shelf": 2, "serial": "R5GL447YDCY", "ip": "10.25.201.108:2222", "email": "phone65@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 66, "shelf": 2, "serial": "R5GL43WEJZD", "ip": "10.25.201.110:2222", "email": "phone66@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 67, "shelf": 2, "serial": "R5GL447YCQZ", "ip": "10.25.201.111:2222", "email": "phone67@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 68, "shelf": 2, "serial": "R5GL447ZTGX", "ip": "10.25.201.114:2222", "email": "phone68@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 69, "shelf": 2, "serial": "R5GL52C6W7V", "ip": "10.25.201.112:2222", "email": "phone69@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 70, "shelf": 2, "serial": "R5GL43WF2QK", "ip": "10.25.201.113:2222", "email": "phone70@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}, {"slot": 71, "shelf": 2, "serial": "R5GL447ZPEB", "ip": "10.25.201.135:2222", "email": "phone71@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 91, "temp": 33}, {"slot": 72, "shelf": 2, "serial": "R5GL447WRXB", "ip": "10.25.201.136:2222", "email": "phone72@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 92, "temp": 28}, {"slot": 73, "shelf": 2, "serial": "R5GL43WEKAM", "ip": "10.25.201.139:2222", "email": "phone73@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 93, "temp": 29}, {"slot": 74, "shelf": 2, "serial": "R5GL43WDG8X", "ip": "10.25.201.137:2222", "email": "phone74@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 94, "temp": 30}, {"slot": 75, "shelf": 2, "serial": "R5GL447WXJL", "ip": "10.25.201.138:2222", "email": "phone75@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 95, "temp": 31}, {"slot": 76, "shelf": 2, "serial": "R5GL447XX1H", "ip": "10.25.201.140:2222", "email": "phone76@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 96, "temp": 32}, {"slot": 77, "shelf": 2, "serial": "R5GL447WXDR", "ip": "10.25.201.141:2222", "email": "phone77@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 97, "temp": 33}, {"slot": 78, "shelf": 2, "serial": "R5GL13V9KST", "ip": "10.25.201.142:2222", "email": "phone78@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 98, "temp": 28}, {"slot": 79, "shelf": 2, "serial": "R5GL13V953T", "ip": "10.25.201.143:2222", "email": "phone79@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 99, "temp": 29}, {"slot": 80, "shelf": 2, "serial": "R5GL13V9Z0N", "ip": "10.25.201.145:2222", "email": "phone80@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 90, "temp": 30}, {"slot": 81, "shelf": 3, "serial": "R5GL447XPXW", "ip": "10.25.201.144:2222", "email": "phone81@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 82, "shelf": 3, "serial": "R5GL43WEERH", "ip": "10.25.201.150:2222", "email": "phone82@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 83, "shelf": 3, "serial": "R5GL44GS9GA", "ip": "10.25.201.146:2222", "email": "phone83@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 84, "shelf": 3, "serial": "R5GL51RXV0B", "ip": "10.25.201.152:2222", "email": "phone84@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 85, "shelf": 3, "serial": "R5GL43WEDLZ", "ip": "10.25.201.147:2222", "email": "phone85@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 86, "shelf": 3, "serial": "R5GL13V915X", "ip": "10.25.201.148:2222", "email": "phone86@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 87, "shelf": 3, "serial": "R5GL447ZLGL", "ip": "10.25.201.149:2222", "email": "phone87@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 88, "shelf": 3, "serial": "R5GL447Z02B", "ip": "10.25.201.151:2222", "email": "phone88@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 89, "shelf": 3, "serial": "R5GL43WEHCV", "ip": "10.25.201.154:2222", "email": "phone89@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 90, "shelf": 3, "serial": "R5GL43WEMND", "ip": "10.25.201.153:2222", "email": "phone90@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 91, "shelf": 3, "serial": "R5GL13V9AGD", "ip": "10.25.201.165:2222", "email": "phone91@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 92, "shelf": 3, "serial": "R5GL44GS9QD", "ip": "10.25.201.166:2222", "email": "phone92@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 93, "shelf": 3, "serial": "R5GL44GS2BN", "ip": "10.25.201.167:2222", "email": "phone93@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 94, "shelf": 3, "serial": "R5GL13V9RRT", "ip": "10.25.201.168:2222", "email": "phone94@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 95, "shelf": 3, "serial": "R5GL447WTWY", "ip": "10.25.201.169:2222", "email": "phone95@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 96, "shelf": 3, "serial": "R5GL447XSGM", "ip": "10.25.201.170:2222", "email": "phone96@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 97, "shelf": 3, "serial": "R5GL13V8YBW", "ip": "10.25.201.171:2222", "email": "phone97@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 98, "shelf": 3, "serial": "R5GL447WWYZ", "ip": "10.25.201.174:2222", "email": "phone98@atomcorp.net", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 99, "shelf": 3, "serial": "R5GL13VA6BR", "ip": "10.25.201.172:2222", "email": "phone99@atomcorp.net", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 100, "shelf": 3, "serial": "R5GL447WT7X", "ip": "10.25.201.173:2222", "email": "phone100@atomcorp.net", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}];
+    const STAND_DATA = [{"slot": 51, "shelf": 1, "serial": "R5GL52C6QDB", "ip": "10.25.201.93:2222", "email": "kettylerto@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 52, "shelf": 1, "serial": "R5GL52C0JJM", "ip": "10.25.201.94:2222", "email": "alexfromer18@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 53, "shelf": 1, "serial": "R5GL52C1SJZ", "ip": "10.25.201.97:2222", "email": "ewanskamila@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 54, "shelf": 1, "serial": "R5GL522XNYR", "ip": "10.25.201.98:2222", "email": "trinanina78@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 55, "shelf": 1, "serial": "R5GL522Y1HA", "ip": "10.25.201.99:2222", "email": "robertoroberto12341@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 56, "shelf": 1, "serial": "R5GL52C3ERF", "ip": "10.25.201.100:2222", "email": "cilargretor@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 57, "shelf": 1, "serial": "R5GL43WF6QL", "ip": "10.25.201.101:2222", "email": "elderalisa737@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 58, "shelf": 1, "serial": "R5GL43WF2SR", "ip": "10.25.201.102:2222", "email": "ymarel126@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 59, "shelf": 1, "serial": "R5GL52C6WGK", "ip": "10.25.201.17:2222", "email": "madonmarta67@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 60, "shelf": 1, "serial": "R5GL52C1QCZ", "ip": "10.25.201.104:2222", "email": "antonomareli@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 61, "shelf": 2, "serial": "R5GL447ZDBZ", "ip": "10.25.201.109:2222", "email": "martaferol77@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 62, "shelf": 2, "serial": "R5GL52C53YH", "ip": "10.25.201.105:2222", "email": "akromderol@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 63, "shelf": 2, "serial": "R5GL50AGWKX", "ip": "10.25.201.106:2222", "email": "lanirekarl@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 64, "shelf": 2, "serial": "R5GL52C1RBW", "ip": "10.25.201.107:2222", "email": "gerogalastar@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 65, "shelf": 2, "serial": "R5GL447YDCY", "ip": "10.25.201.108:2222", "email": "shellygrndo@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 66, "shelf": 2, "serial": "R5GL43WEJZD", "ip": "10.25.201.110:2222", "email": "ferelalice@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 67, "shelf": 2, "serial": "R5GL447YCQZ", "ip": "10.25.201.111:2222", "email": "grigorokaren@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 68, "shelf": 2, "serial": "R5GL447ZTGX", "ip": "10.25.201.114:2222", "email": "dinozerels@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 69, "shelf": 2, "serial": "R5GL52C6W7V", "ip": "10.25.201.112:2222", "email": "tommitejkro@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 70, "shelf": 2, "serial": "R5GL43WF2QK", "ip": "10.25.201.113:2222", "email": "nikoantie@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}, {"slot": 71, "shelf": 2, "serial": "R5GL447ZPEB", "ip": "10.25.201.135:2222", "email": "roterrelad@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 91, "temp": 33}, {"slot": 72, "shelf": 2, "serial": "R5GL447WRXB", "ip": "10.25.201.136:2222", "email": "antonivrtge@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 92, "temp": 28}, {"slot": 73, "shelf": 2, "serial": "R5GL43WEKAM", "ip": "10.25.201.139:2222", "email": "geralrtoler@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 93, "temp": 29}, {"slot": 74, "shelf": 2, "serial": "R5GL43WDG8X", "ip": "10.25.201.137:2222", "email": "leronepaul473@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 94, "temp": 30}, {"slot": 75, "shelf": 2, "serial": "R5GL447WXJL", "ip": "10.25.201.138:2222", "email": "alaandertu@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 95, "temp": 31}, {"slot": 76, "shelf": 2, "serial": "R5GL447XX1H", "ip": "10.25.201.140:2222", "email": "nobatmarta@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 96, "temp": 32}, {"slot": 77, "shelf": 2, "serial": "R5GL447WXDR", "ip": "10.25.201.141:2222", "email": "dredinster1@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 97, "temp": 33}, {"slot": 78, "shelf": 2, "serial": "R5GL13V9KST", "ip": "10.25.201.142:2222", "email": "lanosteylor@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 98, "temp": 28}, {"slot": 79, "shelf": 2, "serial": "R5GL13V953T", "ip": "10.25.201.143:2222", "email": "melemtom@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 99, "temp": 29}, {"slot": 80, "shelf": 2, "serial": "R5GL13V9Z0N", "ip": "10.25.201.145:2222", "email": "greltnela@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 90, "temp": 30}, {"slot": 81, "shelf": 3, "serial": "R5GL447XPXW", "ip": "10.25.201.144:2222", "email": "manurgronet@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 91, "temp": 31}, {"slot": 82, "shelf": 3, "serial": "R5GL43WEERH", "ip": "10.25.201.150:2222", "email": "chrisevera2@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 92, "temp": 32}, {"slot": 83, "shelf": 3, "serial": "R5GL44GS9GA", "ip": "10.25.201.146:2222", "email": "mayachen132@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 93, "temp": 33}, {"slot": 84, "shelf": 3, "serial": "R5GL51RXV0B", "ip": "10.25.201.152:2222", "email": "beriolamar@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 94, "temp": 28}, {"slot": 85, "shelf": 3, "serial": "R5GL43WEDLZ", "ip": "10.25.201.147:2222", "email": "dramerfroled@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 95, "temp": 29}, {"slot": 86, "shelf": 3, "serial": "R5GL13V915X", "ip": "10.25.201.148:2222", "email": "artiknelta@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 96, "temp": 30}, {"slot": 87, "shelf": 3, "serial": "R5GL447ZLGL", "ip": "10.25.201.149:2222", "email": "groladsonnet@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 97, "temp": 31}, {"slot": 88, "shelf": 3, "serial": "R5GL447Z02B", "ip": "10.25.201.151:2222", "email": "elgarnika@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 98, "temp": 32}, {"slot": 89, "shelf": 3, "serial": "R5GL43WEHCV", "ip": "10.25.201.154:2222", "email": "enricorelokarlo@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 99, "temp": 33}, {"slot": 90, "shelf": 3, "serial": "R5GL43WEMND", "ip": "10.25.201.153:2222", "email": "melisasuarer@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 90, "temp": 28}, {"slot": 91, "shelf": 3, "serial": "R5GL13V9AGD", "ip": "10.25.201.165:2222", "email": "malhananro@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 91, "temp": 29}, {"slot": 92, "shelf": 3, "serial": "R5GL44GS9QD", "ip": "10.25.201.166:2222", "email": "mertikilan@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 92, "temp": 30}, {"slot": 93, "shelf": 3, "serial": "R5GL44GS2BN", "ip": "10.25.201.167:2222", "email": "fermalermark@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 93, "temp": 31}, {"slot": 94, "shelf": 3, "serial": "R5GL13V9RRT", "ip": "10.25.201.168:2222", "email": "groperliam@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 94, "temp": 32}, {"slot": 95, "shelf": 3, "serial": "R5GL447WTWY", "ip": "10.25.201.169:2222", "email": "sharlottaarm@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 95, "temp": 33}, {"slot": 96, "shelf": 3, "serial": "R5GL447XSGM", "ip": "10.25.201.170:2222", "email": "andrewkornels@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 96, "temp": 28}, {"slot": 97, "shelf": 3, "serial": "R5GL13V8YBW", "ip": "10.25.201.171:2222", "email": "melisaortelo@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 97, "temp": 29}, {"slot": 98, "shelf": 3, "serial": "R5GL447WWYZ", "ip": "10.25.201.174:2222", "email": "abdrewilgel@gmail.com", "status": "online", "task": "Ожидание таймера", "battery": 98, "temp": 30}, {"slot": 99, "shelf": 3, "serial": "R5GL13VA6BR", "ip": "10.25.201.172:2222", "email": "melisaadams1425@gmail.com", "status": "online", "task": "Скроллинг ленты TT", "battery": 99, "temp": 31}, {"slot": 100, "shelf": 3, "serial": "R5GL447WT7X", "ip": "10.25.201.173:2222", "email": "alexrocer2341@gmail.com", "status": "online", "task": "Прогрев аккаунта", "battery": 90, "temp": 32}];
 
     let currentView = 'gateway';
     let currentMinifarmScope = 'dancers'; // 'all', 'dancers', 'service'
@@ -1769,13 +1824,15 @@
             </div>
 
             <!-- Bottom Actions with Glass Buttons -->
-            <div class="pt-3.5 border-t border-white/10 flex items-center justify-between gap-2.5">
-              <button onclick="openScrcpyModal(${d.slot}, '${d.name_ru}', '${d.status}', ${d.battery})" class="glass-btn flex-1 py-2 rounded-xl text-xs font-semibold">
+            <div class="pt-3.5 border-t border-white/10 flex items-center justify-between gap-2">
+              <button onclick="openScrcpyModal(${d.slot}, '${d.name_ru}', '${d.status}', ${d.battery})" class="glass-btn px-3 py-2 rounded-xl text-xs font-semibold">
                 👁️ Экран #${d.slot}
               </button>
-              <button onclick="jumpToDancer(${d.origIdx})" class="glass-btn px-4 py-2 rounded-xl text-xs font-black shadow-lg text-slate-950" style="background: ${d.color}; border-color: ${d.color};">
+              <button onclick="jumpToDancerGallery(${d.origIdx})" class="glass-btn px-3 py-2 rounded-xl text-xs font-bold text-purple-300 hover:text-white border-purple-500/30 flex items-center gap-1">
+                <span>✨ Галерея</span>
+              </button>
+              <button onclick="jumpToDancer(${d.origIdx})" class="glass-btn px-3.5 py-2 rounded-xl text-xs font-black shadow-lg text-slate-950" style="background: ${d.color}; border-color: ${d.color};">
                 <span>💃 В Студию</span>
-                <span>&rarr;</span>
               </button>
             </div>
           </div>
@@ -1877,6 +1934,7 @@
           card.style.boxShadow = `0 0 25px -2px ${m.color}66, inset 0 1px 0 rgba(255,255,255,0.25)`;
         }
 
+        card.id = `dancer-roster-item-${idx}`;
         card.onclick = () => selectDancer(idx);
 
         const avatarPath = `dance_models/${m.id}/photos/master/avatar.jpg`;
@@ -1935,6 +1993,7 @@
 
       // Photo
       switchPhotoTab(currentPhotoTab);
+      updateDancerGalleryBadge(m);
     }
 
     function switchPhotoTab(tabKey) {
@@ -1950,17 +2009,25 @@
         'avatar': { file: 'avatar.jpg', tag: '🖼️ Аватарка (1:1) • Square Avatar' }
       };
 
-      ['dance', 'studio', 'room', 'face', 'avatar'].forEach(k => {
+      const allTabs = ['dance', 'studio', 'room', 'face', 'avatar', 'gallery'];
+      allTabs.forEach(k => {
         const btn = document.getElementById('ptab-' + k);
         if (btn) {
           if (k === tabKey) {
-            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 text-white shadow-lg';
-            btn.style.background = `linear-gradient(135deg, ${m.color} 0%, ${m.color}cc 100%)`;
-            btn.style.borderColor = m.color;
-            btn.style.boxShadow = `0 0 20px ${m.color}88`;
-            btn.style.color = '#050814';
+            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-white shadow-lg';
+            if (k === 'gallery') {
+              btn.style.background = 'linear-gradient(135deg, #A855F7 0%, #EC4899 100%)';
+              btn.style.borderColor = '#C084FC';
+              btn.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+              btn.style.color = '#ffffff';
+            } else {
+              btn.style.background = `linear-gradient(135deg, ${m.color} 0%, ${m.color}cc 100%)`;
+              btn.style.borderColor = m.color;
+              btn.style.boxShadow = `0 0 20px ${m.color}88`;
+              btn.style.color = '#050814';
+            }
           } else {
-            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+            btn.className = 'glass-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white flex items-center gap-1.5';
             btn.style.background = '';
             btn.style.borderColor = '';
             btn.style.boxShadow = '';
@@ -1969,14 +2036,219 @@
         }
       });
 
-      const entry = photoMap[tabKey];
-      const imgPath = `dance_models/${m.id}/photos/master/${entry.file}`;
       const mainImg = document.getElementById('dancer-main-preview-img');
-      if (mainImg) {
-        mainImg.src = imgPath;
+      const tagPill = document.getElementById('photo-tag-pill');
+      const galleryView = document.getElementById('dancer-gallery-view');
+
+      if (tabKey === 'gallery') {
+        if (mainImg) mainImg.classList.add('hidden');
+        if (tagPill) tagPill.classList.add('hidden');
+        if (galleryView) galleryView.classList.remove('hidden');
+        loadDancerGallery();
+      } else {
+        if (galleryView) galleryView.classList.add('hidden');
+        if (mainImg) mainImg.classList.remove('hidden');
+        if (tagPill) tagPill.classList.remove('hidden');
+
+        const entry = photoMap[tabKey];
+        if (entry) {
+          const imgPath = `dance_models/${m.id}/photos/master/${entry.file}`;
+          if (mainImg) {
+            mainImg.src = imgPath;
+          }
+          if (tagPill) {
+            tagPill.textContent = entry.tag;
+          }
+        }
       }
-      document.getElementById('photo-tag-pill').textContent = entry.tag;
     }
+
+    // --- DANCER GENERATION GALLERY LOGIC ---
+    let currentGalleryItems = [];
+    let currentGalleryFilter = 'all';
+
+    async function updateDancerGalleryBadge(m) {
+      if (!m) return;
+      const infCode = m.code || m.id;
+      const badge = document.getElementById('ptab-gallery-badge');
+      try {
+        const res = await fetch(`http://localhost:8000/api/influencer/${infCode}/gallery`);
+        if (res.ok) {
+          const data = await res.json();
+          if (badge) {
+            badge.textContent = data.total_count || 0;
+          }
+        }
+      } catch (err) {
+        console.warn('Gallery badge fetch error:', err);
+      }
+    }
+
+    async function loadDancerGallery(forceReload = false) {
+      const m = DANCERS_DATA[currentModelIndex];
+      if (!m) return;
+      const infCode = m.code || m.id;
+
+      const infBadge = document.getElementById('gallery-inf-badge');
+      if (infBadge) infBadge.textContent = `${m.name_ru} (${infCode})`;
+
+      const grid = document.getElementById('dancer-gallery-grid');
+      const empty = document.getElementById('dancer-gallery-empty');
+
+      if (grid) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-slate-400 gap-3">
+            <div class="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+            <div class="text-xs font-medium">Загрузка сгенерированных фото и видео...</div>
+          </div>
+        `;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:8000/api/influencer/${infCode}/gallery`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        currentGalleryItems = data.items || [];
+
+        // Update counts
+        const badge = document.getElementById('ptab-gallery-badge');
+        if (badge) badge.textContent = data.total_count || 0;
+
+        const countAll = document.getElementById('gfilter-count-all');
+        if (countAll) countAll.textContent = data.total_count || 0;
+        const countPhoto = document.getElementById('gfilter-count-photo');
+        if (countPhoto) countPhoto.textContent = data.photos_count || 0;
+        const countVideo = document.getElementById('gfilter-count-video');
+        if (countVideo) countVideo.textContent = data.videos_count || 0;
+
+        renderDancerGalleryGrid();
+      } catch (err) {
+        console.error('Gallery load error:', err);
+        if (grid) {
+          grid.innerHTML = `
+            <div class="col-span-full py-10 text-center text-rose-400 text-xs font-mono">
+              ⚠️ Ошибка загрузки галереи: ${err.message}. Проверьте FastAPI Bridge на :8000
+            </div>
+          `;
+        }
+      }
+    }
+
+    function setGalleryFilter(filterKey) {
+      currentGalleryFilter = filterKey;
+      ['all', 'photo', 'video'].forEach(k => {
+        const btn = document.getElementById('gfilter-btn-' + k);
+        if (btn) {
+          if (k === filterKey) {
+            btn.className = 'px-2.5 py-1 rounded-lg font-bold bg-white/20 text-white transition text-xs shadow';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition text-xs';
+          }
+        }
+      });
+      renderDancerGalleryGrid();
+    }
+
+    function renderDancerGalleryGrid() {
+      const grid = document.getElementById('dancer-gallery-grid');
+      const empty = document.getElementById('dancer-gallery-empty');
+      if (!grid) return;
+
+      const filtered = currentGalleryItems.filter(item => {
+        if (currentGalleryFilter === 'all') return true;
+        return item.type === currentGalleryFilter;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (empty) empty.classList.remove('hidden');
+        return;
+      }
+
+      if (empty) empty.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(item => {
+        const isVid = item.type === 'video';
+        const escapedPrompt = (item.prompt || '').replace(/"/g, '&quot;');
+        const cleanTitle = (item.prompt || '').length > 65 ? (item.prompt || '').slice(0, 65) + '...' : (item.prompt || (isVid ? 'Танец' : 'Портрет'));
+        
+        return `
+          <div class="group relative rounded-2xl overflow-hidden border border-white/10 bg-slate-900/90 hover:border-purple-400/60 transition-all duration-300 shadow-lg hover:shadow-2xl flex flex-col justify-between">
+            <!-- Media Preview Box (9:16 vertical for TikTok) -->
+            <div class="relative w-full aspect-[9/16] bg-black overflow-hidden flex items-center justify-center cursor-pointer select-none" onclick="openGalleryItemModal('${item.id}')">
+              ${isVid ? `
+                <video src="${item.url}" poster="${item.thumb_url || ''}" preload="metadata" muted playsinline loop onmouseenter="this.play().catch(()=>{})" onmouseleave="this.pause()" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"></video>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none"></div>
+                <div class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg bg-indigo-600/90 backdrop-blur-md text-white font-mono text-[10px] font-bold shadow-md flex items-center gap-1 border border-indigo-400/40">
+                  <span>🎬 ВИДЕО</span>
+                  <span class="opacity-80">${(item.provider || 'wan26').toUpperCase()}</span>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80 group-hover:scale-110 transition-transform">
+                  <div class="w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/30 flex items-center justify-center text-white text-base pl-0.5 shadow-xl">▶</div>
+                </div>
+              ` : `
+                <img src="${item.url}" alt="${cleanTitle}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none"></div>
+                <div class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg bg-pink-600/90 backdrop-blur-md text-white font-mono text-[10px] font-bold shadow-md flex items-center gap-1 border border-pink-400/40">
+                  <span>📷 2K ФОТО</span>
+                  <span class="opacity-80">QWEN</span>
+                </div>
+              `}
+
+              <div class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/75 backdrop-blur-md text-slate-300 font-mono text-[10px] border border-white/10">
+                ${item.size_mb} MB
+              </div>
+
+              <!-- Hover Action Toolbar -->
+              <div class="absolute inset-x-2 bottom-2 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-between gap-1.5 z-10">
+                <button onclick="event.stopPropagation(); openGalleryItemModal('${item.id}')" class="glass-btn flex-1 py-1.5 rounded-xl text-[11px] font-semibold text-white bg-black/85 backdrop-blur-md border border-white/25 hover:bg-white/20" title="Развернуть на весь экран">
+                  🔍 Просмотр
+                </button>
+                <button onclick="event.stopPropagation(); copyTextValue('${item.url}')" class="glass-btn px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-white bg-black/85 backdrop-blur-md border border-white/25 hover:bg-white/20" title="Скопировать путь к файлу">
+                  📋
+                </button>
+                <a href="${item.url}" download="${item.filename}" onclick="event.stopPropagation()" class="glass-btn px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-white bg-black/85 backdrop-blur-md border border-white/25 hover:bg-white/20 inline-flex items-center justify-center" title="Скачать файл">
+                  ⬇️
+                </a>
+              </div>
+            </div>
+
+            <!-- Card Footer Info -->
+            <div class="p-3 bg-slate-950 flex flex-col justify-between flex-1 border-t border-white/5 space-y-1.5">
+              <div class="text-[11px] text-slate-200 line-clamp-2 font-medium leading-tight" title="${escapedPrompt}">
+                ${cleanTitle}
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono pt-1.5 border-t border-white/5">
+                <span>${item.created_at}</span>
+                <span class="text-emerald-400 font-bold">$${(item.cost_usd || 0).toFixed(3)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openGalleryItemModal(itemId) {
+      const item = currentGalleryItems.find(it => it.id === itemId);
+      if (!item) return;
+      const isVid = item.type === 'video';
+      openModalWithSrc(item.url, `${isVid ? '🎬 Видео' : '📷 2K Фото'}: ${item.prompt || item.filename}`, isVid);
+    }
+
+    function jumpToDancerGallery(idx) {
+      jumpToDancer(idx);
+      switchPhotoTab('gallery');
+    }
+
+    function openStudioForCurrentDancer() {
+      const m = DANCERS_DATA[currentModelIndex];
+      if (!m) return;
+      const infCode = m.code || ('inf_' + m.id.toLowerCase().replace(/[^a-z0-9]/g, '_'));
+      navToView('higgsfield');
+      switchHiggsfieldModel(infCode);
+      showToast(`✨ Открыта Студия Генерации для ${m.name_ru}`);
+    }
+
 
     function applyDancerTheme(m) {
       const color = m.color;
@@ -3258,16 +3530,45 @@
       }
     }
 
-    // Modal with arbitrary src
-    function openModalWithSrc(src, caption) {
+    // Modal with arbitrary src (photo or video)
+    function openModalWithSrc(src, caption, isVideo = false) {
       const modal = document.getElementById('img-modal');
       const img = document.getElementById('modal-img');
+      const vid = document.getElementById('modal-vid');
       const cap = document.getElementById('modal-caption');
-      if (modal && img) {
-        img.src = src;
-        if (cap) cap.textContent = caption || '2K Кадр Higgsfield';
-        modal.classList.remove('hidden');
+      if (!modal) return;
+
+      if (isVideo) {
+        if (img) img.classList.add('hidden');
+        if (vid) {
+          vid.classList.remove('hidden');
+          vid.src = src;
+          vid.play().catch(() => {});
+        }
+      } else {
+        if (vid) {
+          vid.pause();
+          vid.classList.add('hidden');
+          vid.src = '';
+        }
+        if (img) {
+          img.classList.remove('hidden');
+          img.src = src;
+        }
       }
+
+      if (cap) cap.textContent = caption || '2K Кадр Higgsfield';
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('img-modal');
+      const vid = document.getElementById('modal-vid');
+      if (vid) {
+        vid.pause();
+        vid.src = '';
+      }
+      if (modal) modal.classList.add('hidden');
     }
 
 
