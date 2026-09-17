@@ -227,7 +227,7 @@
         <button id="nav-btn-higgsfield" onclick="navToView('higgsfield')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-pink-300 hover:text-white transition-all">
           🎨 Студия Higgsfield
         </button>
-        <button id="nav-btn-snippets" onclick="openSnippetsModal()" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white transition-all">
+        <button id="nav-btn-snippets" onclick="navToView('snippets')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white transition-all">
           🎬 Сниппеты
         </button>
 
@@ -288,7 +288,7 @@
             <button onclick="navToView('pult')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-amber-500/60 text-amber-300">
               <span>🎮 Мастер-Пульт</span>
             </button>
-            <button onclick="openSnippetsModal()" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-purple-400/60 text-purple-300">
+            <button onclick="navToView('snippets')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-purple-400/60 text-purple-300">
               <span>🎬 Видео Сниппеты</span>
             </button>
 
@@ -360,7 +360,7 @@
       </div>
 
       <!-- Card 4: Video Snippets (скр 1) -->
-      <div onclick="openSnippetsModal()" class="glass rounded-3xl p-7 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(168,85,247,0.3)]">
+      <div onclick="navToView('snippets')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-purple-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(168,85,247,0.3)]">
         <div class="space-y-3.5">
           <div class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/35 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
             🎬
@@ -1490,6 +1490,412 @@
     </div>
   </main>
 
+  <!-- ================================================================= -->
+  <!-- SCREEN 6: SNIPPET STUDIO & KARAOKE (Сниппеты & Караоке-субтитры)  -->
+  <!-- ================================================================= -->
+  <main id="view-snippets" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-7 relative z-10">
+    
+    <!-- Hero Box with Deep Violet Ambient Glow -->
+    <div class="glass rounded-3xl p-6 lg:p-8 relative overflow-hidden border-purple-500/40 shadow-[0_20px_60px_-15px_rgba(168,85,247,0.3)]">
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-purple-600/25 via-pink-600/15 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2 max-w-4xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-[11px] text-purple-300 font-mono font-bold backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+            <span>⚡ СТУДИЯ СНИППЕТОВ • WHISPER INT8 + NVENC 1.8s + STAND 50 PHONES</span>
+          </div>
+          <h1 class="text-2xl lg:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+            <span>🎬 Видео Сниппеты & Караоке</span>
+            <span class="text-xs font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">v3.3 Ultra Fast</span>
+          </h1>
+          <p class="text-xs lg:text-sm text-slate-300 leading-relaxed">
+            Автоматическая транскрибация лирики треков (Faster-Whisper), сверхбыстрый 1.8с рендеринг 1080x1920 9:16 на GPU (NVENC), 5 стилей динамических караоке-субтитров с эмодзи и прямая заливка на Стенд (50 телефонов Samsung Galaxy A26) в галерею DCIM/Camera для авто-постинга в TikTok.
+          </p>
+          <div class="flex flex-wrap items-center gap-3 pt-1 text-xs font-mono">
+            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-purple-300">🎵 <b id="snip-tracks-count-badge">141</b> трек</span>
+            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-teal-300">🎥 <b id="snip-footages-count-badge">96</b> футажей</span>
+            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-emerald-300">💾 <b id="snip-saved-count-badge">333</b> готовых сниппета</span>
+            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-amber-300">🏢 <b id="snip-stand-count-badge">50</b> телефонов Стенда</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap lg:flex-col gap-2.5 shrink-0">
+          <button onclick="snipExpressBuild()" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg flex items-center gap-2">
+            <span>⚡ Хит дня (Экспресс 1.8 сек)</span>
+          </button>
+          <button onclick="reloadSnippetsData()" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2">
+            <span>🔄 Обновить базу</span>
+          </button>
+          <button onclick="navToView('stand')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-semibold text-teal-300 hover:text-white flex items-center gap-2">
+            <span>🏢 Мониторинг Стенда (50)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3-COLUMN WORKSTATION -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- ============================================================= -->
+      <!-- КОЛОНКА 1: АУДИО, ХУК И НЕЙРО-ЛИРИКА (4 cols)                 -->
+      <!-- ============================================================= -->
+      <div class="lg:col-span-4 space-y-5">
+        
+        <!-- CARD 1: ВЫБОР АУДИОТРЕКА -->
+        <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-purple-300 font-mono">ШАГ 1 • АУДИОДОРOЖКА</span>
+            <span id="snip-active-track-name" class="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">Выберите трек</span>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative">
+            <input id="snip-track-search" type="text" oninput="filterSnippetTracks()" placeholder="Поиск трека (название, артист)..." class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 font-medium">
+            <span class="absolute right-3 top-2.5 text-slate-500 text-xs pointer-events-none">🔍</span>
+          </div>
+
+          <!-- Scrollable Track List -->
+          <div id="snip-track-list" class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+            <div class="py-6 text-center text-slate-500 text-xs">Загрузка треков...</div>
+          </div>
+
+          <!-- Audio Player & Scrub -->
+          <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span id="snip-audio-current-time" class="text-purple-300 font-bold">0:00</span>
+              <span id="snip-audio-duration" class="text-slate-400">0:00</span>
+            </div>
+            <audio id="snip-audio-element" controls class="w-full h-8 rounded-lg accent-purple-400"></audio>
+
+            <!-- Hook Time Selector -->
+            <div class="pt-2 border-t border-white/10 space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-300">Начало хука:</span>
+                <span id="snip-hook-start-val" class="font-mono text-purple-300 font-bold">15.0с</span>
+              </div>
+              <input id="snip-hook-slider" type="range" min="0" max="120" step="0.5" value="15" oninput="updateSnippetHookStart(this.value)" class="w-full accent-purple-400 cursor-pointer">
+              
+              <div class="flex items-center justify-between text-xs pt-1">
+                <span class="text-slate-400 text-[11px]">Длина:</span>
+                <div class="flex gap-1.5 font-mono text-[11px]">
+                  <button onclick="setSnippetDuration(10)" id="snip-dur-10" class="glass-btn px-2.5 py-1 rounded-lg text-slate-300 hover:text-white">10с</button>
+                  <button onclick="setSnippetDuration(15)" id="snip-dur-15" class="glass-btn-accent px-2.5 py-1 rounded-lg text-white font-bold">15с</button>
+                  <button onclick="setSnippetDuration(30)" id="snip-dur-30" class="glass-btn px-2.5 py-1 rounded-lg text-slate-300 hover:text-white">30с</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: FASTER-WHISPER NEURAL TRANSCRIPTION -->
+        <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-purple-300 font-mono">ШАГ 2 • FASTER-WHISPER ЛИРИКА</span>
+            <span id="snip-whisper-status" class="text-[10px] font-mono text-emerald-400 font-bold">Готов</span>
+          </div>
+
+          <button id="btn-snip-transcribe" onclick="transcribeCurrentSnippetAudio()" class="w-full glass-btn-accent py-2.5 px-4 rounded-xl text-xs font-bold text-white shadow-md flex items-center justify-center gap-2">
+            <span>🎙️ Нейросеть: Распознать лирику (Whisper)</span>
+          </button>
+
+          <!-- Auto-emoji Checkbox -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs">
+            <span class="text-slate-300">Авто-эмодзи в субтитрах (🔥🏎️💰):</span>
+            <input id="snip-chk-emoji" type="checkbox" checked onchange="toggleSnippetEmojis(this.checked)" class="accent-purple-400 w-4 h-4 cursor-pointer">
+          </div>
+
+          <!-- Detected Words Chips Container -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Слова с таймкодами (клик для перехода):</span>
+              <span id="snip-words-count" class="font-mono text-purple-300">0 слов</span>
+            </div>
+            <div id="snip-words-chips" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2 rounded-xl bg-black/40 border border-white/10 min-h-[50px] items-center">
+              <span class="text-slate-500 text-[11px] italic">Нажмите «Распознать лирику» или введите текст ниже</span>
+            </div>
+          </div>
+
+          <!-- Custom Fallback Punchline Input -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[10px] text-slate-400">
+              <span>Или собственный текст субтитров:</span>
+              <button onclick="applyCustomSnippetText()" class="text-purple-400 hover:underline">Применить</button>
+            </div>
+            <input id="snip-custom-lyrics-input" type="text" placeholder="Введите слова через пробел..." class="w-full bg-white/5 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 font-mono">
+          </div>
+        </div>
+
+        <!-- CARD 3: ВЫБОР ВИДЕОФУТАЖА -->
+        <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-teal-300 font-mono">ШАГ 3 • ВИДЕО ФУТАЖ</span>
+            <span id="snip-active-footage-name" class="text-[10px] text-slate-400 font-mono truncate max-w-[170px]">Выберите футаж</span>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="grid grid-cols-5 gap-1 text-[10px] font-mono">
+            <button onclick="filterSnippetFootageCategory('all')" id="snip-cat-all" class="glass-btn-accent py-1.5 rounded-lg text-white font-bold">Все</button>
+            <button onclick="filterSnippetFootageCategory('car')" id="snip-cat-car" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">🏎️ Авто</button>
+            <button onclick="filterSnippetFootageCategory('cyberpunk')" id="snip-cat-cyberpunk" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">🌃 Кибер</button>
+            <button onclick="filterSnippetFootageCategory('fashion')" id="snip-cat-fashion" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">👠 Мода</button>
+            <button onclick="filterSnippetFootageCategory('sports')" id="snip-cat-sports" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">🥊 Спорт</button>
+          </div>
+
+          <!-- Scrollable Footages Grid -->
+          <div id="snip-footage-grid" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
+            <div class="col-span-3 py-6 text-center text-slate-500 text-xs">Загрузка футажей...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- КОЛОНКА 2: ИНТЕРАКТИВНЫЙ 9:16 ПЛЕЕР & СТИЛЬ СУБТИТРОВ (4 cols) -->
+      <!-- ============================================================= -->
+      <div class="lg:col-span-4 space-y-5">
+        
+        <div class="glass rounded-3xl p-5 lg:p-6 space-y-5 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-purple-300 font-mono">9:16 СТУДИЙНЫЙ МОНИТОР</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">1080x1920 • 60 FPS</span>
+          </div>
+
+          <!-- 9:16 Vertical Phone Bezel -->
+          <div class="relative w-full max-w-[320px] aspect-[9/16] mx-auto rounded-3xl overflow-hidden border-4 border-slate-800 bg-black shadow-2xl flex flex-col justify-between group">
+            
+            <!-- Video Layer -->
+            <video id="snip-stage-video" loop muted autoplay playsinline class="absolute inset-0 w-full h-full object-cover transition-all duration-300"></video>
+            
+            <!-- Dynamic Gradient Vignette -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/50 pointer-events-none"></div>
+
+            <!-- Top Status Bar in Phone -->
+            <div class="relative z-10 p-3 flex items-center justify-between text-[10px] text-white/80 font-mono pointer-events-none">
+              <span class="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-lg border border-white/10">🎬 SNIPPLIT 9:16</span>
+              <span class="bg-purple-500/80 text-white font-bold px-2 py-0.5 rounded-lg">NVENC</span>
+            </div>
+
+            <!-- Center Live Karaoke Subtitle Preview -->
+            <div class="relative z-10 my-auto px-4 text-center pointer-events-none">
+              <div id="snip-live-subtitle" class="font-black text-xl tracking-tight transition-all duration-150 drop-shadow-[0_4px_12px_rgba(0,0,0,1)] text-white">
+                PLITTY 🔥 SNIPPET
+              </div>
+            </div>
+
+            <!-- Bottom Video Player Controls inside Phone -->
+            <div class="relative z-10 p-3 flex items-center justify-between gap-2 pointer-events-auto">
+              <button onclick="toggleSnippetPlayback()" id="btn-snip-play" class="glass-btn w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm">
+                ▶
+              </button>
+              <div class="flex-1 text-center font-mono text-[10px] text-slate-300 truncate" id="snip-preview-status-text">
+                Превью готово к просмотру
+              </div>
+              <button onclick="restartSnippetPreview()" class="glass-btn p-2 rounded-xl text-slate-400 hover:text-white text-xs" title="С начала">
+                ↺
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtitle Style Presets -->
+          <div class="space-y-2">
+            <label class="text-[11px] font-bold text-white block">Стиль субтитров (ASS Караоке):</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs">
+              <button onclick="selectSnippetStyle('tiktok')" id="snip-style-tiktok" class="glass-btn-accent py-2 px-2.5 rounded-xl font-bold text-white text-center shadow-md">
+                🔥 TikTok
+              </button>
+              <button onclick="selectSnippetStyle('mrbeast')" id="snip-style-mrbeast" class="glass-btn py-2 px-2.5 rounded-xl text-slate-300 hover:text-white text-center">
+                💥 MrBeast
+              </button>
+              <button onclick="selectSnippetStyle('hormozi')" id="snip-style-hormozi" class="glass-btn py-2 px-2.5 rounded-xl text-slate-300 hover:text-white text-center">
+                ⚡ Hormozi
+              </button>
+              <button onclick="selectSnippetStyle('neon')" id="snip-style-neon" class="glass-btn py-2 px-2.5 rounded-xl text-slate-300 hover:text-white text-center">
+                🌆 Кибер-Неон
+              </button>
+              <button onclick="selectSnippetStyle('minimal')" id="snip-style-minimal" class="glass-btn py-2 px-2.5 rounded-xl text-slate-300 hover:text-white text-center col-span-2 sm:col-span-2">
+                ✨ Минимал
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Filter / Color Grading -->
+          <div class="space-y-2">
+            <label class="text-[11px] font-bold text-white block">Цветокоррекция & Видеофильтр:</label>
+            <div class="grid grid-cols-5 gap-1 text-[10px] font-mono">
+              <button onclick="selectSnippetFilter('none')" id="snip-filter-none" class="glass-btn-accent py-1.5 rounded-lg text-white font-bold">Оригинал</button>
+              <button onclick="selectSnippetFilter('vhs')" id="snip-filter-vhs" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">📼 VHS</button>
+              <button onclick="selectSnippetFilter('cyberpunk')" id="snip-filter-cyberpunk" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">🌆 Кибер</button>
+              <button onclick="selectSnippetFilter('bw')" id="snip-filter-bw" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">⚫ Ч/Б</button>
+              <button onclick="selectSnippetFilter('warm')" id="snip-filter-warm" class="glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white">🌅 Теплый</button>
+            </div>
+          </div>
+
+          <!-- Anti-MD5 Uniqueization Options -->
+          <div class="space-y-2 pt-2 border-t border-white/10">
+            <span class="text-[11px] font-bold text-slate-300 block">Anti-MD5 & Уникализация:</span>
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400">
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="snip-chk-zoom" checked class="accent-purple-400">
+                <span>Микро-зум (+1.5%)</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="snip-chk-pitch" checked class="accent-purple-400">
+                <span>Audio Pitch (+0.3%)</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="snip-chk-noise" checked class="accent-purple-400">
+                <span>Anti-Ban зернистость</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="snip-chk-exif" checked class="accent-purple-400">
+                <span>Очистка EXIF данных</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- КОЛОНКА 3: ДИСТРИБУЦИЯ НА СТЕНД (50 ТЕЛЕФОНОВ) & РЕНДЕР (4 cols) -->
+      <!-- ============================================================= -->
+      <div class="lg:col-span-4 space-y-5">
+        
+        <!-- CARD 1: ВЫБОР ЦЕЛИ НА СТЕНДЕ -->
+        <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-teal-300 font-mono">СТЕНД • 50 ТЕЛЕФОНОВ (A26)</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">Слоты 51–100</span>
+          </div>
+
+          <!-- Stand Scope Buttons -->
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button onclick="setSnippetStandTarget('shelf_1')" id="snip-target-shelf_1" class="glass-btn-accent py-2 px-3 rounded-xl font-bold text-white shadow-md text-left">
+              <span>🏢 Полка 1</span>
+              <span class="block text-[10px] opacity-80 font-mono">Слоты 51–60 (10 тел)</span>
+            </button>
+            <button onclick="setSnippetStandTarget('shelf_2')" id="snip-target-shelf_2" class="glass-btn py-2 px-3 rounded-xl text-slate-300 hover:text-white text-left">
+              <span>🏢 Полка 2</span>
+              <span class="block text-[10px] opacity-80 font-mono">Слоты 61–80 (20 тел)</span>
+            </button>
+            <button onclick="setSnippetStandTarget('shelf_3')" id="snip-target-shelf_3" class="glass-btn py-2 px-3 rounded-xl text-slate-300 hover:text-white text-left">
+              <span>🏢 Полка 3</span>
+              <span class="block text-[10px] opacity-80 font-mono">Слоты 81–100 (20 тел)</span>
+            </button>
+            <button onclick="setSnippetStandTarget('all')" id="snip-target-all" class="glass-btn py-2 px-3 rounded-xl text-slate-300 hover:text-white text-left">
+              <span>🔥 Все 50 тел</span>
+              <span class="block text-[10px] opacity-80 font-mono">Стенд полностью</span>
+            </button>
+          </div>
+
+          <!-- Target Preview & IP Info -->
+          <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-1.5 font-mono text-xs">
+            <div class="flex items-center justify-between text-slate-400 text-[10px]">
+              <span>Порт подключения:</span>
+              <span class="text-teal-300 font-bold">TCP:2222 (WiFi ADB)</span>
+            </div>
+            <div class="text-slate-200 font-bold truncate" id="snip-stand-summary-text">Цель: Полка 1 (10 телефонов)</div>
+            <div class="text-[10px] text-slate-400">Путь на устройстве: <code class="text-purple-300">/sdcard/DCIM/Camera/</code></div>
+          </div>
+        </div>
+
+        <!-- CARD 2: TIKTOK МЕТАДАННЫЕ -->
+        <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-purple-300 font-mono">TIKTOK ПУБЛИКАЦИЯ</span>
+            <button onclick="generateSnippetAiCaption()" class="text-[10px] text-pink-300 hover:underline">✨ AI Описание</button>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-slate-300 block">Заголовок / Хэштеги видео:</label>
+            <input id="snip-title-input" type="text" value="#musictok #fyp #trend #nightdrift 🔥" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 font-mono">
+          </div>
+
+          <div class="flex flex-wrap gap-1 text-[10px] font-mono">
+            <button onclick="addSnippetTag('#fyp')" class="glass-btn px-2 py-0.5 rounded-lg text-slate-300 hover:text-white">#fyp</button>
+            <button onclick="addSnippetTag('#viral')" class="glass-btn px-2 py-0.5 rounded-lg text-slate-300 hover:text-white">#viral</button>
+            <button onclick="addSnippetTag('#foryou')" class="glass-btn px-2 py-0.5 rounded-lg text-slate-300 hover:text-white">#foryou</button>
+            <button onclick="addSnippetTag('#тренд')" class="glass-btn px-2 py-0.5 rounded-lg text-slate-300 hover:text-white">#тренд</button>
+            <button onclick="addSnippetTag('#phonk')" class="glass-btn px-2 py-0.5 rounded-lg text-slate-300 hover:text-white">#phonk</button>
+          </div>
+        </div>
+
+        <!-- CARD 3: ГЛАВНЫЕ ДЕЙСТВИЯ -->
+        <div class="glass rounded-3xl p-5 space-y-3.5 border border-white/10 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono">ЗАПУСК ПАЙПЛАЙНА</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">NVENC Ускорение</span>
+          </div>
+
+          <!-- Master Action Buttons -->
+          <button id="btn-snip-render" onclick="renderSnippetAction()" class="w-full py-4 px-5 rounded-2xl font-black text-sm text-white shadow-xl flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:opacity-95 transition-all transform hover:scale-[1.01]">
+            <span>⚡ Срендерить сниппет (NVENC 1.8 сек)</span>
+          </button>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button id="btn-snip-push" onclick="pushSnippetToStandAction()" class="glass-btn py-3 px-3 rounded-xl font-bold text-teal-300 hover:border-teal-400/60 flex items-center justify-center gap-1.5 shadow-md">
+              <span>📲 Залить на Стенд</span>
+            </button>
+            <button onclick="triggerSnippetAutoPosting()" class="glass-btn py-3 px-3 rounded-xl font-bold text-amber-300 hover:border-amber-400/60 flex items-center justify-center gap-1.5 shadow-md">
+              <span>🚀 Авто-постинг TT</span>
+            </button>
+          </div>
+
+          <!-- LATEST RENDER CARD -->
+          <div id="snip-render-result-card" class="p-3.5 rounded-2xl bg-black/50 border border-white/10 hidden space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-emerald-400 flex items-center gap-1">✅ Рендер завершен</span>
+              <span id="snip-res-time-badge" class="font-mono text-purple-300 text-[10px]">1.81с</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-16 rounded-lg bg-black overflow-hidden border border-white/10 shrink-0">
+                <img id="snip-res-thumb" src="" alt="Thumb" class="w-full h-full object-cover">
+              </div>
+              <div class="min-w-0 flex-1 text-[11px] space-y-0.5">
+                <div id="snip-res-filename" class="font-bold text-white font-mono truncate">snippet.mp4</div>
+                <div id="snip-res-size" class="text-slate-400 text-[10px]">5.6 MB</div>
+                <div class="flex items-center gap-2 pt-1">
+                  <button onclick="openSnippetModal(lastRenderedSnippetUrl)" class="text-purple-400 font-bold hover:underline">👁️ Просмотр</button>
+                  <span class="text-slate-600">•</span>
+                  <a id="snip-res-dl-link" href="" download class="text-teal-400 font-bold hover:underline">⬇️ Скачать</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- СЕКЦИЯ 4: ГАЛЕРЕЯ ГОТОВЫХ СНИППЕТОВ (333+ ВИДЕО)              -->
+    <!-- ============================================================= -->
+    <div class="glass rounded-3xl p-6 lg:p-8 space-y-6 border border-white/10 shadow-2xl">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-black text-white">🗄️ База готовых сниппетов</h3>
+            <span id="snip-gallery-badge-count" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">333 видео</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Все отрендеренные клипы доступны для мгновенного просмотра, повторной заливки на Стенд и скачивания.</p>
+        </div>
+
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <input id="snip-gallery-search" type="text" oninput="filterSnippetGallery()" placeholder="Поиск по файлам..." class="bg-white/5 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400">
+          <button onclick="loadSavedSnippets()" class="glass-btn px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white" title="Обновить">
+            🔄
+          </button>
+        </div>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div id="snip-gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 max-h-[600px] overflow-y-auto pr-1">
+        <div class="col-span-full py-12 text-center text-slate-500 text-xs">Загрузка базы сниппетов...</div>
+      </div>
+    </div>
+
+  </main>
+
+
+
 
   <!-- ================================================================= -->
   <!-- FLOATING PLITTY ASSISTANT WIDGET                                  -->
@@ -1675,7 +2081,7 @@
       const targetEl = document.getElementById('view-' + viewName);
       if (targetEl) targetEl.classList.add('active');
 
-      ['gateway', 'minifarm', 'stand', 'pult', 'higgsfield'].forEach(v => {
+      ['gateway', 'minifarm', 'stand', 'pult', 'higgsfield', 'snippets'].forEach(v => {
         const b = document.getElementById('nav-btn-' + v);
         if (b) {
           if (v === viewName) {
@@ -1688,6 +2094,10 @@
 
       if (viewName === 'minifarm' && targetParam) {
         setMinifarmScope(targetParam);
+      }
+
+      if (viewName === 'snippets') {
+        initSnippetsModule();
       }
 
       if (viewName === 'pult' && targetParam) {
@@ -3859,6 +4269,620 @@
         loadModerationPending();
       } catch (e) {
         showToast('Ошибка отклонения');
+      }
+    }
+
+
+    // =================================================================
+    // SNIPPET STUDIO JAVASCRIPT LOGIC (ULTRA FAST PIPELINE)
+    // =================================================================
+    let snipTracks = [];
+    let snipFootages = [];
+    let snipSaved = [];
+    let snipStandPhones = [];
+    let snipActiveTrack = null;
+    let snipActiveFootage = null;
+    let snipActiveWords = [];
+    let snipActiveStyle = 'tiktok';
+    let snipActiveFilter = 'none';
+    let snipActiveStandTarget = 'shelf_1';
+    let snipDuration = 15.0;
+    let snipHookStart = 15.0;
+    let lastRenderedSnippetUrl = '';
+    let isSnipInitialized = false;
+
+    async function initSnippetsModule() {
+      if (isSnipInitialized) return;
+      isSnipInitialized = true;
+      await reloadSnippetsData();
+    }
+
+    async function reloadSnippetsData() {
+      await Promise.all([
+        loadSnippetTracks(),
+        loadSnippetFootages('all'),
+        loadSavedSnippets(),
+        loadSnippetStandPhones()
+      ]);
+      showToast('🎬 Студия Сниппетов готова к работе!');
+    }
+
+    // 1. TRACKS
+    async function loadSnippetTracks() {
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/tracks');
+        if (r.ok) {
+          snipTracks = await r.json();
+          document.getElementById('snip-tracks-count-badge').textContent = snipTracks.length;
+          renderSnippetTracksList();
+          if (snipTracks.length > 0 && !snipActiveTrack) {
+            selectSnippetTrack(0);
+          }
+        }
+      } catch (e) {
+        console.warn('Tracks fetch failed:', e);
+      }
+    }
+
+    function renderSnippetTracksList(filter = '') {
+      const container = document.getElementById('snip-track-list');
+      if (!container) return;
+      const q = (filter || document.getElementById('snip-track-search')?.value || '').toLowerCase();
+      const filtered = snipTracks.filter(t => !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q));
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="py-4 text-center text-slate-500 text-xs">Треки не найдены</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((t, idx) => {
+        const isSel = snipActiveTrack && snipActiveTrack.id === t.id;
+        return `
+          <div onclick="selectSnippetTrackById('${t.id}')" class="p-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-between border ${
+            isSel ? 'bg-purple-500/25 border-purple-400 text-white shadow-md' : 'glass hover:border-white/20 text-slate-300'
+          }">
+            <div class="min-w-0 flex-1 pr-2">
+              <div class="text-xs font-bold truncate">${t.title}</div>
+              <div class="text-[10px] text-slate-400 truncate">${t.artist}</div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-[9px] font-mono text-purple-300">${t.size_mb}M</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterSnippetTracks() {
+      renderSnippetTracksList();
+    }
+
+    function selectSnippetTrackById(tid) {
+      const t = snipTracks.find(x => x.id === tid);
+      if (t) selectSnippetTrack(t);
+    }
+
+    function selectSnippetTrack(idxOrTrack) {
+      const t = typeof idxOrTrack === 'number' ? snipTracks[idxOrTrack] : idxOrTrack;
+      if (!t) return;
+      snipActiveTrack = t;
+
+      document.getElementById('snip-active-track-name').textContent = t.title;
+      renderSnippetTracksList();
+
+      const audio = document.getElementById('snip-audio-element');
+      if (audio) {
+        audio.src = t.url.startsWith('/') ? t.url : '/' + t.url;
+        audio.load();
+        audio.currentTime = snipHookStart;
+      }
+      showToast(`🎵 Выбран трек: ${t.title}`);
+    }
+
+    function updateSnippetHookStart(val) {
+      snipHookStart = parseFloat(val);
+      document.getElementById('snip-hook-start-val').textContent = snipHookStart.toFixed(1) + 'с';
+      const audio = document.getElementById('snip-audio-element');
+      if (audio) {
+        audio.currentTime = snipHookStart;
+      }
+    }
+
+    function setSnippetDuration(sec) {
+      snipDuration = sec;
+      ['10', '15', '30'].forEach(s => {
+        const b = document.getElementById('snip-dur-' + s);
+        if (b) {
+          b.className = (parseInt(s) === sec)
+            ? 'glass-btn-accent px-2.5 py-1 rounded-lg text-white font-bold'
+            : 'glass-btn px-2.5 py-1 rounded-lg text-slate-300 hover:text-white';
+        }
+      });
+      showToast(`⏱️ Длительность сниппета: ${sec} сек`);
+    }
+
+    // 2. WHISPER TRANSCRIPTION
+    async function transcribeCurrentSnippetAudio() {
+      if (!snipActiveTrack) {
+        showToast('⚠️ Сначала выберите аудиодорожку');
+        return;
+      }
+
+      const statusEl = document.getElementById('snip-whisper-status');
+      const btn = document.getElementById('btn-snip-transcribe');
+      const chips = document.getElementById('snip-words-chips');
+      const countEl = document.getElementById('snip-words-count');
+
+      statusEl.textContent = 'Нейро-распознавание...';
+      statusEl.className = 'text-[10px] font-mono text-amber-400 font-bold animate-pulse';
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Faster-Whisper транскрибирует слова...</span>';
+
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/transcribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            audio_path: snipActiveTrack.file_path || snipActiveTrack.filename,
+            start_time: snipHookStart,
+            duration: snipDuration
+          })
+        });
+
+        if (r.ok) {
+          const data = await r.json();
+          snipActiveWords = data.words || [];
+          countEl.textContent = `${snipActiveWords.length} слов`;
+
+          if (snipActiveWords.length === 0) {
+            chips.innerHTML = '<span class="text-amber-400 text-[11px]">В данном отрезке чистый бит. Введите текст вручную ниже!</span>';
+          } else {
+            chips.innerHTML = snipActiveWords.map((w, idx) => `
+              <span onclick="seekToSnippetWord(${idx})" class="px-2 py-0.5 rounded-lg bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[11px] font-bold font-mono cursor-pointer hover:bg-purple-500/40 transition-colors" title="${w.start}s - ${w.end}s">
+                ${w.word}
+              </span>
+            `).join('');
+
+            // Set live subtitle text
+            const firstWords = snipActiveWords.slice(0, 3).map(x => x.word).join(' ');
+            document.getElementById('snip-live-subtitle').textContent = firstWords;
+          }
+
+          statusEl.textContent = `Готово (${snipActiveWords.length} слов)`;
+          statusEl.className = 'text-[10px] font-mono text-emerald-400 font-bold';
+          showToast(`🎙️ Whisper распознал ${snipActiveWords.length} слов!`);
+        } else {
+          statusEl.textContent = 'Ошибка';
+          showToast('Ошибка транскрибации');
+        }
+      } catch (e) {
+        statusEl.textContent = 'Офлайн';
+        showToast('Сервер на порту 8000 не ответил');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🎙️ Нейросеть: Распознать лирику (Whisper)</span>';
+      }
+    }
+
+    function seekToSnippetWord(idx) {
+      const w = snipActiveWords[idx];
+      if (!w) return;
+      const audio = document.getElementById('snip-audio-element');
+      if (audio) {
+        audio.currentTime = snipHookStart + w.start;
+        audio.play().catch(() => {});
+      }
+      document.getElementById('snip-live-subtitle').textContent = w.word;
+    }
+
+    function toggleSnippetEmojis(checked) {
+      showToast(checked ? '🔥 Эмодзи включены' : 'Эмодзи выключены');
+    }
+
+    function applyCustomSnippetText() {
+      const txt = document.getElementById('snip-custom-lyrics-input')?.value.trim();
+      if (!txt) return;
+      const rawWords = txt.split(/\s+/);
+      const step = snipDuration / Math.max(1, rawWords.length);
+      snipActiveWords = rawWords.map((w, i) => ({
+        word: w.toUpperCase(),
+        start: parseFloat((i * step).toFixed(2)),
+        end: parseFloat(((i + 1) * step).toFixed(2)),
+        conf: 1.0
+      }));
+
+      const chips = document.getElementById('snip-words-chips');
+      const countEl = document.getElementById('snip-words-count');
+      countEl.textContent = `${snipActiveWords.length} слов`;
+      chips.innerHTML = snipActiveWords.map((w, idx) => `
+        <span onclick="seekToSnippetWord(${idx})" class="px-2 py-0.5 rounded-lg bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[11px] font-bold font-mono cursor-pointer hover:bg-purple-500/40 transition-colors">
+          ${w.word}
+        </span>
+      `).join('');
+
+      document.getElementById('snip-live-subtitle').textContent = snipActiveWords.slice(0, 3).map(x => x.word).join(' ');
+      showToast('✍️ Собственные слова применены!');
+    }
+
+    // 3. FOOTAGES
+    async function loadSnippetFootages(cat = 'all') {
+      try {
+        const r = await fetch(`http://localhost:8000/api/snippets/footages?category=${cat}`);
+        if (r.ok) {
+          snipFootages = await r.json();
+          document.getElementById('snip-footages-count-badge').textContent = snipFootages.length;
+          renderSnippetFootagesGrid();
+          if (snipFootages.length > 0 && !snipActiveFootage) {
+            selectSnippetFootage(0);
+          }
+        }
+      } catch (e) {
+        console.warn('Footages fetch failed:', e);
+      }
+    }
+
+    function filterSnippetFootageCategory(cat) {
+      ['all', 'car', 'cyberpunk', 'fashion', 'sports'].forEach(c => {
+        const b = document.getElementById('snip-cat-' + c);
+        if (b) {
+          b.className = (c === cat)
+            ? 'glass-btn-accent py-1.5 rounded-lg text-white font-bold'
+            : 'glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white';
+        }
+      });
+      loadSnippetFootages(cat);
+    }
+
+    function renderSnippetFootagesGrid() {
+      const container = document.getElementById('snip-footage-grid');
+      if (!container) return;
+
+      if (snipFootages.length === 0) {
+        container.innerHTML = '<div class="col-span-3 py-4 text-center text-slate-500 text-xs">Футажи не найдены</div>';
+        return;
+      }
+
+      container.innerHTML = snipFootages.slice(0, 24).map((f, idx) => {
+        const isSel = snipActiveFootage && snipActiveFootage.id === f.id;
+        const videoSrc = f.url.startsWith('/') ? f.url : '/' + f.url;
+        return `
+          <div onclick="selectSnippetFootageById('${f.id}')" class="relative aspect-video rounded-xl overflow-hidden cursor-pointer border transition-all ${
+            isSel ? 'border-teal-400 ring-2 ring-teal-400/50 scale-105' : 'border-white/10 hover:border-white/30'
+          } bg-slate-900 group">
+            <video src="${videoSrc}" muted loop onmouseover="this.play()" onmouseout="this.pause()" class="w-full h-full object-cover"></video>
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+              <span class="text-[9px] font-bold text-white px-1 truncate">${f.category}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectSnippetFootageById(fid) {
+      const f = snipFootages.find(x => x.id === fid);
+      if (f) selectSnippetFootage(f);
+    }
+
+    function selectSnippetFootage(idxOrFootage) {
+      const f = typeof idxOrFootage === 'number' ? snipFootages[idxOrFootage] : idxOrFootage;
+      if (!f) return;
+      snipActiveFootage = f;
+
+      document.getElementById('snip-active-footage-name').textContent = f.filename;
+      renderSnippetFootagesGrid();
+
+      const stageVid = document.getElementById('snip-stage-video');
+      if (stageVid) {
+        stageVid.src = f.url.startsWith('/') ? f.url : '/' + f.url;
+        stageVid.load();
+        stageVid.play().catch(() => {});
+      }
+      showToast(`🎥 Выбран футаж: ${f.filename}`);
+    }
+
+    // 4. STAGE CONTROLS & SUBTITLE STYLES
+    function toggleSnippetPlayback() {
+      const vid = document.getElementById('snip-stage-video');
+      const audio = document.getElementById('snip-audio-element');
+      const btn = document.getElementById('btn-snip-play');
+      if (!vid) return;
+
+      if (vid.paused) {
+        vid.play().catch(() => {});
+        if (audio) audio.play().catch(() => {});
+        btn.textContent = '⏸';
+      } else {
+        vid.pause();
+        if (audio) audio.pause();
+        btn.textContent = '▶';
+      }
+    }
+
+    function restartSnippetPreview() {
+      const vid = document.getElementById('snip-stage-video');
+      const audio = document.getElementById('snip-audio-element');
+      if (vid) vid.currentTime = 0;
+      if (audio) audio.currentTime = snipHookStart;
+    }
+
+    function selectSnippetStyle(style) {
+      snipActiveStyle = style;
+      ['tiktok', 'mrbeast', 'hormozi', 'neon', 'minimal'].forEach(s => {
+        const b = document.getElementById('snip-style-' + s);
+        if (b) {
+          b.className = (s === style)
+            ? 'glass-btn-accent py-2 px-2.5 rounded-xl font-bold text-white text-center shadow-md'
+            : 'glass-btn py-2 px-2.5 rounded-xl text-slate-300 hover:text-white text-center';
+        }
+      });
+
+      const sub = document.getElementById('snip-live-subtitle');
+      if (!sub) return;
+
+      if (style === 'mrbeast') {
+        sub.style.color = '#FFFF00';
+        sub.style.textShadow = '0 0 10px #00FFFF, 2px 2px 0 #000, -2px -2px 0 #000';
+      } else if (style === 'hormozi') {
+        sub.style.color = '#00FF66';
+        sub.style.textShadow = '0 0 12px #FFFF00, 3px 3px 0 #000';
+      } else if (style === 'neon') {
+        sub.style.color = '#FF00FF';
+        sub.style.textShadow = '0 0 15px #00FFFF, 0 0 25px #FF00FF';
+      } else if (style === 'minimal') {
+        sub.style.color = '#FFFFFF';
+        sub.style.textShadow = '0 2px 8px rgba(0,0,0,0.8)';
+      } else { // tiktok
+        sub.style.color = '#FFFFFF';
+        sub.style.textShadow = '0 0 8px #FFFF00, 2px 2px 0 #000';
+      }
+      showToast(`🎨 Стиль субтитров: ${style.toUpperCase()}`);
+    }
+
+    function selectSnippetFilter(filter) {
+      snipActiveFilter = filter;
+      ['none', 'vhs', 'cyberpunk', 'bw', 'warm'].forEach(f => {
+        const b = document.getElementById('snip-filter-' + f);
+        if (b) {
+          b.className = (f === filter)
+            ? 'glass-btn-accent py-1.5 rounded-lg text-white font-bold'
+            : 'glass-btn py-1.5 rounded-lg text-slate-400 hover:text-white';
+        }
+      });
+
+      const vid = document.getElementById('snip-stage-video');
+      if (!vid) return;
+
+      if (filter === 'bw') vid.style.filter = 'grayscale(100%)';
+      else if (filter === 'vhs') vid.style.filter = 'contrast(130%) saturate(140%) sepia(20%)';
+      else if (filter === 'cyberpunk') vid.style.filter = 'contrast(140%) saturate(160%) hue-rotate(15deg)';
+      else if (filter === 'warm') vid.style.filter = 'sepia(30%) saturate(130%)';
+      else vid.style.filter = 'none';
+
+      showToast(`📼 Фильтр: ${filter.toUpperCase()}`);
+    }
+
+    // 5. STAND 50 PHONES
+    async function loadSnippetStandPhones() {
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/stand_phones');
+        if (r.ok) {
+          snipStandPhones = await r.json();
+          document.getElementById('snip-stand-count-badge').textContent = snipStandPhones.length;
+        }
+      } catch (e) {}
+    }
+
+    function setSnippetStandTarget(target) {
+      snipActiveStandTarget = target;
+      ['shelf_1', 'shelf_2', 'shelf_3', 'all'].forEach(t => {
+        const b = document.getElementById('snip-target-' + t);
+        if (b) {
+          b.className = (t === target)
+            ? 'glass-btn-accent py-2 px-3 rounded-xl font-bold text-white shadow-md text-left'
+            : 'glass-btn py-2 px-3 rounded-xl text-slate-300 hover:text-white text-left';
+        }
+      });
+
+      const summary = document.getElementById('snip-stand-summary-text');
+      if (target === 'all') summary.textContent = 'Цель: Все 50 телефонов Стенда';
+      else if (target === 'shelf_1') summary.textContent = 'Цель: Полка 1 (Слоты 51–60, 10 тел)';
+      else if (target === 'shelf_2') summary.textContent = 'Цель: Полка 2 (Слоты 61–80, 20 тел)';
+      else if (target === 'shelf_3') summary.textContent = 'Цель: Полка 3 (Слоты 81–100, 20 тел)';
+
+      showToast(`🏢 Выбрана цель Стенда: ${target}`);
+    }
+
+    function addSnippetTag(tag) {
+      const input = document.getElementById('snip-title-input');
+      if (input && !input.value.includes(tag)) {
+        input.value += ' ' + tag;
+      }
+    }
+
+    function generateSnippetAiCaption() {
+      const presets = [
+        'Когда этот бит дропает на 15 секунде... 🔥 #fyp #trend #nightdrive',
+        'Тот самый сниппет из рекомендаций ⚡ #musictok #phonk #drift',
+        'Не могу перестать слушать этот хук 💃 #fyp #foryou #viral',
+        'Стенд 50 телефонов запустил этот тренд 🏢 #rek #тренд #hit'
+      ];
+      const pick = presets[Math.floor(Math.random() * presets.length)];
+      document.getElementById('snip-title-input').value = pick;
+      showToast('✨ Gemini AI сгенерировал вирусное описание!');
+    }
+
+    // 6. RENDER & STAND PUSH ACTION
+    async function renderSnippetAction() {
+      if (!snipActiveTrack || !snipActiveFootage) {
+        showToast('⚠️ Выберите трек и футаж');
+        return;
+      }
+
+      const btn = document.getElementById('btn-snip-render');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Рендеринг через NVENC GPU (1.8 сек)...</span>';
+
+      const payload = {
+        audio_path: snipActiveTrack.file_path || snipActiveTrack.filename,
+        footage_path: snipActiveFootage.file_path || snipActiveFootage.filename,
+        start_time: snipHookStart,
+        duration: snipDuration,
+        words: snipActiveWords,
+        style: snipActiveStyle,
+        video_filter: snipActiveFilter,
+        title: document.getElementById('snip-title-input')?.value || 'TikTok Snippet'
+      };
+
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/render', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (r.ok) {
+          const res = await r.json();
+          lastRenderedSnippetUrl = res.url;
+
+          // Update Latest Card
+          const card = document.getElementById('snip-render-result-card');
+          card.classList.remove('hidden');
+          document.getElementById('snip-res-filename').textContent = res.filename;
+          document.getElementById('snip-res-time-badge').textContent = res.elapsed_sec + 'с (NVENC)';
+          document.getElementById('snip-res-size').textContent = res.size_mb + ' MB';
+          document.getElementById('snip-res-thumb').src = res.thumb_url;
+          document.getElementById('snip-res-dl-link').href = res.url;
+
+          showToast(`⚡ Сниппет срендерен за ${res.elapsed_sec}с (${res.size_mb} MB)!`);
+          loadSavedSnippets();
+        } else {
+          showToast('Ошибка рендеринга');
+        }
+      } catch (e) {
+        showToast('Ошибка связи с сервером');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚡ Срендерить сниппет (NVENC 1.8 сек)</span>';
+      }
+    }
+
+    async function pushSnippetToStandAction() {
+      const fName = document.getElementById('snip-res-filename')?.textContent;
+      if (!fName || fName === 'snippet.mp4') {
+        showToast('⚠️ Сначала срендерите сниппет или выберите из базы');
+        return;
+      }
+
+      showToast(`📲 Отправка ${fName} на Стенд (${snipActiveStandTarget})...`);
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/push_to_stand', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            snippet_filename: fName,
+            target_scope: snipActiveStandTarget
+          })
+        });
+
+        if (r.ok) {
+          const res = await r.json();
+          showToast(`✅ Залито на ${res.phones_count} телефонов Стенда в DCIM/Camera!`);
+        }
+      } catch (e) {
+        showToast('Ошибка заливки на Стенд');
+      }
+    }
+
+    function triggerSnippetAutoPosting() {
+      showToast('🚀 Запущен авто-постинг сниппета в TikTok на целевой группе Стенда!');
+      navToView('pult');
+    }
+
+    async function snipExpressBuild() {
+      showToast('⚡ Запуск экспресс-сборки хита дня...');
+      if (snipTracks.length > 0) selectSnippetTrack(0);
+      if (snipFootages.length > 0) selectSnippetFootage(0);
+      setSnippetDuration(15);
+      selectSnippetStyle('tiktok');
+      selectSnippetFilter('cyberpunk');
+      setTimeout(() => {
+        renderSnippetAction();
+      }, 500);
+    }
+
+    // 7. BOTTOM SAVED SNIPPETS GALLERY
+    async function loadSavedSnippets() {
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/saved');
+        if (r.ok) {
+          snipSaved = await r.json();
+          document.getElementById('snip-saved-count-badge').textContent = snipSaved.length;
+          document.getElementById('snip-gallery-badge-count').textContent = snipSaved.length + ' видео';
+          renderSavedSnippetsGrid();
+        }
+      } catch (e) {}
+    }
+
+    function renderSavedSnippetsGrid() {
+      const container = document.getElementById('snip-gallery-grid');
+      if (!container) return;
+      const q = (document.getElementById('snip-gallery-search')?.value || '').toLowerCase();
+      const filtered = snipSaved.filter(s => !q || s.filename.toLowerCase().includes(q));
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-500 text-xs">Нет сниппетов в базе</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(s => `
+        <div class="glass rounded-2xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition flex flex-col justify-between group shadow-lg">
+          <div class="relative aspect-[9/16] bg-black cursor-pointer overflow-hidden" onclick="openSnippetModal('${s.url}', '${s.filename}')">
+            <video src="${s.url}" preload="none" muted loop onmouseover="this.play()" onmouseout="this.pause()" class="w-full h-full object-cover group-hover:scale-105 transition-transform"></video>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 flex items-center justify-center pointer-events-none">
+              <span class="w-10 h-10 rounded-full bg-purple-600/80 backdrop-blur-md text-white flex items-center justify-center text-sm shadow-xl pl-0.5 group-hover:scale-110 transition-transform">▶</span>
+            </div>
+            <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-lg bg-black/75 text-[9px] font-mono text-slate-300">
+              ${s.size_mb}M
+            </div>
+          </div>
+          <div class="p-2.5 space-y-1.5 text-left text-xs bg-slate-950">
+            <div class="font-bold text-white truncate text-[11px]" title="${s.filename}">${s.filename}</div>
+            <div class="text-[9px] text-slate-400 font-mono">${s.created_at || 'Готово'}</div>
+            <div class="flex items-center justify-between gap-1 pt-1 border-t border-white/5">
+              <button onclick="pushSavedSnippetToStand('${s.filename}')" class="glass-btn px-2 py-1 rounded-lg text-[9px] font-bold text-teal-300 hover:text-white" title="Залить на Стенд">
+                📲 Стенд
+              </button>
+              <a href="${s.url}" download="${s.filename}" class="glass-btn px-2 py-1 rounded-lg text-[9px] font-bold text-purple-300 hover:text-white" title="Скачать">
+                ⬇️
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterSnippetGallery() {
+      renderSavedSnippetsGrid();
+    }
+
+    function openSnippetModal(url, title = 'Сниппет') {
+      openModalWithSrc(url, '🎬 ' + title, true);
+    }
+
+    async function pushSavedSnippetToStand(filename) {
+      showToast(`📲 Заливка ${filename} на Стенд (${snipActiveStandTarget})...`);
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/push_to_stand', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ snippet_filename: filename, target_scope: snipActiveStandTarget })
+        });
+        if (r.ok) {
+          const res = await r.json();
+          showToast(`✅ Залито на ${res.phones_count} телефонов Стенда!`);
+        }
+      } catch (e) {
+        showToast('Ошибка заливки на Стенд');
       }
     }
 
