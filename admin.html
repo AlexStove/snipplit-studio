@@ -482,79 +482,82 @@
   <main id="view-minifarm" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
 
     <!-- =============================================================== -->
-    <!-- 🚧 MAINTENANCE SCREEN (ПЛИТТИ НА РЕМОНТЕ)                       -->
+    <!-- 🚧 FULLSCREEN COMIC MAINTENANCE SCENE (ТЕРРИТОРИЯ ПЛИТТИ)      -->
     <!-- =============================================================== -->
-    <div class="glass p-6 sm:p-10 lg:p-12 rounded-3xl border border-amber-500/30 bg-gradient-to-b from-amber-500/[0.08] via-slate-900/70 to-slate-950/90 shadow-[0_20px_60px_-15px_rgba(245,158,11,0.25)] relative overflow-hidden mb-8">
-      <!-- Glow ambient lights -->
-      <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="relative w-full min-h-[720px] lg:min-h-[800px] rounded-3xl overflow-hidden border border-amber-500/40 shadow-[0_25px_80px_-15px_rgba(245,158,11,0.35)] flex flex-col justify-between p-6 sm:p-10 mb-8 bg-slate-950">
+      
+      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, на весь экран страницы) -->
+      <img src="plitty_construction.jpg?v=3" alt="Плитти на ремонте" class="absolute inset-0 w-full h-full object-cover object-top sm:object-center pointer-events-none z-0 filter brightness-105 contrast-105 transition-transform duration-700 hover:scale-105">
 
-      <div class="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-        <!-- Plitty Construction Art -->
-        <div class="relative shrink-0 group">
-          <div class="w-64 sm:w-72 md:w-80 rounded-3xl overflow-hidden border-2 border-amber-400/50 shadow-[0_0_40px_rgba(245,158,11,0.3)] group-hover:scale-[1.02] transition-transform duration-300 bg-slate-950">
-            <img src="plitty_construction.jpg" alt="Плитти на ремонте" class="w-full h-auto object-cover">
+      <!-- Atmospheric Cinematic Gradients to frame comic text & controls -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/80 pointer-events-none z-0"></div>
+      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at center, transparent 30%, rgba(4,6,15,0.7) 100%);"></div>
+
+      <!-- Top Bar: Zone Header & Status -->
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-md shadow-lg">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span>🚧 РЕМОНТНАЯ ЗОНА • ТЕРРИТОРИЯ ПЛИТТИ</span>
           </div>
-          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 whitespace-nowrap">
-            <span>🚧</span> <span>ТЕХОБСЛУЖИВАНИЕ</span>
-          </div>
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+            📱 Мини-ферма (Слоты 1–20) на реконструкции
+          </h1>
         </div>
 
-        <!-- Details & Instructions -->
-        <div class="flex-1 text-center lg:text-left space-y-4">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold tracking-wide">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-            <span>РАЗДЕЛ ВРЕМЕННО НА РЕМОНТЕ</span>
-          </div>
-
-          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-            📱 Мини-ферма (Слоты 1–20) на техобслуживании
-          </h1>
-
-          <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-normal">
-            Раздел персональных карточек танцовщиц и стейджинга закрыт на реконструкцию. Все 20 смартфонов Мини-фермы 1 находятся в сети и подключены к центральной системе управления.
-          </p>
-
-                    <!-- Plitty Hot Quote Speech Bubble -->
-          <div class="relative p-4 rounded-2xl bg-gradient-to-r from-pink-500/15 via-rose-500/10 to-amber-500/15 border border-pink-500/30 backdrop-blur-md shadow-lg max-w-2xl text-left">
-            <div class="flex items-start gap-3">
-              <div class="text-2xl shrink-0 select-none">💬</div>
-              <div class="space-y-1">
-                <div class="text-[11px] font-black uppercase tracking-wider text-pink-300 font-mono flex items-center gap-2">
-                  <span>Плитти подмигивает:</span>
-                  <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-200 text-[9px] border border-pink-500/40 font-bold">HOT WIP 🔥</span>
-                </div>
-                <p class="text-xs sm:text-sm font-semibold text-white/95 italic leading-relaxed">
-                  «Ммм... Не так быстро, котик~ 😉 Эти разделы ещё не готовы! Я как раз навожу здесь порядок, подтягиваю гайки и перенастраиваю серверные стойки. Дай мне ещё немного времени... Обещаю, результат будет очень горячим! 🔥»
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Alternative routing info -->
-          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md max-w-2xl text-left space-y-1.5 text-xs text-slate-300">
-            <div class="font-bold text-amber-300 flex items-center gap-1.5">
-              <span>💡</span> <span>Куда перейти для работы:</span>
-            </div>
-            <p class="text-slate-400 leading-relaxed">
-              Массовый запуск прогрева, сценариев и ADB-команд для слотов 1–20 доступен в <b>Мастер-Пульте</b> (фильтр «Мини-ферма 1»). Просмотры роликов и статистика профилей доступны в разделе <b>Метрика & Аналитика</b>.
-            </p>
-          </div>
-
-          <!-- Quick Navigation Actions -->
-          <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
-            <button onclick="navToView('gateway')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-white hover:border-white/40">
-              🏠 Главный портал
-            </button>
-            <button onclick="navToView('pult', 'minifarm')" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 flex items-center gap-1.5">
-              <span>🎮</span> <span>Мастер-Пульт</span>
-            </button>
-            <button onclick="navToView('metrics')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-rose-300 border-rose-500/40 hover:border-rose-400 flex items-center gap-1.5">
-              <span>📊</span> <span>Метрика & Аналитика</span>
-            </button>
-          </div>
+        <div class="flex items-center gap-2">
+          <span class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.6)] font-mono flex items-center gap-2">
+            <span class="animate-spin text-sm">⚙️</span>
+            <span>ТЕХОБСЛУЖИВАНИЕ</span>
+          </span>
         </div>
       </div>
+
+      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса) -->
+      <div class="relative z-10 max-w-4xl space-y-4">
+        
+        <!-- Comic Speech Bubble -->
+        <div class="relative p-6 sm:p-7 rounded-3xl bg-slate-950/90 border-2 border-pink-400/60 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.4)]">
+          
+          <!-- Speech Bubble Header -->
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2.5 font-mono">
+              <span class="text-2xl">💬</span>
+              <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-pink-300">Плитти подмигивает</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow">HOT WIP 🔥</span>
+            </div>
+            <span class="hidden sm:inline-block text-[11px] font-mono text-slate-400 font-semibold">Plitty Tech Core v3.3</span>
+          </div>
+
+          <!-- The Exact User-Requested Replica -->
+          <p class="text-base sm:text-xl lg:text-2xl font-black text-white leading-relaxed italic drop-shadow-md">
+            «Ммм... Не так быстро, котик~ 😉 Эти разделы ещё не готовы!»
+          </p>
+
+          <p class="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed mt-2.5 pt-2.5 border-t border-white/10">
+            Я как раз навожу здесь порядок, подтягиваю провода и перенастраиваю серверные стойки под новую двухмодульную схему. Массовые команды и прогрев доступны в <b>Мастер-Пульте</b>, а просмотры роликов — в <b>Метрике & Аналитике</b>.
+          </p>
+
+          <!-- Quick Navigation Actions inside Comic Box -->
+          <div class="pt-4 flex flex-wrap items-center gap-3">
+            <button onclick="navToView('gateway')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-white hover:border-white/40 shadow">
+              🏠 Главный портал
+            </button>
+            <button onclick="navToView('pult', 'minifarm')" class="glass-btn-accent px-6 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 flex items-center gap-1.5">
+              <span>🎮</span> <span>В Мастер-Пульт</span>
+            </button>
+            <button onclick="navToView('metrics')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-rose-300 border-rose-500/40 hover:border-rose-400 flex items-center gap-1.5">
+              <span>📊</span> <span>В Метрику & Аналитику</span>
+            </button>
+            <button onclick="navToView('snippets')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-purple-300 border-purple-500/40 hover:border-purple-400 flex items-center gap-1.5">
+              <span>🎬</span> <span>В Видео Сниппеты</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
     <!-- Исходный интерфейс сохранен в режиме разработчика -->
@@ -1369,79 +1372,82 @@
   <main id="view-higgsfield" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
 
     <!-- =============================================================== -->
-    <!-- 🚧 MAINTENANCE SCREEN (ПЛИТТИ НА РЕМОНТЕ)                       -->
+    <!-- 🚧 FULLSCREEN COMIC MAINTENANCE SCENE (ТЕРРИТОРИЯ ПЛИТТИ)      -->
     <!-- =============================================================== -->
-    <div class="glass p-6 sm:p-10 lg:p-12 rounded-3xl border border-amber-500/30 bg-gradient-to-b from-amber-500/[0.08] via-slate-900/70 to-slate-950/90 shadow-[0_20px_60px_-15px_rgba(245,158,11,0.25)] relative overflow-hidden mb-8">
-      <!-- Glow ambient lights -->
-      <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="relative w-full min-h-[720px] lg:min-h-[800px] rounded-3xl overflow-hidden border border-amber-500/40 shadow-[0_25px_80px_-15px_rgba(245,158,11,0.35)] flex flex-col justify-between p-6 sm:p-10 mb-8 bg-slate-950">
+      
+      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, на весь экран страницы) -->
+      <img src="plitty_construction.jpg?v=3" alt="Плитти на ремонте" class="absolute inset-0 w-full h-full object-cover object-top sm:object-center pointer-events-none z-0 filter brightness-105 contrast-105 transition-transform duration-700 hover:scale-105">
 
-      <div class="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-        <!-- Plitty Construction Art -->
-        <div class="relative shrink-0 group">
-          <div class="w-64 sm:w-72 md:w-80 rounded-3xl overflow-hidden border-2 border-amber-400/50 shadow-[0_0_40px_rgba(245,158,11,0.3)] group-hover:scale-[1.02] transition-transform duration-300 bg-slate-950">
-            <img src="plitty_construction.jpg" alt="Плитти на ремонте" class="w-full h-auto object-cover">
+      <!-- Atmospheric Cinematic Gradients to frame comic text & controls -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/80 pointer-events-none z-0"></div>
+      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at center, transparent 30%, rgba(4,6,15,0.7) 100%);"></div>
+
+      <!-- Top Bar: Zone Header & Status -->
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-md shadow-lg">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span>🚧 РЕМОНТНАЯ ЗОНА • ТЕРРИТОРИЯ ПЛИТТИ</span>
           </div>
-          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 whitespace-nowrap">
-            <span>🚧</span> <span>ТЕХОБСЛУЖИВАНИЕ</span>
-          </div>
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+            🎨 Студия генерации Higgsfield на реконструкции
+          </h1>
         </div>
 
-        <!-- Details & Instructions -->
-        <div class="flex-1 text-center lg:text-left space-y-4">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold tracking-wide">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-            <span>РАЗДЕЛ ВРЕМЕННО НА РЕМОНТЕ</span>
-          </div>
-
-          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-            🎨 Студия генерации Higgsfield на техобслуживании
-          </h1>
-
-          <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-normal">
-            Интерфейс студии генерации нейровидео временно остановлен для масштабного обновления пайплайна: интеграция Qwen Face-Lock 2K, синхронизация промптов и обновление базы пресетов танцовщиц.
-          </p>
-
-                    <!-- Plitty Hot Quote Speech Bubble -->
-          <div class="relative p-4 rounded-2xl bg-gradient-to-r from-pink-500/15 via-rose-500/10 to-amber-500/15 border border-pink-500/30 backdrop-blur-md shadow-lg max-w-2xl text-left">
-            <div class="flex items-start gap-3">
-              <div class="text-2xl shrink-0 select-none">💬</div>
-              <div class="space-y-1">
-                <div class="text-[11px] font-black uppercase tracking-wider text-pink-300 font-mono flex items-center gap-2">
-                  <span>Плитти подмигивает:</span>
-                  <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-200 text-[9px] border border-pink-500/40 font-bold">HOT WIP 🔥</span>
-                </div>
-                <p class="text-xs sm:text-sm font-semibold text-white/95 italic leading-relaxed">
-                  «Ммм... Не так быстро, котик~ 😉 Эти разделы ещё не готовы! Я как раз навожу здесь порядок, подтягиваю гайки и перенастраиваю серверные стойки. Дай мне ещё немного времени... Обещаю, результат будет очень горячим! 🔥»
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Alternative routing info -->
-          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md max-w-2xl text-left space-y-1.5 text-xs text-slate-300">
-            <div class="font-bold text-amber-300 flex items-center gap-1.5">
-              <span>💡</span> <span>Куда перейти для работы:</span>
-            </div>
-            <p class="text-slate-400 leading-relaxed">
-              Все готовые смонтированные ролики с динамическими субтитрами и хуками доступны в полном объеме во вкладке <b>Видео Сниппеты</b>.
-            </p>
-          </div>
-
-          <!-- Quick Navigation Actions -->
-          <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
-            <button onclick="navToView('gateway')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-white hover:border-white/40">
-              🏠 Главный портал
-            </button>
-            <button onclick="navToView('pult', 'all')" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 flex items-center gap-1.5">
-              <span>🎮</span> <span>Мастер-Пульт</span>
-            </button>
-            <button onclick="navToView('metrics')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-rose-300 border-rose-500/40 hover:border-rose-400 flex items-center gap-1.5">
-              <span>📊</span> <span>Метрика & Аналитика</span>
-            </button>
-          </div>
+        <div class="flex items-center gap-2">
+          <span class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.6)] font-mono flex items-center gap-2">
+            <span class="animate-spin text-sm">⚙️</span>
+            <span>ТЕХОБСЛУЖИВАНИЕ</span>
+          </span>
         </div>
       </div>
+
+      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса) -->
+      <div class="relative z-10 max-w-4xl space-y-4">
+        
+        <!-- Comic Speech Bubble -->
+        <div class="relative p-6 sm:p-7 rounded-3xl bg-slate-950/90 border-2 border-pink-400/60 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.4)]">
+          
+          <!-- Speech Bubble Header -->
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2.5 font-mono">
+              <span class="text-2xl">💬</span>
+              <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-pink-300">Плитти подмигивает</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow">HOT WIP 🔥</span>
+            </div>
+            <span class="hidden sm:inline-block text-[11px] font-mono text-slate-400 font-semibold">Plitty Tech Core v3.3</span>
+          </div>
+
+          <!-- The Exact User-Requested Replica -->
+          <p class="text-base sm:text-xl lg:text-2xl font-black text-white leading-relaxed italic drop-shadow-md">
+            «Ммм... Не так быстро, котик~ 😉 Эти разделы ещё не готовы!»
+          </p>
+
+          <p class="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed mt-2.5 pt-2.5 border-t border-white/10">
+            Идёт масштабное обновление нейроконвейера Qwen Face-Lock 2K и пресетов танцовщиц. Готовые смонтированные ролики с динамическими субтитрами ждут тебя в разделе <b>Видео Сниппеты</b>!
+          </p>
+
+          <!-- Quick Navigation Actions inside Comic Box -->
+          <div class="pt-4 flex flex-wrap items-center gap-3">
+            <button onclick="navToView('gateway')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-white hover:border-white/40 shadow">
+              🏠 Главный портал
+            </button>
+            <button onclick="navToView('pult', 'all')" class="glass-btn-accent px-6 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 flex items-center gap-1.5">
+              <span>🎮</span> <span>В Мастер-Пульт</span>
+            </button>
+            <button onclick="navToView('metrics')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-rose-300 border-rose-500/40 hover:border-rose-400 flex items-center gap-1.5">
+              <span>📊</span> <span>В Метрику & Аналитику</span>
+            </button>
+            <button onclick="navToView('snippets')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs font-bold text-purple-300 border-purple-500/40 hover:border-purple-400 flex items-center gap-1.5">
+              <span>🎬</span> <span>В Видео Сниппеты</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
     <!-- Исходный интерфейс сохранен в режиме разработчика -->
