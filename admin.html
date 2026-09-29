@@ -479,50 +479,54 @@
   <!-- ================================================================= -->
   <!-- SCREEN 2: MINIFARM VIEW (Слоты 1–20 & Танцульки)                   -->
   <!-- ================================================================= -->
-  <main id="view-minifarm" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
+  <main id="view-minifarm" class="screen-view w-full relative z-10">
 
     <!-- =============================================================== -->
-    <!-- 🚧 FULLSCREEN COMIC MAINTENANCE SCENE (ТЕРРИТОРИЯ ПЛИТТИ)      -->
+    <!-- 🌟 TRUE EDGE-TO-EDGE FULL-VIEWPORT COMIC SCENE (ТЕРРИТОРИЯ ПЛИТТИ) -->
     <!-- =============================================================== -->
-    <div class="relative w-full min-h-[720px] lg:min-h-[800px] rounded-3xl overflow-hidden border border-amber-500/40 shadow-[0_25px_80px_-15px_rgba(245,158,11,0.35)] flex flex-col justify-between p-6 sm:p-10 mb-8 bg-slate-950">
+    <div class="relative w-full min-h-[calc(100vh-70px)] flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden bg-[#04060f]">
       
-      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, на весь экран страницы) -->
-      <img src="plitty_construction.jpg?v=3" alt="Плитти на ремонте" class="absolute inset-0 w-full h-full object-cover object-top sm:object-center pointer-events-none z-0 filter brightness-105 contrast-105 transition-transform duration-700 hover:scale-105">
+      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, во весь экран) -->
+      <img src="plitty_construction.jpg?v=5" alt="Плитти на ремонте"
+           class="absolute inset-0 w-full h-full object-cover object-[center_10%] pointer-events-none z-0 filter brightness-105 contrast-105">
 
-      <!-- Atmospheric Cinematic Gradients to frame comic text & controls -->
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/80 pointer-events-none z-0"></div>
-      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at center, transparent 30%, rgba(4,6,15,0.7) 100%);"></div>
+      <!-- Atmospheric Cinematic Gradients to highlight Plitty and frame dialog -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#04060f] via-transparent to-[#04060f]/80 pointer-events-none z-0"></div>
+      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at 50% 35%, transparent 25%, rgba(4,6,15,0.7) 100%);"></div>
 
       <!-- Top Bar: Zone Header & Status -->
-      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-md shadow-lg">
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-7xl mx-auto w-full">
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-xl shadow-xl">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
             <span>🚧 РЕМОНТНАЯ ЗОНА • ТЕРРИТОРИЯ ПЛИТТИ</span>
           </div>
-          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
             📱 Мини-ферма (Слоты 1–20) на реконструкции
           </h1>
         </div>
 
         <div class="flex items-center gap-2">
-          <span class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.6)] font-mono flex items-center gap-2">
+          <span class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_30px_rgba(245,158,11,0.7)] font-mono flex items-center gap-2">
             <span class="animate-spin text-sm">⚙️</span>
             <span>ТЕХОБСЛУЖИВАНИЕ</span>
           </span>
         </div>
       </div>
 
-      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса) -->
-      <div class="relative z-10 max-w-4xl space-y-4">
+      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса / Visual Novel) -->
+      <div class="relative z-10 max-w-4xl mx-auto w-full mt-auto pt-8">
         
         <!-- Comic Speech Bubble -->
-        <div class="relative p-6 sm:p-7 rounded-3xl bg-slate-950/90 border-2 border-pink-400/60 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.4)]">
+        <div class="relative p-6 sm:p-8 rounded-3xl bg-[#070b19]/90 border-2 border-pink-400/70 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.45)]">
           
+          <!-- Speech Bubble Pointer Arrow (хвостик комикса) -->
+          <div class="hidden sm:block absolute -top-3.5 left-16 w-7 h-7 bg-[#070b19]/90 border-t-2 border-l-2 border-pink-400/70 transform rotate-45"></div>
+
           <!-- Speech Bubble Header -->
           <div class="flex items-center justify-between gap-2 mb-3">
             <div class="flex items-center gap-2.5 font-mono">
-              <span class="text-2xl">💬</span>
+              <span class="text-2xl animate-bounce">💬</span>
               <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-pink-300">Плитти подмигивает</span>
               <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow">HOT WIP 🔥</span>
             </div>
@@ -560,6 +564,7 @@
 
     </div>
 
+    <div class="w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6">
     <!-- Исходный интерфейс сохранен в режиме разработчика -->
     <details class="glass p-4 rounded-3xl border border-white/10 opacity-70 hover:opacity-100 transition-opacity">
       <summary class="cursor-pointer text-xs font-mono text-slate-400 hover:text-white font-bold select-none p-2 flex items-center justify-between">
@@ -1036,6 +1041,7 @@
   
       </div>
     </details>
+    </div>
 </main>
 
   <!-- ================================================================= -->
@@ -1369,50 +1375,54 @@
   <!-- ================================================================= -->
   <!-- SCREEN 5: HIGGSFIELD GENERATION STUDIO (3 СЕКТОРА)                -->
   <!-- ================================================================= -->
-  <main id="view-higgsfield" class="screen-view w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 pt-6 space-y-6 relative z-10">
+  <main id="view-higgsfield" class="screen-view w-full relative z-10">
 
     <!-- =============================================================== -->
-    <!-- 🚧 FULLSCREEN COMIC MAINTENANCE SCENE (ТЕРРИТОРИЯ ПЛИТТИ)      -->
+    <!-- 🌟 TRUE EDGE-TO-EDGE FULL-VIEWPORT COMIC SCENE (ТЕРРИТОРИЯ ПЛИТТИ) -->
     <!-- =============================================================== -->
-    <div class="relative w-full min-h-[720px] lg:min-h-[800px] rounded-3xl overflow-hidden border border-amber-500/40 shadow-[0_25px_80px_-15px_rgba(245,158,11,0.35)] flex flex-col justify-between p-6 sm:p-10 mb-8 bg-slate-950">
+    <div class="relative w-full min-h-[calc(100vh-70px)] flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden bg-[#04060f]">
       
-      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, на весь экран страницы) -->
-      <img src="plitty_construction.jpg?v=3" alt="Плитти на ремонте" class="absolute inset-0 w-full h-full object-cover object-top sm:object-center pointer-events-none z-0 filter brightness-105 contrast-105 transition-transform duration-700 hover:scale-105">
+      <!-- Full-bleed Background: Plitty in Server Room (Без рамок, во весь экран) -->
+      <img src="plitty_construction.jpg?v=5" alt="Плитти на ремонте"
+           class="absolute inset-0 w-full h-full object-cover object-[center_10%] pointer-events-none z-0 filter brightness-105 contrast-105">
 
-      <!-- Atmospheric Cinematic Gradients to frame comic text & controls -->
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/80 pointer-events-none z-0"></div>
-      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at center, transparent 30%, rgba(4,6,15,0.7) 100%);"></div>
+      <!-- Atmospheric Cinematic Gradients to highlight Plitty and frame dialog -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#04060f] via-transparent to-[#04060f]/80 pointer-events-none z-0"></div>
+      <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at 50% 35%, transparent 25%, rgba(4,6,15,0.7) 100%);"></div>
 
       <!-- Top Bar: Zone Header & Status -->
-      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-md shadow-lg">
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-7xl mx-auto w-full">
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold tracking-wide backdrop-blur-xl shadow-xl">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
             <span>🚧 РЕМОНТНАЯ ЗОНА • ТЕРРИТОРИЯ ПЛИТТИ</span>
           </div>
-          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
             🎨 Студия генерации Higgsfield на реконструкции
           </h1>
         </div>
 
         <div class="flex items-center gap-2">
-          <span class="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.6)] font-mono flex items-center gap-2">
+          <span class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_30px_rgba(245,158,11,0.7)] font-mono flex items-center gap-2">
             <span class="animate-spin text-sm">⚙️</span>
             <span>ТЕХОБСЛУЖИВАНИЕ</span>
           </span>
         </div>
       </div>
 
-      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса) -->
-      <div class="relative z-10 max-w-4xl space-y-4">
+      <!-- Bottom Comic Dialogue Box & Navigation (Стиль Комикса / Visual Novel) -->
+      <div class="relative z-10 max-w-4xl mx-auto w-full mt-auto pt-8">
         
         <!-- Comic Speech Bubble -->
-        <div class="relative p-6 sm:p-7 rounded-3xl bg-slate-950/90 border-2 border-pink-400/60 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.4)]">
+        <div class="relative p-6 sm:p-8 rounded-3xl bg-[#070b19]/90 border-2 border-pink-400/70 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(236,72,153,0.45)]">
           
+          <!-- Speech Bubble Pointer Arrow (хвостик комикса) -->
+          <div class="hidden sm:block absolute -top-3.5 left-16 w-7 h-7 bg-[#070b19]/90 border-t-2 border-l-2 border-pink-400/70 transform rotate-45"></div>
+
           <!-- Speech Bubble Header -->
           <div class="flex items-center justify-between gap-2 mb-3">
             <div class="flex items-center gap-2.5 font-mono">
-              <span class="text-2xl">💬</span>
+              <span class="text-2xl animate-bounce">💬</span>
               <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-pink-300">Плитти подмигивает</span>
               <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow">HOT WIP 🔥</span>
             </div>
@@ -1450,6 +1460,7 @@
 
     </div>
 
+    <div class="w-full max-w-[98%] 2xl:max-w-[2150px] mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6">
     <!-- Исходный интерфейс сохранен в режиме разработчика -->
     <details class="glass p-4 rounded-3xl border border-white/10 opacity-70 hover:opacity-100 transition-opacity">
       <summary class="cursor-pointer text-xs font-mono text-slate-400 hover:text-white font-bold select-none p-2 flex items-center justify-between">
@@ -1985,6 +1996,7 @@
   
       </div>
     </details>
+    </div>
 </main>
 
   <!-- ================================================================= -->
