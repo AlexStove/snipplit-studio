@@ -1977,7 +1977,7 @@
           </p>
           <div class="flex flex-wrap items-center gap-3 pt-1 text-xs font-mono">
             <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-purple-300">🎵 <b id="snip-tracks-count-badge">141</b> трек</span>
-            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-teal-300">🎥 <b id="snip-footages-count-badge">554</b> футажа</span>
+            <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-teal-300">🎥 <b id="snip-footages-count-badge">201</b> футажа</span>
             <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-emerald-300">💾 <b id="snip-saved-count-badge">333</b> готовых сниппета</span>
             <span class="px-3 py-1 rounded-xl bg-black/40 border border-white/10 text-amber-300">🏢 <b id="snip-stand-count-badge">50</b> телефонов Стенда</span>
           </div>
@@ -2156,10 +2156,10 @@
             <input id="snip-custom-lyrics-input" type="text" placeholder="Введите слова через пробел..." class="w-full bg-white/5 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 font-mono">
           </div>
         </div>
-        <!-- CARD 3: ВЫБОР ВИДЕОФУТАЖА (554 футажа) -->
+        <!-- CARD 3: ВЫБОР ВИДЕОФУТАЖА (201 футаж) -->
         <div class="glass rounded-3xl p-5 space-y-4 border border-white/10 shadow-xl">
           <div class="flex items-center justify-between gap-2">
-            <span class="text-[10px] font-black uppercase tracking-wider text-teal-300 font-mono">ШАГ 3 • ФУТАЖИ (<span id="snip-footage-cat-count">554</span>)</span>
+            <span class="text-[10px] font-black uppercase tracking-wider text-teal-300 font-mono">ШАГ 3 • ФУТАЖИ (<span id="snip-footage-cat-count">201</span>)</span>
             <div class="flex items-center gap-2">
               <button onclick="openFootageHarvesterModal()" class="py-1 px-2.5 rounded-xl font-bold text-[10px] text-white flex items-center gap-1.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:opacity-90 shadow-md border border-teal-400/30 transition-transform transform hover:scale-105 cursor-pointer">
                 <span>📥 Загрузить футажи</span>
@@ -2170,12 +2170,12 @@
 
           <!-- Category Pills (All 6 categories) -->
           <div class="grid grid-cols-3 gap-1.5 text-[10px] font-mono">
-            <button onclick="filterSnippetFootageCategory('all')" id="snip-cat-all" class="glass-btn-accent py-1.5 px-2 rounded-lg text-white font-bold truncate">Все (554)</button>
-            <button onclick="filterSnippetFootageCategory('hooks')" id="snip-cat-hooks" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🔥 Хуки (408)</button>
-            <button onclick="filterSnippetFootageCategory('car')" id="snip-cat-car" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🏎️ Авто (28)</button>
-            <button onclick="filterSnippetFootageCategory('sports')" id="snip-cat-sports" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🥊 Спорт (34)</button>
-            <button onclick="filterSnippetFootageCategory('fashion')" id="snip-cat-fashion" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">👠 Мода (16)</button>
-            <button onclick="filterSnippetFootageCategory('general')" id="snip-cat-general" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🎬 Эстетика (68)</button>
+            <button onclick="filterSnippetFootageCategory('all')" id="snip-cat-all" class="glass-btn-accent py-1.5 px-2 rounded-lg text-white font-bold truncate">Все (201)</button>
+            <button onclick="filterSnippetFootageCategory('hooks')" id="snip-cat-hooks" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🔥 Хуки (52)</button>
+            <button onclick="filterSnippetFootageCategory('car')" id="snip-cat-car" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🏎️ Авто (22)</button>
+            <button onclick="filterSnippetFootageCategory('sports')" id="snip-cat-sports" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🥊 Спорт (21)</button>
+            <button onclick="filterSnippetFootageCategory('fashion')" id="snip-cat-fashion" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">👠 Мода (36)</button>
+            <button onclick="filterSnippetFootageCategory('general')" id="snip-cat-general" class="glass-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white truncate">🎬 Эстетика (70)</button>
           </div>
 
           <!-- Scrollable Footages Grid -->
@@ -9939,15 +9939,57 @@ async function loadSnippetTracks() {
       showToast(`✍️ Текст применен (${snipActiveWords.length} слов)!`);
     }
 
-    // 3. FOOTAGES (554 футажа, 6 категорий)
+    // 3. FOOTAGES (201 футаж, 6 категорий)
+    let snipFootagesSummary = { all: 201, hooks: 52, car: 22, sports: 21, fashion: 36, general: 70 };
+
+    async function updateFootagesCategoryBadges() {
+      try {
+        const r = await fetch('http://localhost:8000/api/snippets/footages/summary');
+        if (r.ok) {
+          snipFootagesSummary = await r.json();
+        } else {
+          // Fallback: calculate from all footages
+          const rAll = await fetch('http://localhost:8000/api/snippets/footages?category=all');
+          if (rAll.ok) {
+            const allItems = await rAll.json();
+            snipFootagesSummary = {
+              all: allItems.length,
+              hooks: allItems.filter(x => x.category === 'hooks').length,
+              car: allItems.filter(x => x.category === 'car').length,
+              sports: allItems.filter(x => x.category === 'sports').length,
+              fashion: allItems.filter(x => x.category === 'fashion').length,
+              general: allItems.filter(x => x.category === 'general').length,
+            };
+          }
+        }
+      } catch (e) {
+        console.warn('Footages summary fetch failed:', e);
+      }
+
+      const map = {
+        'all': `Все (${snipFootagesSummary.all ?? 0})`,
+        'hooks': `🔥 Хуки (${snipFootagesSummary.hooks ?? 0})`,
+        'car': `🏎️ Авто (${snipFootagesSummary.car ?? 0})`,
+        'sports': `🥊 Спорт (${snipFootagesSummary.sports ?? 0})`,
+        'fashion': `👠 Мода (${snipFootagesSummary.fashion ?? 0})`,
+        'general': `🎬 Эстетика (${snipFootagesSummary.general ?? 0})`
+      };
+
+      Object.entries(map).forEach(([key, text]) => {
+        const btn = document.getElementById('snip-cat-' + key);
+        if (btn) btn.textContent = text;
+      });
+
+      const totalBadge = document.getElementById('snip-footages-count-badge');
+      if (totalBadge) totalBadge.textContent = snipFootagesSummary.all ?? 0;
+    }
+
     async function loadSnippetFootages(cat = 'all') {
       try {
+        await updateFootagesCategoryBadges();
         const r = await fetch(`http://localhost:8000/api/snippets/footages?category=${cat}`);
         if (r.ok) {
           snipFootages = await r.json();
-          if (cat === 'all') {
-            document.getElementById('snip-footages-count-badge').textContent = snipFootages.length;
-          }
           const catCountEl = document.getElementById('snip-footage-cat-count');
           if (catCountEl) catCountEl.textContent = snipFootages.length;
           renderSnippetFootagesGrid();
