@@ -284,9 +284,7 @@
         <button id="nav-btn-minifarm" onclick="navToView('minifarm')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           📱 Мини-ферма (20)
         </button>
-        <button id="nav-btn-stand" onclick="navToView('stand')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
-          🏢 Стенд (50)
-        </button>
+
         <button id="nav-btn-pult" onclick="navToView('pult')" class="glass-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
           🎮 Пульт
         </button>
@@ -307,7 +305,7 @@
         <div class="hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full glass text-xs font-mono">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-slate-200 font-semibold">70/70</span>
+            <span class="text-slate-200 font-semibold">40/40</span>
             <span class="text-[10px] text-slate-400">ТЕЛ</span>
           </div>
           <span class="text-white/20">|</span>
@@ -351,9 +349,7 @@
             <button onclick="navToView('minifarm', 'all')" class="glass-btn-accent px-5 py-2.5 rounded-2xl text-xs">
               <span>📱 Мини-ферма (20)</span>
             </button>
-            <button onclick="navToView('stand')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-[#2DD4BF]/60 text-[#2DD4BF]">
-              <span>🏢 Стенд (50)</span>
-            </button>
+
             <button onclick="navToView('pult')" class="glass-btn px-5 py-2.5 rounded-2xl text-xs hover:border-amber-500/60 text-amber-300">
               <span>🎮 Мастер-Пульт</span>
             </button>
@@ -1045,9 +1041,7 @@
 
       <div class="flex items-center gap-2">
         <span class="text-xs font-mono text-slate-400">Активная цель:</span>
-        <span id="target-summary-badge" class="px-4 py-1.5 rounded-xl glass border-amber-400/50 text-amber-300 text-xs font-bold font-mono shadow-md">
-          Вся ферма: 70 телефонов
-        </span>
+        <span id="target-summary-badge" class="px-4 py-1.5 rounded-xl glass border-amber-400/50 text-amber-300 text-xs font-bold font-mono shadow-md">Вся ферма: 40 телефонов</span>
       </div>
     </div>
 
@@ -1055,28 +1049,28 @@
     <div class="glass rounded-3xl p-6 space-y-4 border-amber-500/30">
       <div class="text-xs font-bold uppercase tracking-wider text-slate-300">1. Выберите целевую группу (Target Scope):</div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <button id="target-btn-all" onclick="setPultTarget('all')" class="glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all">
+        <button id="target-btn-all" onclick="setPultTarget('all')" class="glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all shadow-lg bg-white/10">
           <div class="text-lg font-black text-white flex items-center justify-between">
             <span>🔘 ВСЕ ТЕЛЕФОНЫ</span>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">70 шт</span>
+            <span id="badge-target-all" class="text-xs px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono font-black">40 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Мини-ферма (20) + Стенд (50). Массовые команды.</div>
+          <div class="text-xs text-slate-300 mt-1">Мини-ферма 1 (Слоты 01–20) + Мини-ферма 2 (Слоты 21–40). Массовые команды.</div>
         </button>
 
-        <button id="target-btn-minifarm" onclick="setPultTarget('minifarm')" class="glass p-5 rounded-2xl text-left transition-all">
+        <button id="target-btn-minifarm1" onclick="setPultTarget('minifarm1')" class="glass p-5 rounded-2xl text-left transition-all hover:border-white/20 bg-white/5">
           <div class="text-lg font-black text-white flex items-center justify-between">
-            <span>📱 ТОЛЬКО МИНИ-ФЕРМА</span>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-rose-400 text-slate-950 font-mono font-black">20 шт</span>
+            <span>📱 МИНИ-ФЕРМА 1</span>
+            <span id="badge-target-minifarm1" class="text-xs px-2.5 py-0.5 rounded-full bg-blue-400 text-slate-950 font-mono font-black">20 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Слоты 1–20 (10 танцовщиц + 10 служебных).</div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 01–20 (Базовый пул, Слот 15 — 🛡️ CommandCenter).</div>
         </button>
 
-        <button id="target-btn-stand" onclick="setPultTarget('stand')" class="glass p-5 rounded-2xl text-left transition-all">
+        <button id="target-btn-minifarm2" onclick="setPultTarget('minifarm2')" class="glass p-5 rounded-2xl text-left transition-all hover:border-white/20 bg-white/5">
           <div class="text-lg font-black text-white flex items-center justify-between">
-            <span>🏢 ТОЛЬКО СТЕНД</span>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-teal-400 text-slate-950 font-mono font-black">50 шт</span>
+            <span>🇺🇸 МИНИ-ФЕРМА 2</span>
+            <span id="badge-target-minifarm2" class="text-xs px-2.5 py-0.5 rounded-full bg-purple-400 text-slate-950 font-mono font-black">20 шт</span>
           </div>
-          <div class="text-xs text-slate-300 mt-1">Слоты 51–100 (Samsung Galaxy A26, порт 2222).</div>
+          <div class="text-xs text-slate-300 mt-1">Слоты 21–40 (Samsung Galaxy A26, v2rayNG US Proxy, регион США).</div>
         </button>
       </div>
     </div>
@@ -1200,9 +1194,9 @@
       </div>
 
       <div id="pult-console-log" class="p-4 rounded-2xl bg-black/80 border border-white/10 font-mono text-xs text-slate-300 h-44 overflow-y-auto space-y-1">
-        <div class="text-slate-500">[System] Plitty Master Pult v3.3 инициализирован. Все 70 устройств на связи.</div>
-        <div class="text-teal-400">[Stand] 50 телефонов Samsung Galaxy A26 подключены на порту TCP 2222.</div>
-        <div class="text-pink-400">[Minifarm] 10 танцовщиц (Слоты 1–10) + 10 служебных сервисов (Слоты 11–20) готовы к работе.</div>
+        <div class="text-slate-500">[System] Plitty Master Pult v3.4 инициализирован. Все 40 устройств экосистемы на связи.</div>
+        <div class="text-blue-400">[MiniFarm 1] Слоты 01–20 (19 воркеров + Слот 15 CommandCenter 🛡️) готовы к работе.</div>
+        <div class="text-purple-400">[MiniFarm 2] Слоты 21–40 (Samsung Galaxy A26 • v2rayNG US Proxy, США) готовы к работе.</div>
       </div>
     </div>
   </main>
@@ -7010,39 +7004,42 @@ Sound: LARI - MEGANA
         if (r.ok) {
           const data = await r.json();
           const allBadge = document.querySelector('#target-btn-all span.font-mono');
-          const mfBadge = document.querySelector('#target-btn-minifarm span.font-mono');
-          const stBadge = document.querySelector('#target-btn-stand span.font-mono');
+          const mf1Badge = document.querySelector('#target-btn-minifarm1 span.font-mono');
+          const mf2Badge = document.querySelector('#target-btn-minifarm2 span.font-mono');
           if (allBadge && data.all !== undefined) allBadge.textContent = `${data.all} шт`;
-          if (mfBadge && data.minifarm !== undefined) mfBadge.textContent = `${data.minifarm} шт`;
-          if (stBadge && data.stand !== undefined) stBadge.textContent = `${data.stand} шт`;
+          if (mf1Badge && (data.minifarm1 !== undefined || data.minifarm !== undefined)) mf1Badge.textContent = `${data.minifarm1 || data.minifarm} шт`;
+          if (mf2Badge && data.minifarm2 !== undefined) mf2Badge.textContent = `${data.minifarm2} шт`;
 
           const badge = document.getElementById('target-summary-badge');
           if (badge) {
-            if (pultTarget === 'all') badge.textContent = `Вся ферма: ${data.all || 70} телефонов`;
-            else if (pultTarget === 'minifarm') badge.textContent = `Только Мини-ферма: ${data.minifarm || 20} телефонов`;
-            else if (pultTarget === 'stand') badge.textContent = `Только Стенд: ${data.stand || 50} телефонов`;
+            if (pultTarget === 'all') badge.textContent = `Вся ферма: ${data.all || 40} телефонов`;
+            else if (pultTarget === 'minifarm1' || pultTarget === 'minifarm') badge.textContent = `Мини-ферма 1: ${data.minifarm1 || 20} телефонов (Слоты 01–20)`;
+            else if (pultTarget === 'minifarm2') badge.textContent = `Мини-ферма 2: ${data.minifarm2 || 20} телефонов (Слоты 21–40, US)`;
           }
         }
       } catch (e) {}
     }
 
     function setPultTarget(target) {
+      if (target === 'minifarm') target = 'minifarm1';
       pultTarget = target;
       const badge = document.getElementById('target-summary-badge');
-      ['all', 'minifarm', 'stand'].forEach(t => {
+      ['all', 'minifarm1', 'minifarm2'].forEach(t => {
         const b = document.getElementById('target-btn-' + t);
         if (b) {
           if (t === target) {
-            b.className = 'glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all shadow-lg';
+            b.className = 'glass p-5 rounded-2xl border-2 border-amber-400 text-left transition-all shadow-lg bg-white/10';
           } else {
-            b.className = 'glass p-5 rounded-2xl text-left transition-all hover:border-white/20';
+            b.className = 'glass p-5 rounded-2xl text-left transition-all hover:border-white/20 bg-white/5';
           }
         }
       });
 
-      if (target === 'all') badge.textContent = 'Вся ферма: 70 телефонов';
-      else if (target === 'minifarm') badge.textContent = 'Только Мини-ферма: 20 телефонов';
-      else if (target === 'stand') badge.textContent = 'Только Стенд: 50 телефонов';
+      if (badge) {
+        if (target === 'all') badge.textContent = 'Вся ферма: 40 телефонов';
+        else if (target === 'minifarm1') badge.textContent = 'Мини-ферма 1: 20 телефонов (Слоты 01–20)';
+        else if (target === 'minifarm2') badge.textContent = 'Мини-ферма 2: 20 телефонов (Слоты 21–40, US)';
+      }
 
       updatePultCounts();
       appendConsoleLog(`[Pult] Целевая группа: ${target.toUpperCase()}`);
