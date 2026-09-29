@@ -342,7 +342,7 @@
             Привет! Я <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F3A6BF] via-[#E588A6] to-[#C95F81]">Плитти</span>.
           </h1>
           <p class="text-sm lg:text-base text-slate-300 max-w-3xl leading-relaxed">
-            Вся инфраструктура фермы объединена: <b>Мини-ферма 1 (20)</b>, <b>Мини-ферма 2 (US)</b>, <b>Мастер-Пульт</b>, <b>Сниппеты</b> и <b>Метрика</b>. Разделы <i>Мини-ферма</i>, <i>Стенд</i> и <i>Студия</i> на техобслуживании. Выбери модуль:
+            Вся инфраструктура фермы объединена: <b>Мини-ферма 1 (20)</b>, <b>Мини-ферма 2 (US)</b>, <b>Мастер-Пульт</b>, <b>Сниппеты</b> и <b>Метрика</b>. Разделы <i>Мини-ферма</i> и <i>Студия</i> на техобслуживании. Выбери модуль:
           </p>
           
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
@@ -363,8 +363,8 @@
       </div>
     </div>
 
-    <!-- 6 Main Route Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6 gap-6">
+    <!-- 5 Main Route Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
       <!-- Card 1: Minifarm (20 phones) - UNDER MAINTENANCE -->
       <div onclick="navToView('minifarm', 'all')" class="glass rounded-3xl p-7 group cursor-pointer border-amber-500/30 hover:border-amber-400/70 bg-amber-500/[0.03] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(245,158,11,0.25)]">
         <div class="space-y-3.5">
@@ -388,28 +388,7 @@
         </div>
       </div>
 
-      <!-- Card 2: Stand (50 phones) - UNDER MAINTENANCE -->
-      <div onclick="navToView('stand')" class="glass rounded-3xl p-7 group cursor-pointer border-amber-500/30 hover:border-amber-400/70 bg-amber-500/[0.03] transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(245,158,11,0.25)]">
-        <div class="space-y-3.5">
-          <div class="flex items-center justify-between">
-            <div class="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-md">
-              🏢
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/25 text-amber-300 border border-amber-400/50 font-mono shadow-sm">🚧 НА РЕМОНТЕ</span>
-          </div>
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">3 ПОЛКИ • СЛОТЫ 51–100</span>
-            <h2 class="text-xl font-black text-white mt-1 group-hover:text-amber-300 transition-colors">Стенд (50)</h2>
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Стенд демонтирован и находится на реконструкции. Ферма переведена на двухмодульную схему: Мини-ферма 1 (1–20) и Мини-ферма 2 (21–40).
-          </p>
-        </div>
-        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
-          <span class="glass-btn px-3 py-1.5 rounded-xl border border-amber-500/40 text-amber-300 font-bold">🚧 На ремонте</span>
-          <span class="group-hover:translate-x-1.5 transition-transform text-base">&rarr;</span>
-        </div>
-      </div>
+      
 
       <!-- Card 3: Pult -->
       <div onclick="navToView('pult')" class="glass rounded-3xl p-7 group cursor-pointer hover:border-amber-400 transition-all flex flex-col justify-between hover:shadow-[0_16px_45px_-10px_rgba(245,158,11,0.3)]">
